@@ -14,6 +14,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { Readout, type DetailRow, type Stat } from '../../components/readout/Readout';
+import { FormulaPanel } from '../../components/sim/FormulaPanel';
+import { LevelBlurb } from '../../components/sim/LevelBlurb';
 import { PresetPicker } from '../../components/sim/PresetPicker';
 import { ResultPanel } from '../../components/sim/ResultPanel';
 import { Scene } from '../../components/sim/Scene';
@@ -21,7 +23,7 @@ import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Segmented } from '../../components/ui/Segmented';
 import { Toggle } from '../../components/ui/Toggle';
-import { ValueSlider } from '../../components/ui/ValueSlider';
+import { NumberField } from '../../components/ui/NumberField';
 import { useImpactSound } from '../../hooks/useImpactSound';
 import { useSimulation } from '../../hooks/useSimulation';
 import {
@@ -42,6 +44,8 @@ import {
 import { analyticBounds, type SimParams, type SimResult } from '../../lib/physics/simulation';
 import { colors, radius, scenes, spacing } from '../../theme';
 import { useDetailMode } from '../../context/DetailMode';
+import { useDifficulty } from '../../context/Difficulty';
+import { showsExtraQuantities, usesPreciseTerms } from '../../lib/difficulty';
 import { friendly, friendlyTime, precise, speedComparisonKey } from '../../lib/format';
 
 /** Playback speed choices. A feather on a long fall genuinely needs the 4x. */
@@ -212,6 +216,17 @@ export default function DropSimulator() {
 
   // ---------------------------------------------------------------- readout
   const { detailed } = useDetailMode();
+  const { level } = useDifficulty();
+  const precise_ = usesPreciseTerms(level);
+
+  /** Which way it is currently travelling — shown once terms turn precise. */
+  const directionCaption = useCallback(
+    (verticalVelocity: number) => {
+      if (Math.abs(verticalVelocity) < 0.01) return '';
+      return verticalVelocity < 0 ? t('drop.stats.down') : t('drop.stats.up');
+    },
+    [t]
+  );
 
   /** Resolves the everyday-speed comparison key, or nothing when too slow. */
   const comparisonCaption = useCallback(
@@ -241,12 +256,16 @@ export default function DropSimulator() {
     return [
       {
         key: 'speed',
-        label: t('drop.stats.speed'),
+        label: precise_ ? t('drop.stats.velocity') : t('drop.stats.speed'),
         value: displayFrame.speed,
         unit: 'm/s',
         fill: displayFrame.speed / speedReference,
         showTrend: running,
-        caption: comparisonCaption(displayFrame.speed),
+        caption: precise_
+          ? [directionCaption(displayFrame.vy), comparisonCaption(displayFrame.speed)]
+              .filter(Boolean)
+              .join(' · ')
+          : comparisonCaption(displayFrame.speed),
       },
       {
         key: 'height',
@@ -265,7 +284,7 @@ export default function DropSimulator() {
         tone: colors.textMuted,
       },
     ];
-  }, [displayFrame, speedReference, bounds.maxY, running, t, comparisonCaption]);
+  }, [displayFrame, speedReference, bounds.maxY, running, t, comparisonCaption, precise_, directionCaption]);
 
   /** Raw figures — only rendered when detailed mode is on. */
   const liveDetails: DetailRow[] = useMemo(() => {
@@ -285,13 +304,27 @@ export default function DropSimulator() {
       },
       { label: t('details.dragCoefficient'), value: precise(dragCoefficient, 2), unit: '' },
       { label: t('details.crossSection'), value: precise(area, 5), unit: 'm²' },
+      ...(showsExtraQuantities(level)
+        ? [
+            {
+              label: t('details.momentum'),
+              value: precise(mass * displayFrame.speed, 4),
+              unit: 'kg·m/s',
+            },
+            {
+              label: t('details.kineticEnergy'),
+              value: precise(0.5 * mass * displayFrame.speed ** 2, 4),
+              unit: 'J',
+            },
+          ]
+        : []),
       {
         label: t('details.terminalVelocity'),
         value: Number.isFinite(vTerminal) ? precise(vTerminal, 3) : '∞',
         unit: Number.isFinite(vTerminal) ? 'm/s' : '',
       },
     ];
-  }, [detailed, displayFrame, env, airResistance, dragCoefficient, area, vTerminal, t]);
+  }, [detailed, displayFrame, env, airResistance, dragCoefficient, area, vTerminal, t, level, mass]);
 
   /** One plain sentence describing what just happened. */
   const outcomeMessage = useMemo(() => {
@@ -351,6 +384,8 @@ export default function DropSimulator() {
         // the card's 1px borders.
         onLayout={(e) => setPanelWidth(e.nativeEvent.layout.width - spacing.md * 4 - 2)}
       >
+        <LevelBlurb module="drop" />
+
         {showLiveData ? (
           <Readout stats={liveStats} details={liveDetails} message={outcomeMessage} />
         ) : null}
@@ -379,25 +414,24 @@ export default function DropSimulator() {
                 }}
               />
               <View style={styles.customSliders}>
-                <ValueSlider
+                <NumberField
                   label={t('drop.sliders.dragCoefficient')}
                   value={dragCoefficient}
                   min={0.04}
                   max={3}
-                  precision={2}
+                  decimals={2}
                   disabled={running}
-                  onChange={setDragCoefficient}
+                  onCommit={setDragCoefficient}
                 />
-                <ValueSlider
+                <NumberField
                   label={t('drop.sliders.crossSection')}
                   value={area}
                   min={0.0001}
                   max={1}
                   unit="m²"
-                  precision={4}
-                  logarithmic
+                  decimals={4}
                   disabled={running}
-                  onChange={setArea}
+                  onCommit={setArea}
                 />
               </View>
             </View>
@@ -405,55 +439,49 @@ export default function DropSimulator() {
         </Card>
 
         <Card title={t('drop.cards.release')}>
-          <ValueSlider
+          <NumberField
             label={t('drop.sliders.mass')}
             value={mass}
             min={LIMITS.massMin}
             max={LIMITS.massMax}
             unit="kg"
-            precision={2}
-            logarithmic
+            decimals={4}
             disabled={running}
-            onChange={setMass}
+            onCommit={setMass}
             hint={
-              airResistance && env.airDensity > 0
-                ? undefined
-                : t('drop.hints.noAirMass')
+              airResistance && env.airDensity > 0 ? undefined : t('drop.hints.noAirMass')
             }
           />
-          <ValueSlider
+          <NumberField
             label={t('drop.sliders.dropHeight')}
             value={dropHeight}
             min={LIMITS.heightMin}
             max={LIMITS.heightMax}
             unit="m"
-            precision={1}
+            decimals={1}
             disabled={running}
-            onChange={setDropHeight}
+            onCommit={setDropHeight}
           />
-          <ValueSlider
+          <NumberField
             label={t('drop.sliders.initialVelocity')}
             value={speed}
             min={LIMITS.velocityMin}
             max={LIMITS.velocityMax}
             unit="m/s"
-            precision={1}
+            decimals={1}
             disabled={running}
-            onChange={setSpeed}
+            onCommit={setSpeed}
           />
-          <ValueSlider
+          <NumberField
             label={t('drop.sliders.launchAngle')}
             value={angleDeg}
             min={LIMITS.angleMin}
             max={LIMITS.angleMax}
             unit="°"
-            step={1}
-            precision={0}
+            decimals={0}
             disabled={running || angleDisabled}
-            onChange={setAngleDeg}
-            hint={
-              angleDisabled ? t('drop.hints.needVelocity') : t('drop.hints.angle')
-            }
+            onCommit={setAngleDeg}
+            hint={angleDisabled ? t('drop.hints.needVelocity') : t('drop.hints.angle')}
           />
         </Card>
 
@@ -521,6 +549,8 @@ export default function DropSimulator() {
             airResistance={airResistance && env.airDensity > 0}
           />
         ) : null}
+
+        <FormulaPanel module="drop" />
 
         <Text style={styles.credits}>{t('drop.credits')}</Text>
       </ScrollView>

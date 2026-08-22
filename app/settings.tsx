@@ -4,14 +4,17 @@ import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-n
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Card } from '../components/ui/Card';
+import { useDifficulty } from '../context/Difficulty';
 import { useLanguage } from '../context/Language';
-import { SUPPORTED_LANGUAGES, type SupportedLanguage } from '../lib/i18n';
+import { DIFFICULTY_ORDER, type DifficultyLevel } from '../lib/difficulty';
+import { SUPPORTED_LANGUAGES } from '../lib/i18n';
 import { colors, radius, spacing } from '../theme';
 
 export default function Settings() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { language, setLanguage } = useLanguage();
+  const { level, setLevel } = useDifficulty();
 
   return (
     <ScrollView
@@ -19,13 +22,31 @@ export default function Settings() {
       contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
       showsVerticalScrollIndicator={false}
     >
+      <Card title={t('difficulty.title')}>
+        <Text style={styles.description}>{t('difficulty.description')}</Text>
+        <View style={styles.list}>
+          {DIFFICULTY_ORDER.map((id) => (
+            <ChoiceRow
+              key={id}
+              title={t(`difficulty.levels.${id}.label`)}
+              subtitle={t(`difficulty.levels.${id}.grades`)}
+              selected={id === level}
+              onPress={() => setLevel(id as DifficultyLevel)}
+            />
+          ))}
+        </View>
+      </Card>
+
       <Card title={t('settings.language')}>
         <Text style={styles.description}>{t('settings.languageDescription')}</Text>
         <View style={styles.list}>
           {SUPPORTED_LANGUAGES.map((lang) => (
-            <LanguageRow
+            <ChoiceRow
               key={lang.code}
-              language={lang}
+              /* The language's own name leads, so it is findable by someone
+                 who cannot read the current interface. */
+              title={lang.endonym}
+              subtitle={lang.english}
               selected={lang.code === language}
               onPress={() => setLanguage(lang.code)}
             />
@@ -41,12 +62,15 @@ export default function Settings() {
   );
 }
 
-function LanguageRow({
-  language,
+/** One selectable option, shared by the difficulty and language pickers. */
+function ChoiceRow({
+  title,
+  subtitle,
   selected,
   onPress,
 }: {
-  language: SupportedLanguage;
+  title: string;
+  subtitle: string;
   selected: boolean;
   onPress: () => void;
 }) {
@@ -62,16 +86,12 @@ function LanguageRow({
         onPress={onPress}
         accessibilityRole="radio"
         accessibilityState={{ selected }}
-        accessibilityLabel={`${language.endonym} (${language.english})`}
+        accessibilityLabel={`${title} (${subtitle})`}
         style={[styles.row, selected && styles.rowSelected]}
       >
         <View style={styles.rowText}>
-          {/* The language's own name leads, so it is findable by someone who
-              cannot currently read the interface. */}
-          <Text style={[styles.endonym, selected && { color: colors.accent }]}>
-            {language.endonym}
-          </Text>
-          <Text style={styles.english}>{language.english}</Text>
+          <Text style={[styles.endonym, selected && { color: colors.accent }]}>{title}</Text>
+          <Text style={styles.english}>{subtitle}</Text>
         </View>
         <View style={[styles.radio, selected && styles.radioSelected]}>
           {selected ? <View style={styles.radioDot} /> : null}

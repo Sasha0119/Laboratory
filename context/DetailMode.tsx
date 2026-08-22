@@ -1,7 +1,9 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { detailDefaultFor } from '../lib/difficulty';
+import { useDifficulty } from './Difficulty';
 
 /**
- * "Show detailed data" — app-wide, OFF by default.
+ * "Show detailed data" — app-wide.
  *
  * This is the house style for every simulation module, present and future:
  *
@@ -11,12 +13,16 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from 're
  *   - Raw physics — component velocities, accelerations, coefficients, exact
  *     unrounded figures, symbolic axis labels — lives behind this flag.
  *
+ * The starting position now follows the difficulty level (off for Beginner and
+ * Intermediate, on for Pro), but the switch stays under the user's control: a
+ * manual flip sticks until the level itself changes.
+ *
  * It is deliberately a context rather than per-screen state: a reader who
  * turns detail on once expects it to stay on as they move between modules,
  * and a new module should inherit the behaviour by calling `useDetailMode()`
  * instead of inventing its own toggle.
  *
- * Session-scoped on purpose — the app stores nothing on the device.
+ * Session-scoped on purpose — only the level itself is stored on the device.
  */
 
 interface DetailModeValue {
@@ -30,20 +36,24 @@ const DetailModeContext = createContext<DetailModeValue>({
 });
 
 export function DetailModeProvider({ children }: { children: ReactNode }) {
-  const [detailed, setDetailed] = useState(false);
+  const { level, ready } = useDifficulty();
+  const [detailed, setDetailed] = useState(() => detailDefaultFor(level));
+
+  // Re-apply the level's default whenever the level changes — including the
+  // moment the stored level is first read back at startup. A manual toggle in
+  // between is left alone, because this only fires on a genuine level change.
+  const lastLevel = useRef<string | null>(null);
+  useEffect(() => {
+    if (!ready) return;
+    if (lastLevel.current === level) return;
+    lastLevel.current = level;
+    setDetailed(detailDefaultFor(level));
+  }, [level, ready]);
+
   const value = useMemo(() => ({ detailed, setDetailed }), [detailed]);
   return <DetailModeContext.Provider value={value}>{children}</DetailModeContext.Provider>;
 }
 
 export function useDetailMode(): DetailModeValue {
   return useContext(DetailModeContext);
-}
-
-/**
- * Pick between a plain-language label and its technical form.
- * `label('Speed', '|v| (m/s)')` reads the way it is used at the call site.
- */
-export function useLabel(): (plain: string, technical: string) => string {
-  const { detailed } = useDetailMode();
-  return (plain, technical) => (detailed ? technical : plain);
 }

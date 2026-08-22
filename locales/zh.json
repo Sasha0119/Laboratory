@@ -56,13 +56,61 @@
         "title": "碰撞",
         "summary": "两个迎面而来的物体。每次碰撞动量都守恒，能量却不一定。"
       },
-      "pendulum": {
-        "title": "单摆",
-        "summary": "简单摆与阻尼摆，以及小角度近似。"
+      "simpleCircuits": {
+        "title": "简单电路",
+        "summary": "电池、灯泡和开关，以及电流为什么会流动。"
       },
-      "incline": {
-        "title": "斜面",
-        "summary": "带静摩擦与动摩擦的滑动与滚动物体。"
+      "magnets": {
+        "title": "磁体与磁性",
+        "summary": "磁极、吸引与排斥，以及磁场的形状。"
+      },
+      "statesOfMatter": {
+        "title": "物态与热",
+        "summary": "固体、液体和气体，以及加热和冷却对它们的影响。"
+      },
+      "simpleMachines": {
+        "title": "简单机械",
+        "summary": "杠杆、滑轮和斜面，以及它们省下的力。"
+      },
+      "waves": {
+        "title": "波与声音",
+        "summary": "波长、频率和振幅，以及声音如何传播。"
+      },
+      "light": {
+        "title": "光、反射与折射",
+        "summary": "镜子、透镜，以及杯中的吸管为什么看起来是弯的。"
+      },
+      "ohmsLaw": {
+        "title": "欧姆定律与电路",
+        "summary": "串联和并联中的电压、电流与电阻。"
+      },
+      "energyConservation": {
+        "title": "能量守恒",
+        "summary": "动能与势能相互转化，却从不消失。"
+      },
+      "pressureBuoyancy": {
+        "title": "压强与浮力",
+        "summary": "物体为什么会浮或沉，以及压强为什么随深度增加。"
+      },
+      "rotational": {
+        "title": "转动与力矩",
+        "summary": "转动、转动惯量，以及让它转起来的力矩。"
+      },
+      "induction": {
+        "title": "电磁感应",
+        "summary": "运动的磁体产生电流，以及预言这一点的定律。"
+      },
+      "harmonicMotion": {
+        "title": "简谐运动",
+        "summary": "单摆与弹簧，有阻尼与无阻尼。"
+      },
+      "thermodynamics": {
+        "title": "热力学",
+        "summary": "热的定律、熵，以及把热变成功的热机。"
+      },
+      "advancedDrag": {
+        "title": "含高级阻力模型的抛体运动",
+        "summary": "雷诺数、阻力危机，以及简单模型失效的地方。"
       }
     },
     "topics": {
@@ -76,7 +124,8 @@
       "damping": "阻尼",
       "friction": "摩擦",
       "torque": "力矩"
-    }
+    },
+    "comingSoonMessage": "这个实验即将推出！"
   },
   "presets": {
     "ball": {
@@ -172,7 +221,10 @@
     "stats": {
       "speed": "速度",
       "heightLeft": "剩余高度",
-      "time": "时间"
+      "time": "时间",
+      "velocity": "速度（矢量）",
+      "down": "向下",
+      "up": "向上"
     },
     "terminal": {
       "none": "无阻力",
@@ -189,6 +241,10 @@
     "badge": {
       "air": "有空气",
       "vacuum": "真空"
+    },
+    "blurbs": {
+      "beginner": "重力把物体往下拉，所以它一路都在加速。打开空气阻力后，落得越快，空气推回来的力就越大。",
+      "intermediate": "重力提供恒定的向下加速度。阻力方向与速度相反，且随速度的平方增大，因此加速度不断减小，直到两者在终端速度处平衡。"
     }
   },
   "collisions": {
@@ -218,7 +274,8 @@
     "stats": {
       "speedOf": "{{name}}的速度",
       "movingDirection": "{{direction}}运动",
-      "stopped": "已停止"
+      "stopped": "已停止",
+      "velocityOf": "{{name}}的速度（矢量）"
     },
     "badge": {
       "bounciness": "弹性 {{value}}"
@@ -244,6 +301,10 @@
       "restitution": "恢复系数  e",
       "momentum": "动量  p",
       "kineticEnergy": "动能  KE"
+    },
+    "blurbs": {
+      "beginner": "两个物体相遇时会互相推挤，交换一部分运动。它们有多弹，决定了是弹开还是黏在一起。",
+      "intermediate": "无论哪种碰撞，碰撞前的总动量都等于碰撞后的总动量。恢复系数决定有多少动能被保留下来。"
     }
   },
   "details": {
@@ -257,7 +318,9 @@
     "airDensity": "空气密度  ρ",
     "dragCoefficient": "阻力系数  Cd",
     "crossSection": "横截面  A",
-    "terminalVelocity": "终端速度  v∞"
+    "terminalVelocity": "终端速度  v∞",
+    "momentum": "动量  p",
+    "kineticEnergy": "动能  KE"
   },
   "results": {
     "outcomes": {
@@ -315,5 +378,54 @@
     "languageDescription": "选择所有界面使用的语言。你的选择会保存在本机。",
     "translationNote": "英语以外的翻译由 AI 辅助生成，尚未经过母语者校对。物理术语尤其建议复核。",
     "unitsNote": "单位符号（kg、m、m/s）是国际通用的，在所有语言中保持不变。"
+  },
+  "difficulty": {
+    "title": "难度",
+    "description": "改变每个模拟显示多少讲解，不会改变物理本身。",
+    "levels": {
+      "beginner": {
+        "label": "入门",
+        "grades": "7–8 年级"
+      },
+      "intermediate": {
+        "label": "进阶",
+        "grades": "9–10 年级"
+      },
+      "pro": {
+        "label": "专业 / 大学",
+        "grades": "11 年级以上及大学"
+      }
+    },
+    "short": {
+      "beginner": "入门",
+      "intermediate": "进阶",
+      "pro": "专业"
+    },
+    "yourLevel": "你的难度",
+    "otherLevels": "其他难度"
+  },
+  "input": {
+    "range": "最小：{{min}} {{unit}} — 最大：{{max}} {{unit}}",
+    "clampedMin": "最小为 {{min}} {{unit}} — 已调整",
+    "clampedMax": "最大为 {{max}} {{unit}} — 已调整",
+    "invalid": "请输入数字"
+  },
+  "formulas": {
+    "title": "如何计算",
+    "footnote": "这些就是模拟实际积分的方程，并非简化的替代式。",
+    "drop": {
+      "position": "高度随时间变化",
+      "velocity": "竖直速度随时间变化",
+      "fallTime": "从静止下落所需时间",
+      "drag": "空气阻力",
+      "terminal": "终端速度"
+    },
+    "collisions": {
+      "momentum": "动量守恒",
+      "inelastic": "完全非弹性 — 黏在一起",
+      "elastic": "完全弹性 — 弹开",
+      "restitution": "恢复系数",
+      "kineticEnergy": "动能"
+    }
   }
 }

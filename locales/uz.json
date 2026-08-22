@@ -56,13 +56,61 @@
         "title": "To'qnashuvlar",
         "summary": "Bir-biriga qarab kelayotgan ikki jism. Har qanday zarbada impuls saqlanadi, energiya esa yo'q."
       },
-      "pendulum": {
-        "title": "Mayatnik",
-        "summary": "Oddiy va so'nuvchi mayatniklar hamda kichik burchak yaqinlashuvi."
+      "simpleCircuits": {
+        "title": "Oddiy elektr zanjirlari",
+        "summary": "Batareyalar, lampochkalar va kalitlar: tokni nima harakatga keltiradi."
       },
-      "incline": {
-        "title": "Qiya tekislik",
-        "summary": "Tinchlik va sirpanish ishqalanishi bilan sirpanuvchi va dumalovchi jismlar."
+      "magnets": {
+        "title": "Magnitlar va magnetizm",
+        "summary": "Qutblar, tortishish va itarilish, magnit maydon shakli."
+      },
+      "statesOfMatter": {
+        "title": "Modda holatlari va issiqlik",
+        "summary": "Qattiq, suyuq va gaz holatlari: isitish va sovitish ularga qanday ta’sir qiladi."
+      },
+      "simpleMachines": {
+        "title": "Oddiy mexanizmlar",
+        "summary": "Richaglar, bloklar va qiya tekisliklar: ular qanday kuch tejaydi."
+      },
+      "waves": {
+        "title": "To‘lqinlar va tovush",
+        "summary": "To‘lqin uzunligi, chastota va amplituda; tovush qanday tarqaladi."
+      },
+      "light": {
+        "title": "Yorug‘lik, qaytish va sinish",
+        "summary": "Ko‘zgular, linzalar va nega naycha suvda siniqdek ko‘rinadi."
+      },
+      "ohmsLaw": {
+        "title": "Om qonuni va zanjirlar",
+        "summary": "Ketma-ket va parallel ulanishda kuchlanish, tok va qarshilik."
+      },
+      "energyConservation": {
+        "title": "Energiyaning saqlanishi",
+        "summary": "Kinetik va potensial energiya bir-biriga o‘tadi va hech qayerga yo‘qolmaydi."
+      },
+      "pressureBuoyancy": {
+        "title": "Bosim va suzish kuchi",
+        "summary": "Nega jismlar suzadi yoki cho‘kadi va nega chuqurlikda bosim ortadi."
+      },
+      "rotational": {
+        "title": "Aylanma harakat va moment",
+        "summary": "Aylanish, inersiya momenti va uni harakatga keltiruvchi kuch momenti."
+      },
+      "induction": {
+        "title": "Elektromagnit induksiya",
+        "summary": "Harakatlanuvchi magnitlar tok hosil qiladi; buni bashorat qiluvchi qonun."
+      },
+      "harmonicMotion": {
+        "title": "Garmonik tebranishlar",
+        "summary": "Mayatniklar va prujinalar, so‘nish bilan va so‘nishsiz."
+      },
+      "thermodynamics": {
+        "title": "Termodinamika",
+        "summary": "Issiqlik qonunlari, entropiya va issiqlikni ishga aylantiruvchi dvigatellar."
+      },
+      "advancedDrag": {
+        "title": "Murakkab qarshilik bilan otilgan jism harakati",
+        "summary": "Reynolds soni, qarshilik inqirozi va oddiy model qayerda ishlamay qolishi."
       }
     },
     "topics": {
@@ -76,7 +124,8 @@
       "damping": "So'nish",
       "friction": "Ishqalanish",
       "torque": "Aylantiruvchi moment"
-    }
+    },
+    "comingSoonMessage": "Bu tajriba tez orada qo‘shiladi!"
   },
   "presets": {
     "ball": {
@@ -172,7 +221,10 @@
     "stats": {
       "speed": "Tezlik",
       "heightLeft": "Qolgan balandlik",
-      "time": "Vaqt"
+      "time": "Vaqt",
+      "velocity": "Tezlik (vektor)",
+      "down": "pastga",
+      "up": "yuqoriga"
     },
     "terminal": {
       "none": "qarshilik yo'q",
@@ -189,6 +241,10 @@
     "badge": {
       "air": "havo",
       "vacuum": "vakuum"
+    },
+    "blurbs": {
+      "beginner": "Tortishish jismni pastga tortadi, shuning uchun u butun yo‘l davomida tezlashadi. Havo qarshiligi yoqilgan bo‘lsa, tezlik ortgan sari havo kuchliroq qarshilik qiladi.",
+      "intermediate": "Tortishish doimiy pastga yo‘nalgan tezlanish beradi. Qarshilik tezlikka qarshi yo‘nalgan va uning kvadratiga proporsional o‘sadi, shuning uchun tezlanish ikkalasi chegaraviy tezlikda muvozanatlashguncha kamayadi."
     }
   },
   "collisions": {
@@ -218,7 +274,8 @@
     "stats": {
       "speedOf": "{{name}} tezligi",
       "movingDirection": "{{direction}} ketmoqda",
-      "stopped": "to'xtadi"
+      "stopped": "to'xtadi",
+      "velocityOf": "{{name}} tezligi (vektor)"
     },
     "badge": {
       "bounciness": "elastiklik {{value}}"
@@ -244,6 +301,10 @@
       "restitution": "Tiklanish  e",
       "momentum": "Impuls  p",
       "kineticEnergy": "Kinetik energiya  KE"
+    },
+    "blurbs": {
+      "beginner": "Ikki jism uchrashganda bir-birini itaradi va harakatining bir qismini almashadi. Ular qanchalik elastik bo‘lsa, shunga qarab yo ajralib ketadi, yo yopishib qoladi.",
+      "intermediate": "To‘qnashuv turidan qat’i nazar, zarbadan oldingi umumiy impuls keyingisiga teng. Tiklanish koeffitsienti kinetik energiyaning qanchasi saqlanishini belgilaydi."
     }
   },
   "details": {
@@ -257,7 +318,9 @@
     "airDensity": "Havo zichligi  ρ",
     "dragCoefficient": "Qarshilik koeffitsienti  Cd",
     "crossSection": "Kesim  A",
-    "terminalVelocity": "Chegaraviy tezlik  v∞"
+    "terminalVelocity": "Chegaraviy tezlik  v∞",
+    "momentum": "Impuls  p",
+    "kineticEnergy": "Kinetik energiya  KE"
   },
   "results": {
     "outcomes": {
@@ -315,5 +378,54 @@
     "languageDescription": "Barcha ekranlar uchun tilni tanlang. Tanlovingiz shu qurilmada saqlanadi.",
     "translationNote": "Ingliz tilidan boshqa tarjimalar sun'iy intellekt yordamida tayyorlangan va hali ona tili sohibi tomonidan tekshirilmagan. Ayniqsa fizika atamalarini ko'rib chiqish tavsiya etiladi.",
     "unitsNote": "O'lchov belgilari (kg, m, m/s) xalqaro bo'lib, barcha tillarda bir xil qoladi."
+  },
+  "difficulty": {
+    "title": "Daraja",
+    "description": "Har bir simulyatsiyada qancha tushuntirish ko‘rsatilishini o‘zgartiradi. Fizikaning o‘ziga ta’sir qilmaydi.",
+    "levels": {
+      "beginner": {
+        "label": "Boshlang‘ich",
+        "grades": "7–8-sinf"
+      },
+      "intermediate": {
+        "label": "O‘rta",
+        "grades": "9–10-sinf"
+      },
+      "pro": {
+        "label": "Yuqori / Oliy",
+        "grades": "11-sinf va undan yuqori, oliy ta’lim"
+      }
+    },
+    "short": {
+      "beginner": "Boshlang‘ich",
+      "intermediate": "O‘rta",
+      "pro": "Yuqori"
+    },
+    "yourLevel": "Sizning darajangiz",
+    "otherLevels": "Boshqa darajalar"
+  },
+  "input": {
+    "range": "Eng kam: {{min}} {{unit}} — Eng ko‘p: {{max}} {{unit}}",
+    "clampedMin": "Eng kami {{min}} {{unit}} — to‘g‘rilandi",
+    "clampedMax": "Eng ko‘pi {{max}} {{unit}} — to‘g‘rilandi",
+    "invalid": "Son kiriting"
+  },
+  "formulas": {
+    "title": "Qanday hisoblanadi",
+    "footnote": "Bular simulyatsiya haqiqatan integrallaydigan tenglamalar, soddalashtirilgan o‘rinbosar emas.",
+    "drop": {
+      "position": "Vaqtga bog‘liq balandlik",
+      "velocity": "Vaqtga bog‘liq vertikal tezlik",
+      "fallTime": "Tinch holatdan tushish vaqti",
+      "drag": "Havo qarshiligi kuchi",
+      "terminal": "Chegaraviy tezlik"
+    },
+    "collisions": {
+      "momentum": "Impuls saqlanadi",
+      "inelastic": "Mutlaq noelastik — yopishadi",
+      "elastic": "Mutlaq elastik — sakraydi",
+      "restitution": "Tiklanish koeffitsienti",
+      "kineticEnergy": "Kinetik energiya"
+    }
   }
 }

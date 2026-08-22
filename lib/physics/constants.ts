@@ -76,11 +76,12 @@ export const ENVIRONMENT_ORDER: EnvironmentId[] = ['earth', 'moon', 'mars', 'zer
 /** Slider bounds, kept here so the UI and the physics agree on what is legal. */
 export const LIMITS = {
   /**
-   * Mass is exposed on a logarithmic slider. The lower bound is below the
-   * spec's 0.01 kg because a real feather weighs well under a gram, and
-   * faking the feather's mass would break the drag maths that makes it float.
+   * The lower bound sits well under the spec's 0.01 kg because a real feather
+   * weighs 0.8 g, and faking its mass would break the drag maths that makes it
+   * float. The bound must stay below every preset's mass, since it is now
+   * printed next to the input and enforced on what the user types.
    */
-  massMin: 0.001,
+  massMin: 0.0005,
   massMax: 50,
   heightMin: 0.5,
   heightMax: 100,

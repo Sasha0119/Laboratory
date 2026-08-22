@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { DetailModeProvider } from '../context/DetailMode';
+import { DifficultyProvider, useDifficulty } from '../context/Difficulty';
 import { LanguageProvider, useLanguage } from '../context/Language';
 // Side-effect import: initialises i18next before any screen renders.
 import '../lib/i18n';
@@ -16,10 +17,14 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.bg }}>
       <SafeAreaProvider>
         <LanguageProvider>
-          <DetailModeProvider>
-            <StatusBar style="light" />
-            <Navigator />
-          </DetailModeProvider>
+          {/* Difficulty sits above DetailMode: the level decides that
+              toggle's starting position. */}
+          <DifficultyProvider>
+            <DetailModeProvider>
+              <StatusBar style="light" />
+              <Navigator />
+            </DetailModeProvider>
+          </DifficultyProvider>
         </LanguageProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
@@ -28,11 +33,15 @@ export default function RootLayout() {
 
 function Navigator() {
   const { t } = useTranslation();
-  const { ready } = useLanguage();
+  const { ready: languageReady } = useLanguage();
+  const { ready: difficultyReady } = useDifficulty();
 
-  // Hold the first paint until the saved language has been read back, so a
-  // non-English user never sees a flash of English headers.
-  if (!ready) return <View style={{ flex: 1, backgroundColor: colors.bg }} />;
+  // Hold the first paint until both stored settings have been read back, so a
+  // non-English user never sees a flash of English headers and a Pro user
+  // never sees the beginner layout blink past.
+  if (!languageReady || !difficultyReady) {
+    return <View style={{ flex: 1, backgroundColor: colors.bg }} />;
+  }
 
   return (
     <Stack

@@ -13,13 +13,18 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Readout, type DetailRow, type Stat } from '../../components/readout/Readout';
+import { FormulaPanel } from '../../components/sim/FormulaPanel';
+import { LevelBlurb } from '../../components/sim/LevelBlurb';
 import { PresetPicker } from '../../components/sim/PresetPicker';
 import { TrackScene, trackScale } from '../../components/sim/TrackScene';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Segmented } from '../../components/ui/Segmented';
-import { ValueSlider } from '../../components/ui/ValueSlider';
+import { NumberField } from '../../components/ui/NumberField';
 import { useDetailMode } from '../../context/DetailMode';
+import { useDifficulty } from '../../context/Difficulty';
+import { LIMITS } from '../../lib/physics/constants';
+import { usesPreciseTerms } from '../../lib/difficulty';
 import { useCollisionSim } from '../../hooks/useCollisionSim';
 import { useImpactSound } from '../../hooks/useImpactSound';
 import {
@@ -65,6 +70,8 @@ export default function CollisionsSimulator() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { detailed } = useDetailMode();
+  const { level } = useDifficulty();
+  const precise_ = usesPreciseTerms(level);
 
   const nameOf = useCallback((id: string) => t(`presets.${id}.label`), [t]);
   const directionOf = useCallback(
@@ -182,7 +189,9 @@ export default function CollisionsSimulator() {
     () => [
       {
         key: 'a',
-        label: t('collisions.stats.speedOf', { name: nameOf(baseA.id) }),
+        label: t(precise_ ? 'collisions.stats.velocityOf' : 'collisions.stats.speedOf', {
+          name: nameOf(baseA.id),
+        }),
         value: Math.abs(frame.aVelocity),
         unit: 'm/s',
         fill: Math.abs(frame.aVelocity) / speedReference,
@@ -194,7 +203,9 @@ export default function CollisionsSimulator() {
       },
       {
         key: 'b',
-        label: t('collisions.stats.speedOf', { name: nameOf(baseB.id) }),
+        label: t(precise_ ? 'collisions.stats.velocityOf' : 'collisions.stats.speedOf', {
+          name: nameOf(baseB.id),
+        }),
         value: Math.abs(frame.bVelocity),
         unit: 'm/s',
         fill: Math.abs(frame.bVelocity) / speedReference,
@@ -206,7 +217,18 @@ export default function CollisionsSimulator() {
             : t('collisions.stats.movingDirection', { direction: directionOf(frame.bVelocity) }),
       },
     ],
-    [frame.aVelocity, frame.bVelocity, baseA.id, baseB.id, speedReference, running, t, nameOf, directionOf]
+    [
+      frame.aVelocity,
+      frame.bVelocity,
+      baseA.id,
+      baseB.id,
+      speedReference,
+      running,
+      t,
+      nameOf,
+      directionOf,
+      precise_,
+    ]
   );
 
   const liveDetails: DetailRow[] = useMemo(() => {
@@ -321,6 +343,8 @@ export default function CollisionsSimulator() {
         contentContainerStyle={styles.controlsContent}
         showsVerticalScrollIndicator={false}
       >
+        <LevelBlurb module="collisions" />
+
         <Readout stats={liveStats} details={liveDetails} message={message} />
 
         <Card title={t('collisions.cards.kind')}>
@@ -334,14 +358,14 @@ export default function CollisionsSimulator() {
           <Text style={styles.blurb}>{t(`collisions.kindBlurbs.${kind}`)}</Text>
           {kind === 'realistic' ? (
             <View style={styles.bounceSlider}>
-              <ValueSlider
+              <NumberField
                 label={t('collisions.sliders.bounciness')}
                 value={bounciness}
                 min={0}
                 max={1}
-                precision={2}
+                decimals={2}
                 disabled={running}
-                onChange={setBounciness}
+                onCommit={setBounciness}
                 hint={t('collisions.sliders.bouncinessHint')}
               />
             </View>
@@ -388,6 +412,8 @@ export default function CollisionsSimulator() {
           />
         </Card>
 
+        <FormulaPanel module="collisions" />
+
         <Text style={styles.credits}>{t('collisions.credits')}</Text>
       </ScrollView>
 
@@ -432,26 +458,25 @@ function ObjectCard({
     <Card title={title} accessory={comparisonKey ? t(comparisonKey) : undefined}>
       <PresetPicker value={presetId} onChange={onPreset} disabled={disabled} />
       <View style={styles.objectSliders}>
-        <ValueSlider
+        <NumberField
           label={t('collisions.sliders.mass')}
           value={mass}
-          min={0.001}
-          max={50}
+          min={LIMITS.massMin}
+          max={LIMITS.massMax}
           unit="kg"
-          precision={2}
-          logarithmic
+          decimals={4}
           disabled={disabled}
-          onChange={onMass}
+          onCommit={onMass}
         />
-        <ValueSlider
+        <NumberField
           label={t('collisions.sliders.startingSpeed')}
           value={velocity}
           min={-15}
           max={15}
           unit="m/s"
-          precision={1}
+          decimals={1}
           disabled={disabled}
-          onChange={onVelocity}
+          onCommit={onVelocity}
           hint={
             velocity === 0
               ? t('collisions.sliders.sittingStill')

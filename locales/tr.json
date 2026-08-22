@@ -56,13 +56,61 @@
         "title": "Çarpışmalar",
         "summary": "Karşılıklı gelen iki cisim. Her çarpışmada momentum korunur, enerji korunmaz."
       },
-      "pendulum": {
-        "title": "Sarkaç",
-        "summary": "Basit ve sönümlü sarkaçlar ile küçük açı yaklaşımı."
+      "simpleCircuits": {
+        "title": "Basit Devreler",
+        "summary": "Piller, ampuller ve anahtarlar; akımı akıtan şey nedir."
       },
-      "incline": {
-        "title": "Eğik Düzlem",
-        "summary": "Statik ve kinetik sürtünmeyle kayan ve yuvarlanan cisimler."
+      "magnets": {
+        "title": "Mıknatıslar ve Manyetizma",
+        "summary": "Kutuplar, çekme ve itme, manyetik alanın biçimi."
+      },
+      "statesOfMatter": {
+        "title": "Maddenin Hâlleri ve Isı",
+        "summary": "Katılar, sıvılar ve gazlar; ısıtma ve soğutma onlara ne yapar."
+      },
+      "simpleMachines": {
+        "title": "Basit Makineler",
+        "summary": "Kaldıraçlar, makaralar ve eğik düzlemler; kazandırdıkları kuvvet."
+      },
+      "waves": {
+        "title": "Dalgalar ve Ses",
+        "summary": "Dalga boyu, frekans ve genlik; sesin nasıl yayıldığı."
+      },
+      "light": {
+        "title": "Işık, Yansıma ve Kırılma",
+        "summary": "Aynalar, mercekler ve bardaktaki pipetin neden kırık göründüğü."
+      },
+      "ohmsLaw": {
+        "title": "Ohm Yasası ve Devreler",
+        "summary": "Seri ve paralel bağlamada gerilim, akım ve direnç."
+      },
+      "energyConservation": {
+        "title": "Enerjinin Korunumu",
+        "summary": "Kinetik ve potansiyel enerjinin yer değiştirmesi; hiç yok olmaması."
+      },
+      "pressureBuoyancy": {
+        "title": "Basınç ve Kaldırma Kuvveti",
+        "summary": "Cisimler neden yüzer ya da batar, basınç derinlikle neden artar."
+      },
+      "rotational": {
+        "title": "Dönme Hareketi ve Tork",
+        "summary": "Dönme, eylemsizlik momenti ve onu başlatan burulma."
+      },
+      "induction": {
+        "title": "Elektromanyetik İndüksiyon",
+        "summary": "Hareket eden mıknatısların akım üretmesi ve bunu öngören yasa."
+      },
+      "harmonicMotion": {
+        "title": "Basit Harmonik Hareket",
+        "summary": "Sarkaçlar ve yaylar; sönümlü ve sönümsüz."
+      },
+      "thermodynamics": {
+        "title": "Termodinamik",
+        "summary": "Isı yasaları, entropi ve ısıyı işe çeviren makineler."
+      },
+      "advancedDrag": {
+        "title": "İleri Direnç Modeliyle Atış Hareketi",
+        "summary": "Reynolds sayısı, direnç krizi ve basit modelin nerede yetersiz kaldığı."
       }
     },
     "topics": {
@@ -76,7 +124,8 @@
       "damping": "Sönümleme",
       "friction": "Sürtünme",
       "torque": "Tork"
-    }
+    },
+    "comingSoonMessage": "Bu deney yakında geliyor!"
   },
   "presets": {
     "ball": {
@@ -172,7 +221,10 @@
     "stats": {
       "speed": "Hız",
       "heightLeft": "Kalan yükseklik",
-      "time": "Süre"
+      "time": "Süre",
+      "velocity": "Hız (vektör)",
+      "down": "aşağı",
+      "up": "yukarı"
     },
     "terminal": {
       "none": "direnç yok",
@@ -189,6 +241,10 @@
     "badge": {
       "air": "hava",
       "vacuum": "boşluk"
+    },
+    "blurbs": {
+      "beginner": "Yerçekimi cismi aşağı çeker, bu yüzden sürekli hızlanır. Hava direnci açıkken hava, cisim hızlandıkça daha güçlü iter.",
+      "intermediate": "Yerçekimi sabit bir aşağı ivme verir. Direnç hıza ters yöndedir ve hızın karesiyle büyür; böylece ivme, ikisi limit hızda dengelenene kadar azalır."
     }
   },
   "collisions": {
@@ -218,7 +274,8 @@
     "stats": {
       "speedOf": "{{name}} hızı",
       "movingDirection": "{{direction}} gidiyor",
-      "stopped": "durdu"
+      "stopped": "durdu",
+      "velocityOf": "{{name}} hızı (vektör)"
     },
     "badge": {
       "bounciness": "esneklik {{value}}"
@@ -244,6 +301,10 @@
       "restitution": "Geri verme  e",
       "momentum": "Momentum  p",
       "kineticEnergy": "Kinetik enerji  KE"
+    },
+    "blurbs": {
+      "beginner": "İki cisim karşılaştığında birbirini iter ve hareketlerinin bir kısmını takas ederler. Ne kadar esnek oldukları ayrılacaklarını mı yoksa yapışık kalacaklarını mı belirler.",
+      "intermediate": "Çarpışma türü ne olursa olsun, çarpışmadan önceki toplam momentum sonrakine eşittir. Geri verme katsayısı kinetik enerjinin ne kadarının kalacağını belirler."
     }
   },
   "details": {
@@ -257,7 +318,9 @@
     "airDensity": "Hava yoğunluğu  ρ",
     "dragCoefficient": "Sürükleme katsayısı  Cd",
     "crossSection": "Kesit  A",
-    "terminalVelocity": "Limit hız  v∞"
+    "terminalVelocity": "Limit hız  v∞",
+    "momentum": "Momentum  p",
+    "kineticEnergy": "Kinetik enerji  KE"
   },
   "results": {
     "outcomes": {
@@ -315,5 +378,54 @@
     "languageDescription": "Bütün ekranlar için dili seç. Seçimin bu cihazda saklanır.",
     "translationNote": "İngilizce dışındaki çeviriler yapay zekâ desteğiyle hazırlandı ve henüz ana dili konuşan biri tarafından kontrol edilmedi. Özellikle fizik terimleri gözden geçirilmeli.",
     "unitsNote": "Birim sembolleri (kg, m, m/s) uluslararasıdır ve her dilde aynı kalır."
+  },
+  "difficulty": {
+    "title": "Seviye",
+    "description": "Her simülasyonun ne kadar açıklama gösterdiğini değiştirir. Fiziği asla değiştirmez.",
+    "levels": {
+      "beginner": {
+        "label": "Başlangıç",
+        "grades": "7–8. sınıf"
+      },
+      "intermediate": {
+        "label": "Orta",
+        "grades": "9–10. sınıf"
+      },
+      "pro": {
+        "label": "İleri / Üniversite",
+        "grades": "11. sınıf ve üzeri, üniversite"
+      }
+    },
+    "short": {
+      "beginner": "Başlangıç",
+      "intermediate": "Orta",
+      "pro": "İleri"
+    },
+    "yourLevel": "Senin seviyen",
+    "otherLevels": "Diğer seviyeler"
+  },
+  "input": {
+    "range": "En az: {{min}} {{unit}} — En çok: {{max}} {{unit}}",
+    "clampedMin": "En az {{min}} {{unit}} olabilir — düzeltildi",
+    "clampedMax": "En çok {{max}} {{unit}} olabilir — düzeltildi",
+    "invalid": "Bir sayı gir"
+  },
+  "formulas": {
+    "title": "Nasıl hesaplanıyor",
+    "footnote": "Bunlar simülasyonun gerçekten integre ettiği denklemler; basitleştirilmiş bir karşılık değil.",
+    "drop": {
+      "position": "Zamana göre yükseklik",
+      "velocity": "Zamana göre düşey hız",
+      "fallTime": "Durgun hâlden düşme süresi",
+      "drag": "Hava direnci kuvveti",
+      "terminal": "Limit hız"
+    },
+    "collisions": {
+      "momentum": "Momentum korunur",
+      "inelastic": "Tam esnek olmayan — yapışırlar",
+      "elastic": "Tam esnek — sekerler",
+      "restitution": "Geri verme katsayısı",
+      "kineticEnergy": "Kinetik enerji"
+    }
   }
 }

@@ -56,13 +56,61 @@
         "title": "Collisions",
         "summary": "Two objects meeting head-on. Watch momentum survive every impact while energy does not."
       },
-      "pendulum": {
-        "title": "Pendulum",
-        "summary": "Simple and damped pendulums, plus the small-angle approximation."
+      "simpleCircuits": {
+        "title": "Simple Circuits",
+        "summary": "Batteries, bulbs and switches, and what makes a current flow."
       },
-      "incline": {
-        "title": "Inclined Plane",
-        "summary": "Sliding and rolling bodies with static and kinetic friction."
+      "magnets": {
+        "title": "Magnets & Magnetism",
+        "summary": "Poles, attraction and repulsion, and the shape of a magnetic field."
+      },
+      "statesOfMatter": {
+        "title": "States of Matter & Heat",
+        "summary": "Solids, liquids and gases, and what heating and cooling do to them."
+      },
+      "simpleMachines": {
+        "title": "Simple Machines",
+        "summary": "Levers, pulleys and inclined planes, and the effort they save."
+      },
+      "waves": {
+        "title": "Waves & Sound",
+        "summary": "Wavelength, frequency and amplitude, and how sound travels."
+      },
+      "light": {
+        "title": "Light, Reflection & Refraction",
+        "summary": "Mirrors, lenses, and why a straw looks bent in a glass of water."
+      },
+      "ohmsLaw": {
+        "title": "Ohm's Law & Circuits",
+        "summary": "Voltage, current and resistance, in series and in parallel."
+      },
+      "energyConservation": {
+        "title": "Energy Conservation",
+        "summary": "Kinetic and potential energy trading places, and never disappearing."
+      },
+      "pressureBuoyancy": {
+        "title": "Pressure & Buoyancy",
+        "summary": "Why things float or sink, and why pressure grows with depth."
+      },
+      "rotational": {
+        "title": "Rotational Motion & Torque",
+        "summary": "Spin, moment of inertia, and the twist that gets it going."
+      },
+      "induction": {
+        "title": "Electromagnetic Induction",
+        "summary": "Moving magnets making current, and the law that predicts it."
+      },
+      "harmonicMotion": {
+        "title": "Simple Harmonic Motion",
+        "summary": "Pendulums and springs, with and without damping."
+      },
+      "thermodynamics": {
+        "title": "Thermodynamics",
+        "summary": "The laws of heat, entropy, and engines that turn one into work."
+      },
+      "advancedDrag": {
+        "title": "Projectile Motion with Advanced Drag",
+        "summary": "Reynolds number, the drag crisis, and where the simple model breaks down."
       }
     },
     "topics": {
@@ -76,7 +124,8 @@
       "damping": "Damping",
       "friction": "Friction",
       "torque": "Torque"
-    }
+    },
+    "comingSoonMessage": "This experiment is coming soon!"
   },
   "presets": {
     "ball": {
@@ -172,7 +221,10 @@
     "stats": {
       "speed": "Speed",
       "heightLeft": "Height left",
-      "time": "Time"
+      "time": "Time",
+      "velocity": "Velocity",
+      "down": "downward",
+      "up": "upward"
     },
     "terminal": {
       "none": "no drag",
@@ -189,6 +241,10 @@
     "badge": {
       "air": "air",
       "vacuum": "vacuum"
+    },
+    "blurbs": {
+      "beginner": "Gravity pulls the object down, so it speeds up the whole way. With air resistance on, the air pushes back harder the faster it falls.",
+      "intermediate": "Gravity gives a constant downward acceleration. Drag opposes the velocity and grows with its square, so the acceleration shrinks until the two balance at terminal velocity."
     }
   },
   "collisions": {
@@ -218,7 +274,8 @@
     "stats": {
       "speedOf": "{{name}} speed",
       "movingDirection": "moving {{direction}}",
-      "stopped": "stopped"
+      "stopped": "stopped",
+      "velocityOf": "{{name}} velocity"
     },
     "badge": {
       "bounciness": "bounciness {{value}}"
@@ -244,6 +301,10 @@
       "restitution": "Restitution  e",
       "momentum": "Momentum  p",
       "kineticEnergy": "Kinetic energy  KE"
+    },
+    "blurbs": {
+      "beginner": "When the two objects meet they push on each other and swap some of their motion. How bouncy they are decides whether they spring apart or stay stuck together.",
+      "intermediate": "Total momentum before the impact equals total momentum after it, whatever the collision type. The coefficient of restitution sets how much kinetic energy survives."
     }
   },
   "details": {
@@ -257,7 +318,9 @@
     "airDensity": "Air density  ρ",
     "dragCoefficient": "Drag coefficient  Cd",
     "crossSection": "Cross-section  A",
-    "terminalVelocity": "Terminal velocity  v∞"
+    "terminalVelocity": "Terminal velocity  v∞",
+    "momentum": "Momentum  p",
+    "kineticEnergy": "Kinetic energy  KE"
   },
   "results": {
     "outcomes": {
@@ -315,5 +378,54 @@
     "languageDescription": "Choose the language for every screen. Your choice is saved on this device.",
     "translationNote": "Translations other than English were produced with AI assistance and have not yet been checked by a native speaker. Physics wording in particular may need review.",
     "unitsNote": "Unit symbols (kg, m, m/s) are international and stay the same in every language."
+  },
+  "difficulty": {
+    "title": "Difficulty",
+    "description": "Changes how much explanation each simulation shows. It never changes the physics.",
+    "levels": {
+      "beginner": {
+        "label": "Beginner",
+        "grades": "Grades 7–8"
+      },
+      "intermediate": {
+        "label": "Intermediate",
+        "grades": "Grades 9–10"
+      },
+      "pro": {
+        "label": "Pro / University",
+        "grades": "Grade 11+ and university"
+      }
+    },
+    "short": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "pro": "Pro"
+    },
+    "yourLevel": "Your level",
+    "otherLevels": "Other levels"
+  },
+  "input": {
+    "range": "Min: {{min}} {{unit}} — Max: {{max}} {{unit}}",
+    "clampedMin": "Min is {{min}} {{unit}} — adjusted",
+    "clampedMax": "Max is {{max}} {{unit}} — adjusted",
+    "invalid": "Enter a number"
+  },
+  "formulas": {
+    "title": "How it's calculated",
+    "footnote": "These are the equations the simulation actually integrates, not a simplified stand-in.",
+    "drop": {
+      "position": "Height over time",
+      "velocity": "Vertical velocity over time",
+      "fallTime": "Time to fall from rest",
+      "drag": "Air resistance force",
+      "terminal": "Terminal velocity"
+    },
+    "collisions": {
+      "momentum": "Momentum is conserved",
+      "inelastic": "Perfectly inelastic — they stick",
+      "elastic": "Perfectly elastic — they bounce",
+      "restitution": "Coefficient of restitution",
+      "kineticEnergy": "Kinetic energy"
+    }
   }
 }
