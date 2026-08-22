@@ -23,7 +23,7 @@ const CATEGORIES: Category[] = [
     detail: 'Drop things from a hundred metres and watch the maths hold up.',
     tint: colors.accent,
     href: '/physics',
-    modules: '1 simulation · 3 coming',
+    modules: '2 simulations · 2 coming',
   },
   {
     id: 'chemistry',

@@ -22,6 +22,7 @@ import {
 } from '../kinematics';
 import { PRESETS_BY_ID } from '../presets';
 import { simulate, type SimParams } from '../simulation';
+import { resolveCollision, simulateCollision } from '../collision';
 
 // ---------------------------------------------------------------- harness --
 
@@ -316,6 +317,208 @@ section('Zero-G');
     vz.x * drifting.totalTime,
     1e-4
   );
+}
+
+// -------------------------------------------------------------- collisions --
+
+section('Collisions — conservation laws');
+
+function bodies(m1: number, v1: number, m2: number, v2: number) {
+  return {
+    a: { mass: m1, velocity: v1, position: -3, radius: 0.2 },
+    b: { mass: m2, velocity: v2, position: 3, radius: 0.2 },
+  };
+}
+
+function runCollision(
+  m1: number,
+  v1: number,
+  m2: number,
+  v2: number,
+  kind: 'bouncy' | 'sticky' | 'realistic',
+  restitution = 0.7
+) {
+  const { a, b } = bodies(m1, v1, m2, v2);
+  return simulateCollision({ a, b, kind, restitution, halfTrack: 8 }, FIXED_DT);
+}
+
+{
+  // Momentum must survive every collision type, at every restitution.
+  for (const [kind, e] of [
+    ['bouncy', 1],
+    ['sticky', 0],
+    ['realistic', 0.7],
+  ] as const) {
+    const sim = runCollision(2, 4, 3, -1, kind, e);
+    const ev = sim.event!;
+    near(`${kind}: momentum is conserved`, ev.momentumAfter, ev.momentumBefore, 1e-9);
+  }
+  // ...and at a spread of arbitrary restitutions.
+  for (const e of [0.15, 0.42, 0.88]) {
+    const r = resolveCollision(1.7, 6, 4.3, -2.5, e);
+    near(
+      `momentum conserved at e = ${e}`,
+      1.7 * r.v1 + 4.3 * r.v2,
+      1.7 * 6 + 4.3 * -2.5,
+      1e-9
+    );
+  }
+}
+
+{
+  // Elastic collisions conserve kinetic energy exactly.
+  const sim = runCollision(2, 5, 3, -2, 'bouncy');
+  const ev = sim.event!;
+  near('bouncy: kinetic energy is conserved', ev.energyAfter, ev.energyBefore, 1e-9);
+  near('bouncy: no energy lost', ev.energyLost, 0, 1e-9);
+  // Restitution definition: separation speed equals approach speed when e = 1.
+  near(
+    'bouncy: they separate as fast as they closed',
+    ev.bAfter - ev.aAfter,
+    ev.aBefore - ev.bBefore,
+    1e-9
+  );
+}
+
+{
+  // The spec's explicit elastic formulas, checked directly.
+  const m1 = 2;
+  const m2 = 3;
+  const v1 = 5;
+  const v2 = -2;
+  const r = resolveCollision(m1, v1, m2, v2, 1);
+  near(
+    "elastic v1' matches ((m1-m2)/M)v1 + (2m2/M)v2",
+    r.v1,
+    ((m1 - m2) / (m1 + m2)) * v1 + ((2 * m2) / (m1 + m2)) * v2,
+    1e-12
+  );
+  near(
+    "elastic v2' matches (2m1/M)v1 + ((m2-m1)/M)v2",
+    r.v2,
+    ((2 * m1) / (m1 + m2)) * v1 + ((m2 - m1) / (m1 + m2)) * v2,
+    1e-12
+  );
+}
+
+{
+  // Equal masses, one stationary: the classic full transfer of velocity.
+  const r = resolveCollision(1, 7, 1, 0, 1);
+  near('equal masses: the mover stops dead', r.v1, 0, 1e-12);
+  near('equal masses: the target takes the whole speed', r.v2, 7, 1e-12);
+}
+
+{
+  // A very heavy body barely notices a very light one bouncing off it.
+  const r = resolveCollision(1000, 0, 0.01, -5, 1);
+  check('a light ball rebounds off a heavy one', r.v2 > 4.9 && r.v2 <= 5.0);
+  check('the heavy body is barely moved', Math.abs(r.v1) < 0.001);
+}
+
+{
+  // Perfectly inelastic: one common velocity, from the momentum equation.
+  const m1 = 4;
+  const m2 = 1;
+  const v1 = 3;
+  const v2 = -2;
+  const r = resolveCollision(m1, v1, m2, v2, 0);
+  const combined = (m1 * v1 + m2 * v2) / (m1 + m2);
+  near('sticky: both end at (m1v1+m2v2)/M', r.v1, combined, 1e-12);
+  near('sticky: the two velocities are identical', r.v1, r.v2, 1e-15);
+
+  const sim = runCollision(m1, v1, m2, v2, 'sticky');
+  check('sticky: the run reports them joined', sim.event!.stuck && sim.stuck);
+  check('sticky: energy is lost', sim.event!.energyLost > 0);
+  near(
+    'sticky: they stay exactly touching afterwards',
+    sim.b.position - sim.a.position,
+    sim.a.radius + sim.b.radius,
+    1e-6
+  );
+}
+
+{
+  // Partially inelastic must sit strictly between the two extremes.
+  const args = [2, 4, 3, -1] as const;
+  const elastic = resolveCollision(...args, 1);
+  const inelastic = resolveCollision(...args, 0);
+  const partial = resolveCollision(...args, 0.7);
+  check(
+    'realistic sits between bouncy and sticky',
+    partial.v1 > elastic.v1 && partial.v1 < inelastic.v1
+  );
+  const eOf = (r: { v1: number; v2: number }) => (r.v2 - r.v1) / (args[1] - args[3]);
+  near('the restitution comes back out as 0.7', eOf(partial), 0.7, 1e-12);
+  near('e = 1 recovers a bouncy collision', eOf(elastic), 1, 1e-12);
+  near('e = 0 recovers a sticky one', eOf(inelastic), 0, 1e-12);
+}
+
+{
+  // Energy loss must rise as bounciness falls, never the other way.
+  let previous = -1;
+  for (const e of [1, 0.8, 0.6, 0.4, 0.2, 0]) {
+    const sim = runCollision(2, 5, 3, -2, e === 1 ? 'bouncy' : 'realistic', e);
+    const lost = sim.event!.energyLost;
+    check(`energy lost grows as e falls (e = ${e})`, lost > previous - 1e-12);
+    previous = lost;
+  }
+}
+
+section('Collisions — the track');
+
+{
+  const sim = runCollision(1, 3, 1, 0, 'bouncy');
+  check('a collision is detected', sim.event !== null);
+  check('contact happens where they touch', Math.abs(sim.event!.position) < 8);
+  near('closing speed is recorded', sim.event!.approachSpeed, 3, 1e-9);
+}
+
+{
+  // Moving apart from the start: they must never meet.
+  const { a, b } = bodies(1, -2, 1, 2);
+  const sim = simulateCollision(
+    { a, b, kind: 'bouncy', restitution: 1, halfTrack: 8 },
+    FIXED_DT
+  );
+  check('bodies moving apart never collide', sim.event === null);
+  check('the run reports no contact', sim.outcome === 'no-contact');
+}
+
+{
+  // Both stationary: nothing should happen at all.
+  const { a, b } = bodies(1, 0, 1, 0);
+  const sim = simulateCollision(
+    { a, b, kind: 'bouncy', restitution: 1, halfTrack: 8 },
+    FIXED_DT
+  );
+  check('two still objects stay still', sim.event === null && sim.t === 0);
+}
+
+{
+  // Nothing may ever leave the track.
+  const sim = runCollision(5, 9, 0.2, 0, 'bouncy');
+  const h = 8;
+  check(
+    'bodies stay within the end stops',
+    sim.a.position - sim.a.radius >= -h - 1e-6 &&
+      sim.b.position + sim.b.radius <= h + 1e-6
+  );
+}
+
+{
+  // Halving the timestep must not change the outcome.
+  const { a, b } = bodies(2.5, 6, 1.5, -3);
+  const coarse = simulateCollision(
+    { a: { ...a }, b: { ...b }, kind: 'realistic', restitution: 0.65, halfTrack: 8 },
+    1 / 120
+  );
+  const fine = simulateCollision(
+    { a: { ...a }, b: { ...b }, kind: 'realistic', restitution: 0.65, halfTrack: 8 },
+    1 / 960
+  );
+  near('contact time is timestep-independent', fine.event!.time, coarse.event!.time, 2e-2);
+  near("v1' is timestep-independent", fine.event!.aAfter, coarse.event!.aAfter, 1e-9);
+  near("v2' is timestep-independent", fine.event!.bAfter, coarse.event!.bAfter, 1e-9);
 }
 
 // ------------------------------------------------------------------ report --

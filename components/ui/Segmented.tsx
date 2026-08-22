@@ -15,6 +15,8 @@ interface Props<T extends string> {
   /** Tinted highlight, so the environment picker can carry that world's colour. */
   tint?: string;
   compact?: boolean;
+  /** Locked while a simulation is mid-run, like the sliders. */
+  disabled?: boolean;
 }
 
 const PAD = 4;
@@ -30,6 +32,7 @@ export function Segmented<T extends string>({
   onChange,
   tint = colors.accent,
   compact = false,
+  disabled = false,
 }: Props<T>) {
   const index = Math.max(
     0,
@@ -52,7 +55,7 @@ export function Segmented<T extends string>({
 
   return (
     <View
-      style={[styles.track, compact && styles.trackCompact]}
+      style={[styles.track, compact && styles.trackCompact, disabled && styles.disabled]}
       onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}
     >
       {segmentWidth > 0 ? (
@@ -86,9 +89,10 @@ export function Segmented<T extends string>({
             key={opt.value}
             style={styles.segment}
             accessibilityRole="button"
-            accessibilityState={{ selected: active }}
+            accessibilityState={{ selected: active, disabled }}
+            disabled={disabled}
             onPress={() => {
-              if (active) return;
+              if (active || disabled) return;
               if (Platform.OS !== 'web') {
                 Haptics.selectionAsync().catch(() => {});
               }
@@ -120,6 +124,7 @@ const styles = StyleSheet.create({
     padding: PAD,
     position: 'relative',
   },
+  disabled: { opacity: 0.45 },
   trackCompact: {
     padding: PAD_COMPACT,
     borderRadius: radius.sm,

@@ -11,7 +11,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
-import { LiveReadout } from '../../components/sim/LiveReadout';
+import { Readout, type DetailRow, type Stat } from '../../components/readout/Readout';
 import { PresetPicker } from '../../components/sim/PresetPicker';
 import { ResultPanel } from '../../components/sim/ResultPanel';
 import { Scene } from '../../components/sim/Scene';
@@ -29,6 +29,7 @@ import {
   type EnvironmentId,
 } from '../../lib/physics/constants';
 import { buildDragModel, terminalVelocity } from '../../lib/physics/drag';
+import { resolveLaunch } from '../../lib/physics/kinematics';
 import {
   PRESETS_BY_ID,
   SHAPE_DRAG,
@@ -38,6 +39,8 @@ import {
 } from '../../lib/physics/presets';
 import { analyticBounds, type SimParams, type SimResult } from '../../lib/physics/simulation';
 import { colors, radius, scenes, spacing } from '../../theme';
+import { useDetailMode } from '../../context/DetailMode';
+import { friendly, friendlyTime, precise, speedComparison } from '../../lib/format';
 
 /** Playback speed choices. A feather on a long fall genuinely needs the 4x. */
 const SPEEDS = [
@@ -204,6 +207,96 @@ export default function DropSimulator() {
 
   const angleDisabled = speed === 0;
 
+  // ---------------------------------------------------------------- readout
+  const { detailed } = useDetailMode();
+
+  /**
+   * The bar reads against the fastest this object could possibly be going: the
+   * drag-free impact speed. With air resistance on it visibly stops short of
+   * full, which is the whole point of the terminal-velocity idea.
+   */
+  const speedReference = useMemo(() => {
+    const v = resolveLaunch(speed, angleDeg);
+    return Math.max(
+      Math.hypot(v.x, Math.sqrt(Math.max(v.y * v.y + 2 * env.gravity * dropHeight, 0))),
+      speed,
+      1
+    );
+  }, [speed, angleDeg, env.gravity, dropHeight]);
+
+  const liveStats: Stat[] = useMemo(() => {
+    const height = Math.max(displayFrame.y, 0);
+    return [
+      {
+        key: 'speed',
+        label: 'Speed',
+        value: displayFrame.speed,
+        unit: 'm/s',
+        fill: displayFrame.speed / speedReference,
+        showTrend: running,
+        caption: speedComparison(displayFrame.speed) ?? undefined,
+      },
+      {
+        key: 'height',
+        label: 'Height left',
+        value: height,
+        unit: 'm',
+        fill: height / Math.max(bounds.maxY, 1e-6),
+        tone: colors.blue,
+      },
+      {
+        key: 'time',
+        label: 'Time',
+        value: displayFrame.t,
+        unit: 's',
+        format: friendlyTime,
+        tone: colors.textMuted,
+      },
+    ];
+  }, [displayFrame, speedReference, bounds.maxY, running]);
+
+  /** Raw figures — only rendered when detailed mode is on. */
+  const liveDetails: DetailRow[] = useMemo(() => {
+    if (!detailed) return [];
+    return [
+      { label: 'Time  t', value: precise(displayFrame.t, 4), unit: 's' },
+      { label: 'Height  y', value: precise(displayFrame.y, 4), unit: 'm' },
+      { label: 'Horizontal  x', value: precise(displayFrame.x, 4), unit: 'm' },
+      { label: 'Speed  |v|', value: precise(displayFrame.speed, 4), unit: 'm/s' },
+      { label: 'Vertical  vy', value: precise(displayFrame.vy, 4), unit: 'm/s' },
+      { label: 'Horizontal  vx', value: precise(displayFrame.vx, 4), unit: 'm/s' },
+      { label: 'Gravity  g', value: precise(env.gravity, 2), unit: 'm/s²' },
+      {
+        label: 'Air density  ρ',
+        value: airResistance ? precise(env.airDensity, 3) : '0',
+        unit: 'kg/m³',
+      },
+      { label: 'Drag coefficient  Cd', value: precise(dragCoefficient, 2), unit: '' },
+      { label: 'Cross-section  A', value: precise(area, 5), unit: 'm²' },
+      {
+        label: 'Terminal velocity  v∞',
+        value: Number.isFinite(vTerminal) ? precise(vTerminal, 3) : '∞',
+        unit: Number.isFinite(vTerminal) ? 'm/s' : '',
+      },
+    ];
+  }, [detailed, displayFrame, env, airResistance, dragCoefficient, area, vTerminal]);
+
+  /** One plain sentence describing what just happened. */
+  const outcomeMessage = useMemo(() => {
+    if (!result) return null;
+    if (result.outcome === 'floating') return 'Nothing is pulling on it, so it just floats.';
+    if (result.outcome === 'boundary') return 'It drifted until it reached the wall.';
+    if (result.outcome === 'timeout') return 'Still falling when the timer ran out.';
+    const t = friendlyTime(result.totalTime);
+    const v = friendly(result.impactSpeed);
+    const near =
+      Number.isFinite(result.terminalVelocity) &&
+      result.impactSpeed > result.terminalVelocity * 0.98;
+    return near
+      ? `Landed after ${t} seconds at ${v} m/s — as fast as the air will let it fall.`
+      : `Landed after ${t} seconds, hitting the ground at ${v} m/s.`;
+  }, [result]);
+
   return (
     <View style={styles.screen}>
       {/* ------------------------------------------------------- canvas -- */}
@@ -234,25 +327,6 @@ export default function DropSimulator() {
           )}
         </View>
 
-        {showLiveData && phase !== 'idle' ? (
-          <LiveReadout
-            t={frame.t}
-            height={Math.max(frame.y, 0)}
-            x={frame.x}
-            speed={frame.speed}
-            vy={frame.vy}
-            terminalVelocity={vTerminal}
-          />
-        ) : null}
-
-        {phase === 'idle' ? (
-          <View style={[styles.hint, { pointerEvents: 'none' }]}>
-            <Text style={styles.hintText}>
-              Release height {dropHeight.toFixed(1)} m
-              {speed > 0 ? ` · ${speed.toFixed(1)} m/s at ${angleDeg.toFixed(0)}°` : ''}
-            </Text>
-          </View>
-        ) : null}
       </View>
 
       {/* ------------------------------------------------------ controls -- */}
@@ -264,6 +338,10 @@ export default function DropSimulator() {
         // the card's 1px borders.
         onLayout={(e) => setPanelWidth(e.nativeEvent.layout.width - spacing.md * 4 - 2)}
       >
+        {showLiveData ? (
+          <Readout stats={liveStats} details={liveDetails} message={outcomeMessage} />
+        ) : null}
+
         <Card title="Object" accessory={fmtTerminal(vTerminal)}>
           <PresetPicker value={presetId} onChange={applyPreset} disabled={running} />
           <View style={styles.blurbRow}>
@@ -379,6 +457,7 @@ export default function DropSimulator() {
             }))}
             value={environmentId}
             onChange={setEnvironmentId}
+            disabled={running}
             tint={palette.accent}
           />
 
@@ -397,7 +476,7 @@ export default function DropSimulator() {
             <View style={styles.hr} />
             <Toggle
               label="Live data"
-              description="Time, height and velocity during the run"
+              description="Speed, height and time while the run is going"
               value={showLiveData}
               onChange={setShowLiveData}
             />
@@ -413,7 +492,13 @@ export default function DropSimulator() {
           <View style={styles.speedRow}>
             <Text style={styles.subLabel}>Playback</Text>
             <View style={styles.speedControl}>
-              <Segmented compact options={SPEEDS} value={timeScale} onChange={setTimeScale} />
+              <Segmented
+                compact
+                options={SPEEDS}
+                value={timeScale}
+                onChange={setTimeScale}
+                disabled={running}
+              />
             </View>
           </View>
         </Card>
@@ -481,16 +566,6 @@ const styles = StyleSheet.create({
   badgeText: { color: colors.text, fontSize: 11, fontWeight: '700' },
   badgeDim: { color: colors.textFaint, fontSize: 10 },
 
-  hint: {
-    position: 'absolute',
-    bottom: 10,
-    alignSelf: 'center',
-    backgroundColor: 'rgba(8,11,18,0.6)',
-    borderRadius: radius.pill,
-    paddingHorizontal: 11,
-    paddingVertical: 5,
-  },
-  hintText: { color: colors.textMuted, fontSize: 11, fontWeight: '600' },
 
   controls: { flex: 1 },
   controlsContent: {

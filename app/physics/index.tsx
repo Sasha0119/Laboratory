@@ -25,8 +25,10 @@ const SIMS: Sim[] = [
   {
     id: 'collisions',
     title: 'Collisions',
-    summary: 'Elastic and inelastic impacts in one and two dimensions.',
-    topics: ['Momentum', 'Restitution'],
+    summary:
+      'Two objects meeting head-on. Watch momentum survive every impact while energy does not.',
+    topics: ['Momentum', 'Energy', 'Bounciness'],
+    href: '/physics/collisions',
   },
   {
     id: 'pendulum',
