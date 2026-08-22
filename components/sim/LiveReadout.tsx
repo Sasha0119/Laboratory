@@ -18,7 +18,7 @@ interface Props {
 export function LiveReadout({ t, height, x, speed, vy, terminalVelocity }: Props) {
   const showTerminal = Number.isFinite(terminalVelocity) && terminalVelocity > 0;
   return (
-    <View style={styles.panel} pointerEvents="none">
+    <View style={[styles.panel, { pointerEvents: 'none' }]}>
       <Row label="t" value={t.toFixed(2)} unit="s" />
       <Row label="h" value={fmt(height)} unit="m" accent />
       <Row label="x" value={fmt(x)} unit="m" />

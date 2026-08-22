@@ -223,7 +223,7 @@ export default function DropSimulator() {
           />
         ) : null}
 
-        <View style={styles.canvasBadge} pointerEvents="none">
+        <View style={[styles.canvasBadge, { pointerEvents: 'none' }]}>
           <View style={[styles.badgeDot, { backgroundColor: palette.accent }]} />
           <Text style={styles.badgeText}>{env.label}</Text>
           <Text style={styles.badgeDim}>g = {env.gravity.toFixed(2)} m/s²</Text>
@@ -246,7 +246,7 @@ export default function DropSimulator() {
         ) : null}
 
         {phase === 'idle' ? (
-          <View style={styles.hint} pointerEvents="none">
+          <View style={[styles.hint, { pointerEvents: 'none' }]}>
             <Text style={styles.hintText}>
               Release height {dropHeight.toFixed(1)} m
               {speed > 0 ? ` · ${speed.toFixed(1)} m/s at ${angleDeg.toFixed(0)}°` : ''}

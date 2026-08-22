@@ -106,7 +106,7 @@ function CategoryCard({ category, onPress }: { category: Category; onPress?: () 
         accessibilityLabel={category.title}
         style={[styles.card, disabled && styles.cardDisabled]}
       >
-        <View style={styles.cardArt} pointerEvents="none">
+        <View style={[styles.cardArt, { pointerEvents: 'none' }]}>
           <CardArt id={category.id} tint={category.tint} dim={disabled} />
         </View>
 
