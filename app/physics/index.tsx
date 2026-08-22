@@ -1,52 +1,36 @@
 import { useRouter } from 'expo-router';
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Ellipse, Line, Path, Rect } from 'react-native-svg';
 import { colors, radius, spacing } from '../../theme';
 
+/**
+ * Each entry is ids only: the title and summary come from
+ * `physicsIndex.sims.<id>.*` and each topic from `physicsIndex.topics.<key>`.
+ */
 interface Sim {
   id: string;
-  title: string;
-  summary: string;
   topics: string[];
   href?: string;
 }
 
 const SIMS: Sim[] = [
-  {
-    id: 'drop',
-    title: 'Drop & Projectile',
-    summary:
-      'Free fall and projectile motion with real quadratic air drag, across four worlds.',
-    topics: ['Kinematics', 'Drag', 'Terminal velocity'],
-    href: '/physics/drop',
-  },
+  { id: 'drop', topics: ['kinematics', 'drag', 'terminalVelocity'], href: '/physics/drop' },
   {
     id: 'collisions',
-    title: 'Collisions',
-    summary:
-      'Two objects meeting head-on. Watch momentum survive every impact while energy does not.',
-    topics: ['Momentum', 'Energy', 'Bounciness'],
+    topics: ['momentum', 'energy', 'bounciness'],
     href: '/physics/collisions',
   },
-  {
-    id: 'pendulum',
-    title: 'Pendulum',
-    summary: 'Simple and damped pendulums, plus the small-angle approximation.',
-    topics: ['Oscillation', 'Damping'],
-  },
-  {
-    id: 'incline',
-    title: 'Inclined Plane',
-    summary: 'Sliding and rolling bodies with static and kinetic friction.',
-    topics: ['Friction', 'Torque'],
-  },
+  { id: 'pendulum', topics: ['oscillation', 'damping'] },
+  { id: 'incline', topics: ['friction', 'torque'] },
 ];
 
 export default function PhysicsIndex() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <ScrollView
@@ -54,13 +38,10 @@ export default function PhysicsIndex() {
       contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.intro}>
-        Each simulation integrates the real equations of motion. Numbers you read off the
-        screen are the numbers the maths produces.
-      </Text>
+      <Text style={styles.intro}>{t('physicsIndex.intro')}</Text>
 
       <View style={styles.sectionRow}>
-        <Text style={styles.sectionLabel}>Available</Text>
+        <Text style={styles.sectionLabel}>{t('common.available')}</Text>
         <View style={styles.rule} />
       </View>
 
@@ -69,7 +50,7 @@ export default function PhysicsIndex() {
       ))}
 
       <View style={styles.sectionRow}>
-        <Text style={styles.sectionLabel}>Coming soon</Text>
+        <Text style={styles.sectionLabel}>{t('common.comingSoon')}</Text>
         <View style={styles.rule} />
       </View>
 
@@ -81,6 +62,7 @@ export default function PhysicsIndex() {
 }
 
 function SimCard({ sim, onPress }: { sim: Sim; onPress?: () => void }) {
+  const { t } = useTranslation();
   const scale = useRef(new Animated.Value(1)).current;
   const disabled = !onPress;
 
@@ -103,13 +85,13 @@ function SimCard({ sim, onPress }: { sim: Sim; onPress?: () => void }) {
         </View>
         <View style={styles.cardText}>
           <Text style={[styles.cardTitle, disabled && { color: colors.textMuted }]}>
-            {sim.title}
+            {t(`physicsIndex.sims.${sim.id}.title`)}
           </Text>
-          <Text style={styles.cardSummary}>{sim.summary}</Text>
+          <Text style={styles.cardSummary}>{t(`physicsIndex.sims.${sim.id}.summary`)}</Text>
           <View style={styles.topics}>
-            {sim.topics.map((t) => (
-              <View key={t} style={styles.topic}>
-                <Text style={styles.topicText}>{t}</Text>
+            {sim.topics.map((topic) => (
+              <View key={topic} style={styles.topic}>
+                <Text style={styles.topicText}>{t(`physicsIndex.topics.${topic}`)}</Text>
               </View>
             ))}
           </View>

@@ -1,0 +1,319 @@
+{
+  "_note": "AI-generated translation — recommend native speaker review before production, especially physics terminology.",
+  "app": {
+    "name": "实验室"
+  },
+  "nav": {
+    "physics": "物理",
+    "drop": "下落与抛体",
+    "collisions": "碰撞",
+    "settings": "设置"
+  },
+  "common": {
+    "reset": "重置",
+    "run": "开始",
+    "running": "进行中…",
+    "drop": "释放",
+    "launch": "抛出",
+    "restore": "还原",
+    "available": "可用",
+    "comingSoon": "即将推出",
+    "playback": "播放速度"
+  },
+  "directions": {
+    "left": "向左",
+    "right": "向右",
+    "stopped": "已停止"
+  },
+  "home": {
+    "tagline": "真实的模拟，真实的方程。选一张实验台，开始做实验。",
+    "openBench": "进入实验台  →",
+    "footnote": "全部在本机运行。无需账号，无需联网，数据不会离开手机。",
+    "settingsLabel": "设置",
+    "categories": {
+      "physics": {
+        "title": "物理",
+        "subtitle": "运动、力、重力",
+        "detail": "从一百米高处扔下物体，看看数学是否站得住脚。",
+        "modules": "2 个模拟 · 另有 2 个开发中"
+      },
+      "chemistry": {
+        "title": "化学",
+        "subtitle": "反应、状态、化学键",
+        "detail": "滴定、气体定律与反应动力学正在开发中。",
+        "modules": "开发中"
+      }
+    }
+  },
+  "physicsIndex": {
+    "intro": "每个模拟都对真实的运动方程进行数值积分。屏幕上显示的数字，就是数学算出来的数字。",
+    "sims": {
+      "drop": {
+        "title": "下落与抛体",
+        "summary": "在四个不同世界中，带真实平方阻力的自由落体与抛体运动。"
+      },
+      "collisions": {
+        "title": "碰撞",
+        "summary": "两个迎面而来的物体。每次碰撞动量都守恒，能量却不一定。"
+      },
+      "pendulum": {
+        "title": "单摆",
+        "summary": "简单摆与阻尼摆，以及小角度近似。"
+      },
+      "incline": {
+        "title": "斜面",
+        "summary": "带静摩擦与动摩擦的滑动与滚动物体。"
+      }
+    },
+    "topics": {
+      "kinematics": "运动学",
+      "drag": "空气阻力",
+      "terminalVelocity": "终端速度",
+      "momentum": "动量",
+      "energy": "能量",
+      "bounciness": "弹性",
+      "oscillation": "振动",
+      "damping": "阻尼",
+      "friction": "摩擦",
+      "torque": "力矩"
+    }
+  },
+  "presets": {
+    "ball": {
+      "label": "球",
+      "blurb": "足球 · 球形，Cd 0.47"
+    },
+    "marble": {
+      "label": "玻璃珠",
+      "blurb": "玻璃，16 mm · 密实光滑"
+    },
+    "feather": {
+      "label": "羽毛",
+      "blurb": "0.8 g · 面积极大，Cd 2.5"
+    },
+    "book": {
+      "label": "书",
+      "blurb": "精装书，平着下落 · Cd 1.2"
+    },
+    "custom": {
+      "label": "自定义",
+      "blurb": "你自己的数值 — 全部可改"
+    }
+  },
+  "shapes": {
+    "circle": "球体",
+    "square": "立方体",
+    "disc": "圆盘",
+    "feather": "羽毛"
+  },
+  "environments": {
+    "earth": {
+      "label": "地球",
+      "note": "海平面空气，1.225 kg/m³"
+    },
+    "moon": {
+      "label": "月球",
+      "note": "真空 — 阻力始终为零"
+    },
+    "mars": {
+      "label": "火星",
+      "note": "稀薄的 CO₂ 大气，0.020 kg/m³"
+    },
+    "zerog": {
+      "label": "失重",
+      "note": "没有重力、没有空气、没有地面"
+    }
+  },
+  "readout": {
+    "detailToggle": "显示详细数据",
+    "detailDescription": "精确数值、速度分量与符号"
+  },
+  "comparisons": {
+    "slowerThanWalking": "比走路还慢",
+    "walkingPace": "大约是走路的速度",
+    "joggingPace": "大约是慢跑的速度",
+    "cyclingPace": "大约是骑车的速度",
+    "quietStreet": "像小路上的汽车",
+    "carInTown": "像市区里的汽车",
+    "openRoad": "像公路上的汽车",
+    "motorway": "像高速公路上的汽车",
+    "skydiver": "像自由落体的跳伞者",
+    "fasterThanSkydiver": "比跳伞者下落还快"
+  },
+  "drop": {
+    "cards": {
+      "object": "物体",
+      "release": "释放条件",
+      "environment": "环境"
+    },
+    "shape": "形状",
+    "sliders": {
+      "mass": "质量",
+      "dropHeight": "下落高度",
+      "initialVelocity": "初速度",
+      "launchAngle": "抛射角",
+      "dragCoefficient": "阻力系数",
+      "crossSection": "横截面积"
+    },
+    "hints": {
+      "noAirMass": "没有空气 — 质量不影响下落",
+      "needVelocity": "先设置初速度才能调整方向",
+      "angle": "0° 水平抛出 · 90° 竖直向上"
+    },
+    "toggles": {
+      "airResistance": "空气阻力",
+      "airResistanceOn": "在 ρ = {{density}} kg/m³ 下的平方阻力",
+      "airResistanceVacuum": "{{environment}} 是真空 — 始终关闭",
+      "liveData": "实时数据",
+      "liveDataDescription": "运行过程中的速度、高度与时间",
+      "ghost": "上一次的轨迹",
+      "ghostDescription": "保留上一次的轨迹以便对比"
+    },
+    "stats": {
+      "speed": "速度",
+      "heightLeft": "剩余高度",
+      "time": "时间"
+    },
+    "terminal": {
+      "none": "无阻力",
+      "value": "v∞ {{value}} m/s"
+    },
+    "messages": {
+      "floating": "没有任何力作用在它上面，所以它就停在那里。",
+      "boundary": "它一直漂移，直到碰上边界。",
+      "timeout": "计时结束时它仍在下落。",
+      "landed": "{{time}} s 后落地，撞击速度为 {{speed}} m/s。",
+      "landedTerminal": "{{time}} s 后以 {{speed}} m/s 落地 — 这已是空气允许的最快下落速度。"
+    },
+    "credits": "运动采用四阶龙格–库塔法、以固定 1/240 s 步长积分。关闭空气阻力时改用匀加速的解析解 — 这正是真空中所有物体无论质量大小都同时落地的原因。",
+    "badge": {
+      "air": "有空气",
+      "vacuum": "真空"
+    }
+  },
+  "collisions": {
+    "cards": {
+      "kind": "它们相遇时会怎样",
+      "leftObject": "左边的物体",
+      "rightObject": "右边的物体"
+    },
+    "kinds": {
+      "bouncy": "完全弹性",
+      "sticky": "完全黏合",
+      "realistic": "接近真实"
+    },
+    "kindBlurbs": {
+      "bouncy": "它们弹开并保留全部能量，没有任何损失。",
+      "sticky": "它们在碰撞时黏在一起，之后作为一个整体运动。",
+      "realistic": "通常发生的情况：它们弹开，但有一部分能量变成热和声音。"
+    },
+    "sliders": {
+      "bounciness": "弹性",
+      "bouncinessHint": "0 表示黏在一起 · 1 表示完全弹开",
+      "mass": "质量",
+      "startingSpeed": "初速度",
+      "sittingStill": "静止不动",
+      "movingAt": "以 {{speed}} m/s {{direction}}运动"
+    },
+    "stats": {
+      "speedOf": "{{name}}的速度",
+      "movingDirection": "{{direction}}运动",
+      "stopped": "已停止"
+    },
+    "badge": {
+      "bounciness": "弹性 {{value}}"
+    },
+    "messages": {
+      "neverMeet": "这两个物体永远不会相遇 — 请设置能让它们靠近的速度。",
+      "noContact": "它们始终没有接触。",
+      "stuck": "它们黏在一起，以 {{speed}} m/s {{direction}}运动。{{percent}}% 的能量变成了热和声音 — 但总动量没有改变。",
+      "bouncedIntro": "{{nameA}}以 {{speedA}} m/s {{directionA}}离开，{{nameB}}以 {{speedB}} m/s {{directionB}}离开。",
+      "bouncedLossless": "{{intro}} 它们保留了全部能量，总动量也与之前完全相同。",
+      "bouncedLossy": "{{intro}} 它们有 {{percent}}% 的能量变成了热和声音，但总动量没有改变。"
+    },
+    "credits": "这里的动量（质量 × 速度的总和）在任何碰撞前后都相同 — 这是定律，不是近似。而能量只有在物体完全弹性时才守恒。",
+    "details": {
+      "beforeImpact": "— 碰撞前 —",
+      "vBefore": "{{symbol}} 碰撞前",
+      "vAfter": "{{symbol}} 碰撞后",
+      "momentumBefore": "p 碰撞前",
+      "momentumAfter": "p 碰撞后",
+      "energyBefore": "KE 碰撞前",
+      "energyAfter": "KE 碰撞后",
+      "energyLost": "损失的能量",
+      "restitution": "恢复系数  e",
+      "momentum": "动量  p",
+      "kineticEnergy": "动能  KE"
+    }
+  },
+  "details": {
+    "time": "时间  t",
+    "height": "高度  y",
+    "horizontalPosition": "水平位置  x",
+    "speed": "速度  |v|",
+    "verticalVelocity": "竖直分量  vy",
+    "horizontalVelocity": "水平分量  vx",
+    "gravity": "重力加速度  g",
+    "airDensity": "空气密度  ρ",
+    "dragCoefficient": "阻力系数  Cd",
+    "crossSection": "横截面  A",
+    "terminalVelocity": "终端速度  v∞"
+  },
+  "results": {
+    "outcomes": {
+      "landed": "撞击",
+      "boundary": "到达舱壁",
+      "timeout": "计时结束时仍在下落",
+      "floating": "没有合力 — 就那样浮着"
+    },
+    "stats": {
+      "timeTaken": "所用时间",
+      "timeTakenTechnical": "时间  t",
+      "speedAtLanding": "落地速度",
+      "speedAtLandingTechnical": "撞击  |v|",
+      "highestPoint": "最高点",
+      "highestPointTechnical": "最大高度",
+      "droppedFrom": "释放高度",
+      "droppedFromTechnical": "y₀",
+      "sidewaysTravel": "水平位移",
+      "sidewaysTravelTechnical": "射程  x",
+      "forceOfLanding": "落地的猛烈程度",
+      "forceOfLandingTechnical": "撞击能量",
+      "fastestAllowed": "空气允许的最快速度",
+      "fastestAllowedTechnical": "终端  v∞",
+      "noAirHint": "没有空气可减速"
+    },
+    "notes": {
+      "rose": "它比起点高出 {{height}} m，然后才落回来。",
+      "terminal": "它在下落途中停止加速：空气阻力不断增大，直到恰好与自身重力平衡。",
+      "timeout": "计时结束时它仍在下落。可以降低下落高度，或关闭空气阻力。"
+    },
+    "graphs": {
+      "title": "图表",
+      "speed": "速度",
+      "height": "高度",
+      "path": "轨迹",
+      "seconds": "秒",
+      "secondsTechnical": "时间  t (s)",
+      "metresSideways": "水平距离（米）",
+      "metresSidewaysTechnical": "x (m)",
+      "howFast": "它当时有多快",
+      "howFastTechnical": "速度  |v| (m/s) – t",
+      "howHigh": "它当时有多高",
+      "howHighTechnical": "高度  y (m) – t",
+      "thePath": "它走过的路径",
+      "thePathTechnical": "y (m) – x (m)",
+      "seriesSpeed": "速度",
+      "seriesHeight": "高度",
+      "seriesPath": "路径",
+      "fastestPossible": "理论最快"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "languageDescription": "选择所有界面使用的语言。你的选择会保存在本机。",
+    "translationNote": "英语以外的翻译由 AI 辅助生成，尚未经过母语者校对。物理术语尤其建议复核。",
+    "unitsNote": "单位符号（kg、m、m/s）是国际通用的，在所有语言中保持不变。"
+  }
+}

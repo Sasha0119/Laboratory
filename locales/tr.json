@@ -1,0 +1,319 @@
+{
+  "_note": "AI-generated translation — recommend native speaker review before production, especially physics terminology.",
+  "app": {
+    "name": "Laboratuvar"
+  },
+  "nav": {
+    "physics": "Fizik",
+    "drop": "Düşme ve Atış",
+    "collisions": "Çarpışmalar",
+    "settings": "Ayarlar"
+  },
+  "common": {
+    "reset": "Sıfırla",
+    "run": "Başlat",
+    "running": "Çalışıyor…",
+    "drop": "Bırak",
+    "launch": "Fırlat",
+    "restore": "Geri al",
+    "available": "Kullanılabilir",
+    "comingSoon": "Yakında",
+    "playback": "Oynatma"
+  },
+  "directions": {
+    "left": "sola",
+    "right": "sağa",
+    "stopped": "durdu"
+  },
+  "home": {
+    "tagline": "Gerçek simülasyonlar, gerçek denklemler. Bir tezgâh seç ve deneye başla.",
+    "openBench": "Tezgâhı aç  →",
+    "footnote": "Her şey cihazda çalışır. Hesap yok, ağ yok; hiçbir veri telefondan çıkmaz.",
+    "settingsLabel": "Ayarlar",
+    "categories": {
+      "physics": {
+        "title": "Fizik",
+        "subtitle": "Hareket, kuvvetler, yerçekimi",
+        "detail": "Cisimleri yüz metreden bırak ve matematiğin tuttuğunu gör.",
+        "modules": "2 simülasyon · 2 tanesi yolda"
+      },
+      "chemistry": {
+        "title": "Kimya",
+        "subtitle": "Tepkimeler, hâller, bağlar",
+        "detail": "Titrasyon, gaz yasaları ve tepkime kinetiği hazırlanıyor.",
+        "modules": "Geliştiriliyor"
+      }
+    }
+  },
+  "physicsIndex": {
+    "intro": "Her simülasyon gerçek hareket denklemlerini integre eder. Ekranda okuduğun sayılar, matematiğin ürettiği sayılardır.",
+    "sims": {
+      "drop": {
+        "title": "Düşme ve Atış",
+        "summary": "Dört farklı dünyada, gerçek kare hava direnciyle serbest düşme ve atış hareketi."
+      },
+      "collisions": {
+        "title": "Çarpışmalar",
+        "summary": "Karşılıklı gelen iki cisim. Her çarpışmada momentum korunur, enerji korunmaz."
+      },
+      "pendulum": {
+        "title": "Sarkaç",
+        "summary": "Basit ve sönümlü sarkaçlar ile küçük açı yaklaşımı."
+      },
+      "incline": {
+        "title": "Eğik Düzlem",
+        "summary": "Statik ve kinetik sürtünmeyle kayan ve yuvarlanan cisimler."
+      }
+    },
+    "topics": {
+      "kinematics": "Kinematik",
+      "drag": "Hava direnci",
+      "terminalVelocity": "Limit hız",
+      "momentum": "Momentum",
+      "energy": "Enerji",
+      "bounciness": "Esneklik",
+      "oscillation": "Salınım",
+      "damping": "Sönümleme",
+      "friction": "Sürtünme",
+      "torque": "Tork"
+    }
+  },
+  "presets": {
+    "ball": {
+      "label": "Top",
+      "blurb": "Futbol topu · küre, Cd 0.47"
+    },
+    "marble": {
+      "label": "Misket",
+      "blurb": "Cam, 16 mm · yoğun ve kaygan"
+    },
+    "feather": {
+      "label": "Tüy",
+      "blurb": "0.8 g · çok geniş alan, Cd 2.5"
+    },
+    "book": {
+      "label": "Kitap",
+      "blurb": "Ciltli, düz düşerken · Cd 1.2"
+    },
+    "custom": {
+      "label": "Özel",
+      "blurb": "Kendi sayıların — her şeyi değiştir"
+    }
+  },
+  "shapes": {
+    "circle": "Küre",
+    "square": "Küp",
+    "disc": "Disk",
+    "feather": "Tüy"
+  },
+  "environments": {
+    "earth": {
+      "label": "Dünya",
+      "note": "Deniz seviyesi havası, 1.225 kg/m³"
+    },
+    "moon": {
+      "label": "Ay",
+      "note": "Boşluk — direnç her zaman sıfır"
+    },
+    "mars": {
+      "label": "Mars",
+      "note": "Seyrek CO₂ havası, 0.020 kg/m³"
+    },
+    "zerog": {
+      "label": "Yerçekimsiz",
+      "note": "Yerçekimi yok, hava yok, zemin yok"
+    }
+  },
+  "readout": {
+    "detailToggle": "Ayrıntılı verileri göster",
+    "detailDescription": "Tam değerler, hız bileşenleri ve semboller"
+  },
+  "comparisons": {
+    "slowerThanWalking": "yürümekten yavaş",
+    "walkingPace": "yaklaşık yürüme hızı",
+    "joggingPace": "yaklaşık hafif koşu hızı",
+    "cyclingPace": "yaklaşık bisiklet hızı",
+    "quietStreet": "sakin bir sokaktaki araba gibi",
+    "carInTown": "şehir içindeki araba gibi",
+    "openRoad": "şehirlerarası yoldaki araba gibi",
+    "motorway": "otoyoldaki araba gibi",
+    "skydiver": "serbest düşüşteki paraşütçü gibi",
+    "fasterThanSkydiver": "paraşütçünün düşüşünden hızlı"
+  },
+  "drop": {
+    "cards": {
+      "object": "Cisim",
+      "release": "Bırakma",
+      "environment": "Ortam"
+    },
+    "shape": "Şekil",
+    "sliders": {
+      "mass": "Kütle",
+      "dropHeight": "Bırakma yüksekliği",
+      "initialVelocity": "Başlangıç hızı",
+      "launchAngle": "Atış açısı",
+      "dragCoefficient": "Sürükleme katsayısı",
+      "crossSection": "Kesit alanı"
+    },
+    "hints": {
+      "noAirMass": "Hava yoksa kütlenin düşüşe etkisi olmaz",
+      "needVelocity": "Nişan almak için bir başlangıç hızı ver",
+      "angle": "0° yatay atar · 90° dümdüz yukarı"
+    },
+    "toggles": {
+      "airResistance": "Hava direnci",
+      "airResistanceOn": "ρ = {{density}} kg/m³ değerinde kare direnç",
+      "airResistanceVacuum": "{{environment}} bir boşluk — her zaman kapalı",
+      "liveData": "Canlı veri",
+      "liveDataDescription": "Çalışırken hız, yükseklik ve süre",
+      "ghost": "Önceki denemenin izi",
+      "ghostDescription": "Karşılaştırmak için önceki yörüngeyi ekranda tut"
+    },
+    "stats": {
+      "speed": "Hız",
+      "heightLeft": "Kalan yükseklik",
+      "time": "Süre"
+    },
+    "terminal": {
+      "none": "direnç yok",
+      "value": "v∞ {{value}} m/s"
+    },
+    "messages": {
+      "floating": "Ona hiçbir kuvvet etki etmiyor, öylece asılı duruyor.",
+      "boundary": "Duvara ulaşana kadar süzüldü.",
+      "timeout": "Süre dolduğunda hâlâ düşüyordu.",
+      "landed": "{{time}} s sonra yere {{speed}} m/s hızla çarptı.",
+      "landedTerminal": "{{time}} s sonra {{speed}} m/s ile yere indi — havanın izin verdiği en yüksek hız."
+    },
+    "credits": "Hareket, sabit 1/240 s adımla RK4 yöntemiyle integre edilir. Hava kapalıyken bunun yerine sabit ivme için kapalı form çözüm kullanılır — boşlukta kütlesi ne olursa olsun bütün cisimlerin aynı anda yere inmesinin sebebi budur.",
+    "badge": {
+      "air": "hava",
+      "vacuum": "boşluk"
+    }
+  },
+  "collisions": {
+    "cards": {
+      "kind": "Karşılaştıklarında ne olur",
+      "leftObject": "Soldaki cisim",
+      "rightObject": "Sağdaki cisim"
+    },
+    "kinds": {
+      "bouncy": "Zıplayan",
+      "sticky": "Yapışan",
+      "realistic": "Gerçekçi"
+    },
+    "kindBlurbs": {
+      "bouncy": "Birbirlerinden sekerler ve bütün enerjilerini korurlar. Hiçbir şey kaybolmaz.",
+      "sticky": "Çarpışmada birleşirler ve tek parça hâlinde hareket ederler.",
+      "realistic": "Genellikle olan budur: sekerler ama enerjinin bir kısmını ısı ve ses olarak kaybederler."
+    },
+    "sliders": {
+      "bounciness": "Esneklik",
+      "bouncinessHint": "0 yapışır · 1 kusursuz seker",
+      "mass": "Kütle",
+      "startingSpeed": "Başlangıç hızı",
+      "sittingStill": "Duruyor",
+      "movingAt": "{{speed}} m/s hızla {{direction}} gidiyor"
+    },
+    "stats": {
+      "speedOf": "{{name}} hızı",
+      "movingDirection": "{{direction}} gidiyor",
+      "stopped": "durdu"
+    },
+    "badge": {
+      "bounciness": "esneklik {{value}}"
+    },
+    "messages": {
+      "neverMeet": "Bu ikisi hiç karşılaşmayacak — onları birbirine yaklaştıran hızlar ver.",
+      "noContact": "Hiç temas etmediler.",
+      "stuck": "Birbirlerine yapışıp {{speed}} m/s hızla {{direction}} gittiler. Enerjinin %{{percent}} kadarı ısı ve ses olarak kayboldu — ama toplam momentum değişmedi.",
+      "bouncedIntro": "{{nameA}} {{speedA}} m/s ile {{directionA}}, {{nameB}} {{speedB}} m/s ile {{directionB}} gitti.",
+      "bouncedLossless": "{{intro}} Bütün enerjilerini korudular ve toplam momentum tam olarak eskisi gibi.",
+      "bouncedLossy": "{{intro}} Enerjilerinin %{{percent}} kadarını ısı ve ses olarak kaybettiler, ama toplam momentum değişmedi."
+    },
+    "credits": "Momentum (kütle × hız, toplanmış hâlde) burada her çarpışmadan önce ve sonra aynıdır — bu bir yasadır, yaklaşıklık değil. Enerji ise yalnızca cisimler kusursuz esnek olduğunda korunur.",
+    "details": {
+      "beforeImpact": "— çarpışmadan önce —",
+      "vBefore": "{{symbol}} önce",
+      "vAfter": "{{symbol}} sonra",
+      "momentumBefore": "p önce",
+      "momentumAfter": "p sonra",
+      "energyBefore": "KE önce",
+      "energyAfter": "KE sonra",
+      "energyLost": "Kaybolan enerji",
+      "restitution": "Geri verme  e",
+      "momentum": "Momentum  p",
+      "kineticEnergy": "Kinetik enerji  KE"
+    }
+  },
+  "details": {
+    "time": "Süre  t",
+    "height": "Yükseklik  y",
+    "horizontalPosition": "Yatay  x",
+    "speed": "Hız  |v|",
+    "verticalVelocity": "Düşey  vy",
+    "horizontalVelocity": "Yatay  vx",
+    "gravity": "Yerçekimi  g",
+    "airDensity": "Hava yoğunluğu  ρ",
+    "dragCoefficient": "Sürükleme katsayısı  Cd",
+    "crossSection": "Kesit  A",
+    "terminalVelocity": "Limit hız  v∞"
+  },
+  "results": {
+    "outcomes": {
+      "landed": "Çarpma",
+      "boundary": "Odanın duvarına ulaştı",
+      "timeout": "Süre dolduğunda hâlâ düşüyordu",
+      "floating": "Net kuvvet yok — öylece asılı duruyor"
+    },
+    "stats": {
+      "timeTaken": "Geçen süre",
+      "timeTakenTechnical": "Süre  t",
+      "speedAtLanding": "Yere inerkenki hız",
+      "speedAtLandingTechnical": "Çarpma  |v|",
+      "highestPoint": "En yüksek nokta",
+      "highestPointTechnical": "Maks. yükseklik",
+      "droppedFrom": "Bırakıldığı yükseklik",
+      "droppedFromTechnical": "y₀",
+      "sidewaysTravel": "Yatay yol",
+      "sidewaysTravelTechnical": "Menzil  x",
+      "forceOfLanding": "Çarpmanın şiddeti",
+      "forceOfLandingTechnical": "Çarpma enerjisi",
+      "fastestAllowed": "Havanın izin verdiği en yüksek hız",
+      "fastestAllowedTechnical": "Limit  v∞",
+      "noAirHint": "yavaşlatacak hava yok"
+    },
+    "notes": {
+      "rose": "Geri düşmeden önce başladığı yerin {{height}} m üstüne çıktı.",
+      "terminal": "İnerken hızlanmayı bıraktı: hava direnci, cismin ağırlığını tam olarak dengeleyene kadar arttı.",
+      "timeout": "Süre dolduğunda hâlâ düşüyordu. Daha küçük bir bırakma yüksekliği dene veya hava direncini kapat."
+    },
+    "graphs": {
+      "title": "Grafikler",
+      "speed": "Hız",
+      "height": "Yükseklik",
+      "path": "Yörünge",
+      "seconds": "saniye",
+      "secondsTechnical": "süre  t (s)",
+      "metresSideways": "yatayda metre",
+      "metresSidewaysTechnical": "x (m)",
+      "howFast": "Ne kadar hızlı gidiyordu",
+      "howFastTechnical": "Hız  |v| (m/s) – t",
+      "howHigh": "Ne kadar yüksekteydi",
+      "howHighTechnical": "Yükseklik  y (m) – t",
+      "thePath": "İzlediği yol",
+      "thePathTechnical": "y (m) – x (m)",
+      "seriesSpeed": "hız",
+      "seriesHeight": "yükseklik",
+      "seriesPath": "yol",
+      "fastestPossible": "mümkün olan en yüksek"
+    }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "language": "Dil",
+    "languageDescription": "Bütün ekranlar için dili seç. Seçimin bu cihazda saklanır.",
+    "translationNote": "İngilizce dışındaki çeviriler yapay zekâ desteğiyle hazırlandı ve henüz ana dili konuşan biri tarafından kontrol edilmedi. Özellikle fizik terimleri gözden geçirilmeli.",
+    "unitsNote": "Birim sembolleri (kg, m, m/s) uluslararasıdır ve her dilde aynı kalır."
+  }
+}

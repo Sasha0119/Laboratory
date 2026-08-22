@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/slider": "5.0.1",
     "expo": "~54.0.0",
     "expo-audio": "~1.1.1",
@@ -12,8 +13,10 @@
     "expo-linking": "~8.0.12",
     "expo-router": "~6.0.24",
     "expo-status-bar": "~3.0.9",
+    "i18next": "^26.4.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-i18next": "^17.0.12",
     "react-native": "0.81.5",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-safe-area-context": "~5.6.0",
@@ -32,7 +35,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "test:physics": "npx tsx lib/physics/__tests__/run.ts"
+    "test:physics": "npx tsx lib/physics/__tests__/run.ts",
+    "check:locales": "node scripts/check-locales.mjs"
   },
   "private": true
 }

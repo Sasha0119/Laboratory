@@ -1,0 +1,319 @@
+{
+  "_note": "Source language. Every other locale in this folder is translated from this file; add new keys here first.",
+  "app": {
+    "name": "Laboratory"
+  },
+  "nav": {
+    "physics": "Physics",
+    "drop": "Drop & Projectile",
+    "collisions": "Collisions",
+    "settings": "Settings"
+  },
+  "common": {
+    "reset": "Reset",
+    "run": "Run",
+    "running": "Running…",
+    "drop": "Drop",
+    "launch": "Launch",
+    "restore": "Restore",
+    "available": "Available",
+    "comingSoon": "Coming soon",
+    "playback": "Playback"
+  },
+  "directions": {
+    "left": "left",
+    "right": "right",
+    "stopped": "stopped"
+  },
+  "home": {
+    "tagline": "Real simulations, real equations. Pick a bench and start an experiment.",
+    "openBench": "Open bench  →",
+    "footnote": "Everything runs on-device. No account, no network, no data leaves the phone.",
+    "settingsLabel": "Settings",
+    "categories": {
+      "physics": {
+        "title": "Physics",
+        "subtitle": "Motion, forces, gravity",
+        "detail": "Drop things from a hundred metres and watch the maths hold up.",
+        "modules": "2 simulations · 2 coming"
+      },
+      "chemistry": {
+        "title": "Chemistry",
+        "subtitle": "Reactions, states, bonds",
+        "detail": "Titrations, gas laws and reaction kinetics are being built.",
+        "modules": "In development"
+      }
+    }
+  },
+  "physicsIndex": {
+    "intro": "Each simulation integrates the real equations of motion. Numbers you read off the screen are the numbers the maths produces.",
+    "sims": {
+      "drop": {
+        "title": "Drop & Projectile",
+        "summary": "Free fall and projectile motion with real quadratic air drag, across four worlds."
+      },
+      "collisions": {
+        "title": "Collisions",
+        "summary": "Two objects meeting head-on. Watch momentum survive every impact while energy does not."
+      },
+      "pendulum": {
+        "title": "Pendulum",
+        "summary": "Simple and damped pendulums, plus the small-angle approximation."
+      },
+      "incline": {
+        "title": "Inclined Plane",
+        "summary": "Sliding and rolling bodies with static and kinetic friction."
+      }
+    },
+    "topics": {
+      "kinematics": "Kinematics",
+      "drag": "Drag",
+      "terminalVelocity": "Terminal velocity",
+      "momentum": "Momentum",
+      "energy": "Energy",
+      "bounciness": "Bounciness",
+      "oscillation": "Oscillation",
+      "damping": "Damping",
+      "friction": "Friction",
+      "torque": "Torque"
+    }
+  },
+  "presets": {
+    "ball": {
+      "label": "Ball",
+      "blurb": "Football · sphere, Cd 0.47"
+    },
+    "marble": {
+      "label": "Marble",
+      "blurb": "Glass, 16 mm · dense and slippery"
+    },
+    "feather": {
+      "label": "Feather",
+      "blurb": "0.8 g · huge area, Cd 2.5"
+    },
+    "book": {
+      "label": "Book",
+      "blurb": "Hardcover, falling flat · Cd 1.2"
+    },
+    "custom": {
+      "label": "Custom",
+      "blurb": "Your numbers — edit everything"
+    }
+  },
+  "shapes": {
+    "circle": "Sphere",
+    "square": "Cube",
+    "disc": "Disc",
+    "feather": "Feather"
+  },
+  "environments": {
+    "earth": {
+      "label": "Earth",
+      "note": "Sea-level air, 1.225 kg/m³"
+    },
+    "moon": {
+      "label": "Moon",
+      "note": "Vacuum — drag is always zero"
+    },
+    "mars": {
+      "label": "Mars",
+      "note": "Thin CO₂ air, 0.020 kg/m³"
+    },
+    "zerog": {
+      "label": "Zero-G",
+      "note": "No gravity, no air, no floor"
+    }
+  },
+  "readout": {
+    "detailToggle": "Show detailed data",
+    "detailDescription": "Exact figures, component velocities and symbols"
+  },
+  "comparisons": {
+    "slowerThanWalking": "slower than walking",
+    "walkingPace": "about walking pace",
+    "joggingPace": "about jogging pace",
+    "cyclingPace": "about cycling pace",
+    "quietStreet": "like a car on a quiet street",
+    "carInTown": "like a car in town",
+    "openRoad": "like a car on the open road",
+    "motorway": "like a car on the motorway",
+    "skydiver": "like a skydiver in freefall",
+    "fasterThanSkydiver": "faster than a skydiver falls"
+  },
+  "drop": {
+    "cards": {
+      "object": "Object",
+      "release": "Release",
+      "environment": "Environment"
+    },
+    "shape": "Shape",
+    "sliders": {
+      "mass": "Mass",
+      "dropHeight": "Drop height",
+      "initialVelocity": "Initial velocity",
+      "launchAngle": "Launch angle",
+      "dragCoefficient": "Drag coefficient",
+      "crossSection": "Cross-section"
+    },
+    "hints": {
+      "noAirMass": "No air — mass has no effect on the fall",
+      "needVelocity": "Set an initial velocity to aim",
+      "angle": "0° throws flat · 90° straight up"
+    },
+    "toggles": {
+      "airResistance": "Air resistance",
+      "airResistanceOn": "Quadratic drag at ρ = {{density}} kg/m³",
+      "airResistanceVacuum": "{{environment}} is a vacuum — always off",
+      "liveData": "Live data",
+      "liveDataDescription": "Speed, height and time while the run is going",
+      "ghost": "Ghost of last run",
+      "ghostDescription": "Keep the previous trajectory on screen to compare"
+    },
+    "stats": {
+      "speed": "Speed",
+      "heightLeft": "Height left",
+      "time": "Time"
+    },
+    "terminal": {
+      "none": "no drag",
+      "value": "v∞ {{value}} m/s"
+    },
+    "messages": {
+      "floating": "Nothing is pulling on it, so it just floats.",
+      "boundary": "It drifted until it reached the wall.",
+      "timeout": "Still falling when the timer ran out.",
+      "landed": "Landed after {{time}} seconds, hitting the ground at {{speed}} m/s.",
+      "landedTerminal": "Landed after {{time}} seconds at {{speed}} m/s — as fast as the air will let it fall."
+    },
+    "credits": "Motion is integrated with RK4 at a fixed 1/240 s step. With air off, the closed-form constant-acceleration solution is used instead — which is why every object lands together in a vacuum, whatever its mass.",
+    "badge": {
+      "air": "air",
+      "vacuum": "vacuum"
+    }
+  },
+  "collisions": {
+    "cards": {
+      "kind": "What happens when they meet",
+      "leftObject": "Left object",
+      "rightObject": "Right object"
+    },
+    "kinds": {
+      "bouncy": "Bouncy",
+      "sticky": "Sticky",
+      "realistic": "Realistic"
+    },
+    "kindBlurbs": {
+      "bouncy": "They bounce apart and keep all their energy. Nothing is lost.",
+      "sticky": "They join together on impact and move off as one lump.",
+      "realistic": "What usually happens: they bounce, but lose some energy as heat and sound."
+    },
+    "sliders": {
+      "bounciness": "Bounciness",
+      "bouncinessHint": "0 sticks together · 1 bounces perfectly",
+      "mass": "Mass",
+      "startingSpeed": "Starting speed",
+      "sittingStill": "Sitting still",
+      "movingAt": "Moving {{direction}} at {{speed}} m/s"
+    },
+    "stats": {
+      "speedOf": "{{name}} speed",
+      "movingDirection": "moving {{direction}}",
+      "stopped": "stopped"
+    },
+    "badge": {
+      "bounciness": "bounciness {{value}}"
+    },
+    "messages": {
+      "neverMeet": "These two will never meet — give them speeds that bring them together.",
+      "noContact": "They never touched.",
+      "stuck": "They stuck together and moved off {{direction}} at {{speed}} m/s. {{percent}}% of the energy was lost as heat and sound — but the total momentum did not change.",
+      "bouncedIntro": "{{nameA}} went off {{directionA}} at {{speedA}} m/s, {{nameB}} {{directionB}} at {{speedB}} m/s.",
+      "bouncedLossless": "{{intro}} They kept all of their energy, and the total momentum is exactly what it was before.",
+      "bouncedLossy": "{{intro}} They lost {{percent}}% of their energy as heat and sound, but the total momentum is unchanged."
+    },
+    "credits": "Momentum (mass × speed, added up) is the same before and after every collision here — that is a law, not an approximation. Energy is only preserved when the objects are perfectly bouncy.",
+    "details": {
+      "beforeImpact": "— before impact —",
+      "vBefore": "{{symbol}} before",
+      "vAfter": "{{symbol}} after",
+      "momentumBefore": "p before",
+      "momentumAfter": "p after",
+      "energyBefore": "KE before",
+      "energyAfter": "KE after",
+      "energyLost": "Energy lost",
+      "restitution": "Restitution  e",
+      "momentum": "Momentum  p",
+      "kineticEnergy": "Kinetic energy  KE"
+    }
+  },
+  "details": {
+    "time": "Time  t",
+    "height": "Height  y",
+    "horizontalPosition": "Horizontal  x",
+    "speed": "Speed  |v|",
+    "verticalVelocity": "Vertical  vy",
+    "horizontalVelocity": "Horizontal  vx",
+    "gravity": "Gravity  g",
+    "airDensity": "Air density  ρ",
+    "dragCoefficient": "Drag coefficient  Cd",
+    "crossSection": "Cross-section  A",
+    "terminalVelocity": "Terminal velocity  v∞"
+  },
+  "results": {
+    "outcomes": {
+      "landed": "Impact",
+      "boundary": "Reached the chamber wall",
+      "timeout": "Still falling at the time limit",
+      "floating": "No net force — it just floats"
+    },
+    "stats": {
+      "timeTaken": "Time taken",
+      "timeTakenTechnical": "Time  t",
+      "speedAtLanding": "Speed at landing",
+      "speedAtLandingTechnical": "Impact  |v|",
+      "highestPoint": "Highest point",
+      "highestPointTechnical": "Max height",
+      "droppedFrom": "Dropped from",
+      "droppedFromTechnical": "y₀",
+      "sidewaysTravel": "Sideways travel",
+      "sidewaysTravelTechnical": "Range  x",
+      "forceOfLanding": "Force of landing",
+      "forceOfLandingTechnical": "Impact energy",
+      "fastestAllowed": "Fastest the air allows",
+      "fastestAllowedTechnical": "Terminal  v∞",
+      "noAirHint": "no air to slow it"
+    },
+    "notes": {
+      "rose": "It rose {{height}} m above where it started before falling back down.",
+      "terminal": "It stopped speeding up on the way down: air resistance grew until it exactly balanced the object's weight.",
+      "timeout": "It was still falling when the timer ran out. Try a smaller drop height, or turn air resistance off."
+    },
+    "graphs": {
+      "title": "Graphs",
+      "speed": "Speed",
+      "height": "Height",
+      "path": "Path",
+      "seconds": "seconds",
+      "secondsTechnical": "time  t (s)",
+      "metresSideways": "metres sideways",
+      "metresSidewaysTechnical": "x (m)",
+      "howFast": "How fast it was going",
+      "howFastTechnical": "Speed  |v| (m/s) vs t",
+      "howHigh": "How high it was",
+      "howHighTechnical": "Height  y (m) vs t",
+      "thePath": "The path it took",
+      "thePathTechnical": "y (m) vs x (m)",
+      "seriesSpeed": "speed",
+      "seriesHeight": "height",
+      "seriesPath": "path",
+      "fastestPossible": "fastest possible"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "languageDescription": "Choose the language for every screen. Your choice is saved on this device.",
+    "translationNote": "Translations other than English were produced with AI assistance and have not yet been checked by a native speaker. Physics wording in particular may need review.",
+    "unitsNote": "Unit symbols (kg, m, m/s) are international and stay the same in every language."
+  }
+}

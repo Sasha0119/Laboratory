@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import type { SimResult } from '../../lib/physics/simulation';
 import { colors, radius, spacing } from '../../theme';
@@ -18,19 +19,25 @@ interface Props {
 
 type Plot = 'speed' | 'height' | 'path';
 
-const OUTCOME_TEXT: Record<SimResult['outcome'], { title: string; tone: string }> = {
-  landed: { title: 'Impact', tone: colors.accent },
-  boundary: { title: 'Reached the chamber wall', tone: colors.blue },
-  timeout: { title: 'Still falling at the time limit', tone: colors.amber },
-  floating: { title: 'No net force — it just floats', tone: colors.violet },
+/** Only the tint lives here; the wording is at `results.outcomes.<id>`. */
+const OUTCOME_TONE: Record<SimResult['outcome'], string> = {
+  landed: colors.accent,
+  boundary: colors.blue,
+  timeout: colors.amber,
+  floating: colors.violet,
 };
 
 export function ResultPanel({ result, dropHeight, chartWidth, airResistance }: Props) {
   const [plot, setPlot] = useState<Plot>('speed');
-  const outcome = OUTCOME_TEXT[result.outcome];
+  const { t } = useTranslation();
+  const outcomeTone = OUTCOME_TONE[result.outcome];
   const { detailed } = useDetailMode();
-  // Plain wording by default; the symbols only appear in detailed mode.
-  const label = (plain: string, technical: string) => (detailed ? technical : plain);
+  /**
+   * Plain wording by default, symbols in detailed mode. Both variants are
+   * translated: `<key>` and `<key>Technical`.
+   */
+  const label = (key: string) => t(`results.stats.${key}${detailed ? 'Technical' : ''}`);
+  const axis = (key: string) => t(`results.graphs.${key}${detailed ? 'Technical' : ''}`);
 
   const showTerminal =
     airResistance && Number.isFinite(result.terminalVelocity) && result.terminalVelocity > 0;
@@ -39,43 +46,43 @@ export function ResultPanel({ result, dropHeight, chartWidth, airResistance }: P
     <>
       <Card style={styles.card}>
         <View style={styles.headerRow}>
-          <View style={[styles.dot, { backgroundColor: outcome.tone }]} />
-          <Text style={[styles.outcome, { color: outcome.tone }]}>{outcome.title}</Text>
+          <View style={[styles.dot, { backgroundColor: outcomeTone }]} />
+          <Text style={[styles.outcome, { color: outcomeTone }]}>
+            {t(`results.outcomes.${result.outcome}`)}
+          </Text>
         </View>
 
         <View style={styles.grid}>
           <Stat
-            label={label('Time taken', 'Time  t')}
+            label={label('timeTaken')}
             value={detailed ? precise(result.totalTime, 4) : friendlyTime(result.totalTime)}
             unit="s"
             big
           />
           <Stat
-            label={label('Speed at landing', 'Impact  |v|')}
+            label={label('speedAtLanding')}
             value={detailed ? precise(result.impactSpeed, 4) : friendly(result.impactSpeed)}
             unit="m/s"
             big
             tone={colors.accent}
           />
           <Stat
-            label={
-              result.rose ? label('Highest point', 'Max height') : label('Dropped from', 'y₀')
-            }
+            label={result.rose ? label('highestPoint') : label('droppedFrom')}
             value={detailed ? precise(result.maxHeight, 3) : friendly(result.maxHeight)}
             unit="m"
           />
           <Stat
-            label={label('Sideways travel', 'Range  x')}
+            label={label('sidewaysTravel')}
             value={detailed ? precise(result.distance, 3) : friendly(result.distance)}
             unit="m"
           />
           <Stat
-            label={label('Force of landing', 'Impact energy')}
+            label={label('forceOfLanding')}
             value={detailed ? precise(result.impactEnergy, 4) : fmtEnergy(result.impactEnergy)}
             unit="J"
           />
           <Stat
-            label={label('Fastest the air allows', 'Terminal  v∞')}
+            label={label('fastestAllowed')}
             value={
               showTerminal
                 ? detailed
@@ -84,38 +91,31 @@ export function ResultPanel({ result, dropHeight, chartWidth, airResistance }: P
                 : '—'
             }
             unit={showTerminal ? 'm/s' : ''}
-            hint={showTerminal ? undefined : 'no air to slow it'}
+            hint={showTerminal ? undefined : t('results.stats.noAirHint')}
           />
         </View>
 
         {result.rose ? (
           <Text style={styles.note}>
-            It rose {friendly(result.maxHeight - dropHeight)} m above where it started before
-            falling back down.
+            {t('results.notes.rose', { height: friendly(result.maxHeight - dropHeight) })}
           </Text>
         ) : null}
         {showTerminal && result.impactSpeed > result.terminalVelocity * 0.98 ? (
-          <Text style={styles.note}>
-            It stopped speeding up on the way down: air resistance grew until it exactly
-            balanced the object's weight.
-          </Text>
+          <Text style={styles.note}>{t('results.notes.terminal')}</Text>
         ) : null}
         {result.outcome === 'timeout' ? (
-          <Text style={styles.note}>
-            It was still falling when the timer ran out. Try a smaller drop height, or turn
-            air resistance off.
-          </Text>
+          <Text style={styles.note}>{t('results.notes.timeout')}</Text>
         ) : null}
       </Card>
 
-      <Card title="Graphs" style={styles.card}>
+      <Card title={t('results.graphs.title')} style={styles.card}>
         <View style={styles.plotPicker}>
           <Segmented<Plot>
             compact
             options={[
-              { value: 'speed', label: 'Speed' },
-              { value: 'height', label: 'Height' },
-              { value: 'path', label: 'Path' },
+              { value: 'speed', label: t('results.graphs.speed') },
+              { value: 'height', label: t('results.graphs.height') },
+              { value: 'path', label: t('results.graphs.path') },
             ]}
             value={plot}
             onChange={setPlot}
@@ -126,22 +126,22 @@ export function ResultPanel({ result, dropHeight, chartWidth, airResistance }: P
           <LineChart
             width={chartWidth}
             height={168}
-            xLabel={label('seconds', 'time  t (s)')}
-            yLabel={label('How fast it was going', 'Speed  |v| (m/s) vs t')}
+            xLabel={axis('seconds')}
+            yLabel={axis('howFast')}
             formatY={(v) => v.toFixed(v >= 10 ? 0 : 1)}
             formatX={(v) => v.toFixed(v >= 10 ? 0 : 1)}
             reference={
               showTerminal
                 ? {
                     value: result.terminalVelocity,
-                    label: detailed ? 'v∞' : 'fastest possible',
+                    label: detailed ? 'v∞' : t('results.graphs.fastestPossible'),
                     color: colors.amber,
                   }
                 : null
             }
             series={[
               {
-                label: detailed ? '|v|' : 'speed',
+                label: detailed ? '|v|' : t('results.graphs.seriesSpeed'),
                 color: colors.accent,
                 points: result.samples.map((s) => ({ x: s.t, y: s.speed })),
               },
@@ -153,13 +153,13 @@ export function ResultPanel({ result, dropHeight, chartWidth, airResistance }: P
           <LineChart
             width={chartWidth}
             height={168}
-            xLabel={label('seconds', 'time  t (s)')}
-            yLabel={label('How high it was', 'Height  y (m) vs t')}
+            xLabel={axis('seconds')}
+            yLabel={axis('howHigh')}
             formatY={(v) => v.toFixed(v >= 10 ? 0 : 1)}
             formatX={(v) => v.toFixed(v >= 10 ? 0 : 1)}
             series={[
               {
-                label: detailed ? 'y' : 'height',
+                label: detailed ? 'y' : t('results.graphs.seriesHeight'),
                 color: colors.blue,
                 points: result.samples.map((s) => ({ x: s.t, y: s.y })),
               },
@@ -171,13 +171,13 @@ export function ResultPanel({ result, dropHeight, chartWidth, airResistance }: P
           <LineChart
             width={chartWidth}
             height={168}
-            xLabel={label('metres sideways', 'x (m)')}
-            yLabel={label('The path it took', 'y (m) vs x (m)')}
+            xLabel={axis('metresSideways')}
+            yLabel={axis('thePath')}
             formatY={(v) => v.toFixed(v >= 10 ? 0 : 1)}
             formatX={(v) => v.toFixed(v >= 10 ? 0 : 1)}
             series={[
               {
-                label: detailed ? 'y vs x' : 'path',
+                label: detailed ? 'y vs x' : t('results.graphs.seriesPath'),
                 color: colors.violet,
                 points: result.samples.map((s) => ({ x: s.x, y: s.y })),
               },

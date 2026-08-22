@@ -1,0 +1,319 @@
+{
+  "_note": "AI-generated translation — recommend native speaker review before production, especially physics terminology.",
+  "app": {
+    "name": "Laboratoriya"
+  },
+  "nav": {
+    "physics": "Fizika",
+    "drop": "Tushish va otish",
+    "collisions": "To'qnashuvlar",
+    "settings": "Sozlamalar"
+  },
+  "common": {
+    "reset": "Tozalash",
+    "run": "Boshlash",
+    "running": "Ketmoqda…",
+    "drop": "Tashlash",
+    "launch": "Otish",
+    "restore": "Tiklash",
+    "available": "Mavjud",
+    "comingSoon": "Tez orada",
+    "playback": "Tezlik"
+  },
+  "directions": {
+    "left": "chapga",
+    "right": "o'ngga",
+    "stopped": "to'xtadi"
+  },
+  "home": {
+    "tagline": "Haqiqiy simulyatsiyalar, haqiqiy tenglamalar. Stolni tanlang va tajribani boshlang.",
+    "openBench": "Ochish  →",
+    "footnote": "Hammasi qurilmaning o'zida ishlaydi. Hisob ham, tarmoq ham kerak emas — ma'lumot telefondan chiqmaydi.",
+    "settingsLabel": "Sozlamalar",
+    "categories": {
+      "physics": {
+        "title": "Fizika",
+        "subtitle": "Harakat, kuchlar, tortishish",
+        "detail": "Jismlarni yuz metrdan tashlang va matematika to'g'ri chiqishini ko'ring.",
+        "modules": "2 ta simulyatsiya · yana 2 tasi yo'lda"
+      },
+      "chemistry": {
+        "title": "Kimyo",
+        "subtitle": "Reaksiyalar, holatlar, bog'lar",
+        "detail": "Titrlash, gaz qonunlari va reaksiya kinetikasi tayyorlanmoqda.",
+        "modules": "Ishlanmoqda"
+      }
+    }
+  },
+  "physicsIndex": {
+    "intro": "Har bir simulyatsiya haqiqiy harakat tenglamalarini integrallaydi. Ekrandagi sonlar — matematikaning o'zi bergan natijalar.",
+    "sims": {
+      "drop": {
+        "title": "Tushish va otish",
+        "summary": "To'rt xil dunyoda, haqiqiy kvadratik havo qarshiligi bilan erkin tushish va otilgan jism harakati."
+      },
+      "collisions": {
+        "title": "To'qnashuvlar",
+        "summary": "Bir-biriga qarab kelayotgan ikki jism. Har qanday zarbada impuls saqlanadi, energiya esa yo'q."
+      },
+      "pendulum": {
+        "title": "Mayatnik",
+        "summary": "Oddiy va so'nuvchi mayatniklar hamda kichik burchak yaqinlashuvi."
+      },
+      "incline": {
+        "title": "Qiya tekislik",
+        "summary": "Tinchlik va sirpanish ishqalanishi bilan sirpanuvchi va dumalovchi jismlar."
+      }
+    },
+    "topics": {
+      "kinematics": "Kinematika",
+      "drag": "Havo qarshiligi",
+      "terminalVelocity": "Chegaraviy tezlik",
+      "momentum": "Impuls",
+      "energy": "Energiya",
+      "bounciness": "Elastiklik",
+      "oscillation": "Tebranish",
+      "damping": "So'nish",
+      "friction": "Ishqalanish",
+      "torque": "Aylantiruvchi moment"
+    }
+  },
+  "presets": {
+    "ball": {
+      "label": "To'p",
+      "blurb": "Futbol to'pi · shar, Cd 0.47"
+    },
+    "marble": {
+      "label": "Shishacha",
+      "blurb": "Shisha, 16 mm · zich va silliq"
+    },
+    "feather": {
+      "label": "Pat",
+      "blurb": "0.8 g · juda katta yuza, Cd 2.5"
+    },
+    "book": {
+      "label": "Kitob",
+      "blurb": "Qattiq muqova, yassi tushmoqda · Cd 1.2"
+    },
+    "custom": {
+      "label": "O'zim",
+      "blurb": "O'z sonlaringiz — hammasini o'zgartiring"
+    }
+  },
+  "shapes": {
+    "circle": "Shar",
+    "square": "Kub",
+    "disc": "Disk",
+    "feather": "Pat"
+  },
+  "environments": {
+    "earth": {
+      "label": "Yer",
+      "note": "Dengiz sathidagi havo, 1.225 kg/m³"
+    },
+    "moon": {
+      "label": "Oy",
+      "note": "Vakuum — qarshilik doim nolga teng"
+    },
+    "mars": {
+      "label": "Mars",
+      "note": "Siyrak CO₂ havosi, 0.020 kg/m³"
+    },
+    "zerog": {
+      "label": "Vaznsizlik",
+      "note": "Tortishish ham, havo ham, zamin ham yo'q"
+    }
+  },
+  "readout": {
+    "detailToggle": "Batafsil ma'lumotni ko'rsatish",
+    "detailDescription": "Aniq qiymatlar, tezlik tashkil etuvchilari va belgilar"
+  },
+  "comparisons": {
+    "slowerThanWalking": "yurishdan sekinroq",
+    "walkingPace": "taxminan yurish tezligi",
+    "joggingPace": "taxminan yengil yugurish tezligi",
+    "cyclingPace": "taxminan velosiped tezligi",
+    "quietStreet": "tinch ko'chadagi mashina kabi",
+    "carInTown": "shahardagi mashina kabi",
+    "openRoad": "katta yo'ldagi mashina kabi",
+    "motorway": "avtomagistraldagi mashina kabi",
+    "skydiver": "erkin tushayotgan parashutchi kabi",
+    "fasterThanSkydiver": "parashutchining tushishidan ham tez"
+  },
+  "drop": {
+    "cards": {
+      "object": "Jism",
+      "release": "Qo'yib yuborish",
+      "environment": "Muhit"
+    },
+    "shape": "Shakl",
+    "sliders": {
+      "mass": "Massa",
+      "dropHeight": "Tushish balandligi",
+      "initialVelocity": "Boshlang'ich tezlik",
+      "launchAngle": "Otish burchagi",
+      "dragCoefficient": "Qarshilik koeffitsienti",
+      "crossSection": "Ko'ndalang kesim"
+    },
+    "hints": {
+      "noAirMass": "Havo yo'q — massa tushishga ta'sir qilmaydi",
+      "needVelocity": "Mo'ljal olish uchun boshlang'ich tezlik bering",
+      "angle": "0° gorizontal otadi · 90° tik yuqoriga"
+    },
+    "toggles": {
+      "airResistance": "Havo qarshiligi",
+      "airResistanceOn": "ρ = {{density}} kg/m³ da kvadratik qarshilik",
+      "airResistanceVacuum": "{{environment}} — vakuum, doim o'chiq",
+      "liveData": "Jonli ma'lumot",
+      "liveDataDescription": "Harakat davomida tezlik, balandlik va vaqt",
+      "ghost": "Oldingi urinish izi",
+      "ghostDescription": "Taqqoslash uchun oldingi trayektoriyani ekranda qoldirish"
+    },
+    "stats": {
+      "speed": "Tezlik",
+      "heightLeft": "Qolgan balandlik",
+      "time": "Vaqt"
+    },
+    "terminal": {
+      "none": "qarshilik yo'q",
+      "value": "v∞ {{value}} m/s"
+    },
+    "messages": {
+      "floating": "Unga hech qanday kuch ta'sir qilmayapti, shunchaki muallaq turibdi.",
+      "boundary": "Devorga yetguncha suzib bordi.",
+      "timeout": "Vaqt tugaganda hamon tushayotgan edi.",
+      "landed": "{{time}} s dan keyin yerga {{speed}} m/s tezlik bilan urildi.",
+      "landedTerminal": "{{time}} s dan keyin {{speed}} m/s bilan yerga tushdi — havo ruxsat bergan eng yuqori tezlik."
+    },
+    "credits": "Harakat qat'iy 1/240 s qadam bilan RK4 usulida integrallanadi. Havo o'chiq bo'lsa, o'zgarmas tezlanish uchun aniq yechim ishlatiladi — shuning uchun vakuumda massasidan qat'i nazar hamma jism bir vaqtda tushadi.",
+    "badge": {
+      "air": "havo",
+      "vacuum": "vakuum"
+    }
+  },
+  "collisions": {
+    "cards": {
+      "kind": "Uchrashganda nima bo'ladi",
+      "leftObject": "Chapdagi jism",
+      "rightObject": "O'ngdagi jism"
+    },
+    "kinds": {
+      "bouncy": "Elastik",
+      "sticky": "Yopishuvchi",
+      "realistic": "Realistik"
+    },
+    "kindBlurbs": {
+      "bouncy": "Ular bir-biridan sakrab ketadi va butun energiyasini saqlaydi. Hech narsa yo'qolmaydi.",
+      "sticky": "Zarbada birlashib, yagona jism kabi harakatlanadi.",
+      "realistic": "Odatda shunday bo'ladi: sakraydi, lekin energiyaning bir qismini issiqlik va tovush sifatida yo'qotadi."
+    },
+    "sliders": {
+      "bounciness": "Elastiklik",
+      "bouncinessHint": "0 yopishadi · 1 mukammal sakraydi",
+      "mass": "Massa",
+      "startingSpeed": "Boshlang'ich tezlik",
+      "sittingStill": "Joyida turibdi",
+      "movingAt": "{{speed}} m/s tezlik bilan {{direction}} ketmoqda"
+    },
+    "stats": {
+      "speedOf": "{{name}} tezligi",
+      "movingDirection": "{{direction}} ketmoqda",
+      "stopped": "to'xtadi"
+    },
+    "badge": {
+      "bounciness": "elastiklik {{value}}"
+    },
+    "messages": {
+      "neverMeet": "Bu ikkisi hech qachon uchrashmaydi — ularni yaqinlashtiradigan tezlik bering.",
+      "noContact": "Ular umuman tegmadi.",
+      "stuck": "Ular yopishib, {{speed}} m/s tezlik bilan {{direction}} ketdi. Energiyaning {{percent}}% i issiqlik va tovushga aylandi — lekin umumiy impuls o'zgarmadi.",
+      "bouncedIntro": "{{nameA}} {{speedA}} m/s bilan {{directionA}}, {{nameB}} esa {{speedB}} m/s bilan {{directionB}} ketdi.",
+      "bouncedLossless": "{{intro}} Ular butun energiyasini saqlab qoldi va umumiy impuls avvalgidek qoldi.",
+      "bouncedLossy": "{{intro}} Ular energiyasining {{percent}}% ini issiqlik va tovush sifatida yo'qotdi, lekin umumiy impuls o'zgarmadi."
+    },
+    "credits": "Bu yerda impuls (massa × tezlik, yig'indisi) har qanday to'qnashuvdan oldin ham, keyin ham bir xil — bu qonun, taxmin emas. Energiya esa faqat jismlar mukammal elastik bo'lgandagina saqlanadi.",
+    "details": {
+      "beforeImpact": "— zarbadan oldin —",
+      "vBefore": "{{symbol}} oldin",
+      "vAfter": "{{symbol}} keyin",
+      "momentumBefore": "p oldin",
+      "momentumAfter": "p keyin",
+      "energyBefore": "KE oldin",
+      "energyAfter": "KE keyin",
+      "energyLost": "Yo'qolgan energiya",
+      "restitution": "Tiklanish  e",
+      "momentum": "Impuls  p",
+      "kineticEnergy": "Kinetik energiya  KE"
+    }
+  },
+  "details": {
+    "time": "Vaqt  t",
+    "height": "Balandlik  y",
+    "horizontalPosition": "Gorizontal  x",
+    "speed": "Tezlik  |v|",
+    "verticalVelocity": "Vertikal  vy",
+    "horizontalVelocity": "Gorizontal  vx",
+    "gravity": "Tortishish  g",
+    "airDensity": "Havo zichligi  ρ",
+    "dragCoefficient": "Qarshilik koeffitsienti  Cd",
+    "crossSection": "Kesim  A",
+    "terminalVelocity": "Chegaraviy tezlik  v∞"
+  },
+  "results": {
+    "outcomes": {
+      "landed": "Zarba",
+      "boundary": "Kamera devoriga yetdi",
+      "timeout": "Vaqt tugaganda hamon tushmoqda",
+      "floating": "Natijaviy kuch yo'q — shunchaki muallaq"
+    },
+    "stats": {
+      "timeTaken": "Ketgan vaqt",
+      "timeTakenTechnical": "Vaqt  t",
+      "speedAtLanding": "Yerga tushish tezligi",
+      "speedAtLandingTechnical": "Zarba  |v|",
+      "highestPoint": "Eng yuqori nuqta",
+      "highestPointTechnical": "Maks. balandlik",
+      "droppedFrom": "Tashlangan balandlik",
+      "droppedFromTechnical": "y₀",
+      "sidewaysTravel": "Yon tomonga yo'l",
+      "sidewaysTravelTechnical": "Uzoqlik  x",
+      "forceOfLanding": "Zarba kuchi",
+      "forceOfLandingTechnical": "Zarba energiyasi",
+      "fastestAllowed": "Havo ruxsat bergan eng yuqori tezlik",
+      "fastestAllowedTechnical": "Chegaraviy  v∞",
+      "noAirHint": "sekinlatadigan havo yo'q"
+    },
+    "notes": {
+      "rose": "Qaytib tushishdan oldin boshlang'ich nuqtadan {{height}} m yuqoriga ko'tarildi.",
+      "terminal": "Tushish davomida tezlanishdan to'xtadi: havo qarshiligi jismning og'irligini to'liq muvozanatlagunicha o'sdi.",
+      "timeout": "Vaqt tugaganda hamon tushayotgan edi. Kichikroq balandlikni sinab ko'ring yoki havo qarshiligini o'chiring."
+    },
+    "graphs": {
+      "title": "Grafiklar",
+      "speed": "Tezlik",
+      "height": "Balandlik",
+      "path": "Trayektoriya",
+      "seconds": "sekund",
+      "secondsTechnical": "vaqt  t (s)",
+      "metresSideways": "yon tomonga metr",
+      "metresSidewaysTechnical": "x (m)",
+      "howFast": "Qanchalik tez ketayotgan edi",
+      "howFastTechnical": "Tezlik  |v| (m/s) – t",
+      "howHigh": "Qanday balandlikda edi",
+      "howHighTechnical": "Balandlik  y (m) – t",
+      "thePath": "Bosib o'tgan yo'li",
+      "thePathTechnical": "y (m) – x (m)",
+      "seriesSpeed": "tezlik",
+      "seriesHeight": "balandlik",
+      "seriesPath": "yo'l",
+      "fastestPossible": "eng yuqori chegara"
+    }
+  },
+  "settings": {
+    "title": "Sozlamalar",
+    "language": "Til",
+    "languageDescription": "Barcha ekranlar uchun tilni tanlang. Tanlovingiz shu qurilmada saqlanadi.",
+    "translationNote": "Ingliz tilidan boshqa tarjimalar sun'iy intellekt yordamida tayyorlangan va hali ona tili sohibi tomonidan tekshirilmagan. Ayniqsa fizika atamalarini ko'rib chiqish tavsiya etiladi.",
+    "unitsNote": "O'lchov belgilari (kg, m, m/s) xalqaro bo'lib, barcha tillarda bir xil qoladi."
+  }
+}

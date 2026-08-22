@@ -1,5 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   LayoutChangeEvent,
   Platform,
@@ -28,7 +29,7 @@ import {
   type CollisionParams,
 } from '../../lib/physics/collision';
 import { PRESETS_BY_ID, type MaterialId, type ObjectPreset } from '../../lib/physics/presets';
-import { directionWord, friendly, precise, speedComparison } from '../../lib/format';
+import { directionKey, friendly, precise, speedComparisonKey } from '../../lib/format';
 import { colors, radius, spacing } from '../../theme';
 
 /** Track runs from -HALF_TRACK to +HALF_TRACK metres, with end stops. */
@@ -44,17 +45,8 @@ const SIZE_REFERENCE = 0.3;
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
-const KINDS: { value: CollisionKind; label: string }[] = [
-  { value: 'bouncy', label: 'Bouncy' },
-  { value: 'sticky', label: 'Sticky' },
-  { value: 'realistic', label: 'Realistic' },
-];
-
-const KIND_BLURB: Record<CollisionKind, string> = {
-  bouncy: 'They bounce apart and keep all their energy. Nothing is lost.',
-  sticky: 'They join together on impact and move off as one lump.',
-  realistic: 'What usually happens: they bounce, but lose some energy as heat and sound.',
-};
+/** Order of the picker. Labels come from `collisions.kinds.<id>`. */
+const KIND_IDS: CollisionKind[] = ['bouncy', 'sticky', 'realistic'];
 
 /** Impact sound per collision type: sharp for bouncy, dull for sticky. */
 const KIND_SOUND: Record<CollisionKind, MaterialId> = {
@@ -71,7 +63,14 @@ const SPEEDS = [
 
 export default function CollisionsSimulator() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const { detailed } = useDetailMode();
+
+  const nameOf = useCallback((id: string) => t(`presets.${id}.label`), [t]);
+  const directionOf = useCallback(
+    (velocity: number) => t(`directions.${directionKey(velocity)}`),
+    [t]
+  );
 
   // ------------------------------------------------------------ parameters
   const [presetAId, setPresetAId] = useState('ball');
@@ -183,47 +182,55 @@ export default function CollisionsSimulator() {
     () => [
       {
         key: 'a',
-        label: `${baseA.label} speed`,
+        label: t('collisions.stats.speedOf', { name: nameOf(baseA.id) }),
         value: Math.abs(frame.aVelocity),
         unit: 'm/s',
         fill: Math.abs(frame.aVelocity) / speedReference,
         showTrend: running,
         caption:
-          frame.aVelocity === 0 ? 'stopped' : `moving ${directionWord(frame.aVelocity)}`,
+          frame.aVelocity === 0
+            ? t('collisions.stats.stopped')
+            : t('collisions.stats.movingDirection', { direction: directionOf(frame.aVelocity) }),
       },
       {
         key: 'b',
-        label: `${baseB.label} speed`,
+        label: t('collisions.stats.speedOf', { name: nameOf(baseB.id) }),
         value: Math.abs(frame.bVelocity),
         unit: 'm/s',
         fill: Math.abs(frame.bVelocity) / speedReference,
         showTrend: running,
         tone: colors.blue,
         caption:
-          frame.bVelocity === 0 ? 'stopped' : `moving ${directionWord(frame.bVelocity)}`,
+          frame.bVelocity === 0
+            ? t('collisions.stats.stopped')
+            : t('collisions.stats.movingDirection', { direction: directionOf(frame.bVelocity) }),
       },
     ],
-    [frame.aVelocity, frame.bVelocity, baseA.label, baseB.label, speedReference, running]
+    [frame.aVelocity, frame.bVelocity, baseA.id, baseB.id, speedReference, running, t, nameOf, directionOf]
   );
 
   const liveDetails: DetailRow[] = useMemo(() => {
     if (!detailed) return [];
     const rows: DetailRow[] = [
-      { label: 'Time  t', value: precise(frame.t, 4), unit: 's' },
-      { label: `${baseA.label}  m₁`, value: precise(massA, 4), unit: 'kg' },
-      { label: `${baseA.label}  v₁`, value: precise(frame.aVelocity, 4), unit: 'm/s' },
-      { label: `${baseA.label}  x₁`, value: precise(frame.aPosition, 3), unit: 'm' },
-      { label: `${baseB.label}  m₂`, value: precise(massB, 4), unit: 'kg' },
-      { label: `${baseB.label}  v₂`, value: precise(frame.bVelocity, 4), unit: 'm/s' },
-      { label: `${baseB.label}  x₂`, value: precise(frame.bPosition, 3), unit: 'm' },
-      { label: 'Restitution  e', value: precise(restitutionFor(kind, bounciness), 2), unit: '' },
+      { label: t('details.time'), value: precise(frame.t, 4), unit: 's' },
+      { label: `${nameOf(baseA.id)}  m₁`, value: precise(massA, 4), unit: 'kg' },
+      { label: `${nameOf(baseA.id)}  v₁`, value: precise(frame.aVelocity, 4), unit: 'm/s' },
+      { label: `${nameOf(baseA.id)}  x₁`, value: precise(frame.aPosition, 3), unit: 'm' },
+      { label: `${nameOf(baseB.id)}  m₂`, value: precise(massB, 4), unit: 'kg' },
+      { label: `${nameOf(baseB.id)}  v₂`, value: precise(frame.bVelocity, 4), unit: 'm/s' },
+      { label: `${nameOf(baseB.id)}  x₂`, value: precise(frame.bPosition, 3), unit: 'm' },
       {
-        label: 'Momentum  p',
+        label: t('collisions.details.restitution'),
+        value: precise(restitutionFor(kind, bounciness), 2),
+        unit: '',
+      },
+      {
+        label: t('collisions.details.momentum'),
         value: precise(massA * frame.aVelocity + massB * frame.bVelocity, 4),
         unit: 'kg·m/s',
       },
       {
-        label: 'Kinetic energy  KE',
+        label: t('collisions.details.kineticEnergy'),
         value: precise(
           0.5 * massA * frame.aVelocity ** 2 + 0.5 * massB * frame.bVelocity ** 2,
           4
@@ -233,51 +240,53 @@ export default function CollisionsSimulator() {
     ];
     if (event) {
       rows.push(
-        { label: '— before impact —', value: '', unit: '' },
-        { label: "v₁ before", value: precise(event.aBefore, 4), unit: 'm/s' },
-        { label: "v₂ before", value: precise(event.bBefore, 4), unit: 'm/s' },
-        { label: "v₁ after", value: precise(event.aAfter, 4), unit: 'm/s' },
-        { label: "v₂ after", value: precise(event.bAfter, 4), unit: 'm/s' },
-        { label: 'p before', value: precise(event.momentumBefore, 5), unit: 'kg·m/s' },
-        { label: 'p after', value: precise(event.momentumAfter, 5), unit: 'kg·m/s' },
-        { label: 'KE before', value: precise(event.energyBefore, 4), unit: 'J' },
-        { label: 'KE after', value: precise(event.energyAfter, 4), unit: 'J' },
-        { label: 'Energy lost', value: precise(event.energyLost, 4), unit: 'J' }
+        { label: t('collisions.details.beforeImpact'), value: '', unit: '' },
+        { label: t('collisions.details.vBefore', { symbol: 'v₁' }), value: precise(event.aBefore, 4), unit: 'm/s' },
+        { label: t('collisions.details.vBefore', { symbol: 'v₂' }), value: precise(event.bBefore, 4), unit: 'm/s' },
+        { label: t('collisions.details.vAfter', { symbol: 'v₁' }), value: precise(event.aAfter, 4), unit: 'm/s' },
+        { label: t('collisions.details.vAfter', { symbol: 'v₂' }), value: precise(event.bAfter, 4), unit: 'm/s' },
+        { label: t('collisions.details.momentumBefore'), value: precise(event.momentumBefore, 5), unit: 'kg·m/s' },
+        { label: t('collisions.details.momentumAfter'), value: precise(event.momentumAfter, 5), unit: 'kg·m/s' },
+        { label: t('collisions.details.energyBefore'), value: precise(event.energyBefore, 4), unit: 'J' },
+        { label: t('collisions.details.energyAfter'), value: precise(event.energyAfter, 4), unit: 'J' },
+        { label: t('collisions.details.energyLost'), value: precise(event.energyLost, 4), unit: 'J' }
       );
     }
     return rows;
-  }, [detailed, frame, massA, massB, kind, bounciness, event, baseA.label, baseB.label]);
+  }, [detailed, frame, massA, massB, kind, bounciness, event, baseA.id, baseB.id, t, nameOf]);
 
   /** One plain sentence about what happened. */
   const message = useMemo(() => {
     if (phase === 'idle') {
-      return willNeverMeet
-        ? 'These two will never meet — give them speeds that bring them together.'
-        : null;
+      return willNeverMeet ? t('collisions.messages.neverMeet') : null;
     }
     if (!event) {
-      return outcome === 'no-contact' ? 'They never touched.' : null;
+      return outcome === 'no-contact' ? t('collisions.messages.noContact') : null;
     }
     const lostPercent =
       event.energyBefore > 0 ? (event.energyLost / event.energyBefore) * 100 : 0;
+
     if (event.stuck) {
-      return `They stuck together and moved off ${directionWord(event.aAfter)} at ${friendly(
-        Math.abs(event.aAfter)
-      )} m/s. ${Math.round(lostPercent)}% of the energy was lost as heat and sound — but the total momentum did not change.`;
+      return t('collisions.messages.stuck', {
+        direction: directionOf(event.aAfter),
+        speed: friendly(Math.abs(event.aAfter)),
+        percent: Math.round(lostPercent),
+      });
     }
-    const after =
-      `${baseA.label} went off ${directionWord(event.aAfter)} at ${friendly(
-        Math.abs(event.aAfter)
-      )} m/s, ${baseB.label} ${directionWord(event.bAfter)} at ${friendly(
-        Math.abs(event.bAfter)
-      )} m/s.`;
-    if (lostPercent < 0.5) {
-      return `${after} They kept all of their energy, and the total momentum is exactly what it was before.`;
-    }
-    return `${after} They lost ${Math.round(
-      lostPercent
-    )}% of their energy as heat and sound, but the total momentum is unchanged.`;
-  }, [phase, event, outcome, willNeverMeet, baseA.label, baseB.label]);
+
+    const intro = t('collisions.messages.bouncedIntro', {
+      nameA: nameOf(baseA.id),
+      directionA: directionOf(event.aAfter),
+      speedA: friendly(Math.abs(event.aAfter)),
+      nameB: nameOf(baseB.id),
+      directionB: directionOf(event.bAfter),
+      speedB: friendly(Math.abs(event.bAfter)),
+    });
+
+    return lostPercent < 0.5
+      ? t('collisions.messages.bouncedLossless', { intro })
+      : t('collisions.messages.bouncedLossy', { intro, percent: Math.round(lostPercent) });
+  }, [phase, event, outcome, willNeverMeet, baseA.id, baseB.id, t, nameOf, directionOf]);
 
   // ---------------------------------------------------------------- render
   return (
@@ -298,9 +307,11 @@ export default function CollisionsSimulator() {
           />
         ) : null}
         <View style={[styles.badge, { pointerEvents: 'none' }]}>
-          <Text style={styles.badgeText}>{KINDS.find((k) => k.value === kind)?.label}</Text>
+          <Text style={styles.badgeText}>{t(`collisions.kinds.${kind}`)}</Text>
           <Text style={styles.badgeDim}>
-            {kind === 'realistic' ? `bounciness ${bounciness.toFixed(2)}` : ''}
+            {kind === 'realistic'
+              ? t('collisions.badge.bounciness', { value: bounciness.toFixed(2) })
+              : ''}
           </Text>
         </View>
       </View>
@@ -312,33 +323,33 @@ export default function CollisionsSimulator() {
       >
         <Readout stats={liveStats} details={liveDetails} message={message} />
 
-        <Card title="What happens when they meet">
+        <Card title={t('collisions.cards.kind')}>
           <Segmented<CollisionKind>
-            options={KINDS}
+            options={KIND_IDS.map((id) => ({ value: id, label: t(`collisions.kinds.${id}`) }))}
             value={kind}
             onChange={setKind}
             disabled={running}
             tint={kind === 'sticky' ? colors.amber : colors.accent}
           />
-          <Text style={styles.blurb}>{KIND_BLURB[kind]}</Text>
+          <Text style={styles.blurb}>{t(`collisions.kindBlurbs.${kind}`)}</Text>
           {kind === 'realistic' ? (
             <View style={styles.bounceSlider}>
               <ValueSlider
-                label="Bounciness"
+                label={t('collisions.sliders.bounciness')}
                 value={bounciness}
                 min={0}
                 max={1}
                 precision={2}
                 disabled={running}
                 onChange={setBounciness}
-                hint="0 sticks together · 1 bounces perfectly"
+                hint={t('collisions.sliders.bouncinessHint')}
               />
             </View>
           ) : null}
         </Card>
 
         <ObjectCard
-          title="Left object"
+          title={t('collisions.cards.leftObject')}
           presetId={presetAId}
           onPreset={(p) => {
             setPresetAId(p.id);
@@ -353,7 +364,7 @@ export default function CollisionsSimulator() {
         />
 
         <ObjectCard
-          title="Right object"
+          title={t('collisions.cards.rightObject')}
           presetId={presetBId}
           onPreset={(p) => {
             setPresetBId(p.id);
@@ -367,7 +378,7 @@ export default function CollisionsSimulator() {
           tone={colors.blue}
         />
 
-        <Card title="Playback">
+        <Card title={t('common.playback')}>
           <Segmented
             options={SPEEDS}
             value={timeScale}
@@ -377,22 +388,18 @@ export default function CollisionsSimulator() {
           />
         </Card>
 
-        <Text style={styles.credits}>
-          Momentum (mass × speed, added up) is the same before and after every collision here —
-          that is a law, not an approximation. Energy is only preserved when the objects are
-          perfectly bouncy.
-        </Text>
+        <Text style={styles.credits}>{t('collisions.credits')}</Text>
       </ScrollView>
 
       <View style={[styles.actions, { paddingBottom: insets.bottom + spacing.sm }]}>
         <Button
-          label={running ? 'Running…' : 'Run'}
+          label={running ? t('common.running') : t('common.run')}
           icon={running ? undefined : '▶'}
           onPress={start}
           disabled={running}
           flex={2}
         />
-        <Button label="Reset" variant="ghost" onPress={reset} flex={1} />
+        <Button label={t('common.reset')} variant="ghost" onPress={reset} flex={1} />
       </View>
     </View>
   );
@@ -419,13 +426,14 @@ function ObjectCard({
   disabled: boolean;
   tone: string;
 }) {
-  const comparison = speedComparison(velocity);
+  const { t } = useTranslation();
+  const comparisonKey = speedComparisonKey(velocity);
   return (
-    <Card title={title} accessory={comparison ?? undefined}>
+    <Card title={title} accessory={comparisonKey ? t(comparisonKey) : undefined}>
       <PresetPicker value={presetId} onChange={onPreset} disabled={disabled} />
       <View style={styles.objectSliders}>
         <ValueSlider
-          label="Mass"
+          label={t('collisions.sliders.mass')}
           value={mass}
           min={0.001}
           max={50}
@@ -436,7 +444,7 @@ function ObjectCard({
           onChange={onMass}
         />
         <ValueSlider
-          label="Starting speed"
+          label={t('collisions.sliders.startingSpeed')}
           value={velocity}
           min={-15}
           max={15}
@@ -446,10 +454,11 @@ function ObjectCard({
           onChange={onVelocity}
           hint={
             velocity === 0
-              ? 'Sitting still'
-              : `Moving ${directionWord(velocity)}${
-                  Math.abs(velocity) > 0 ? ` at ${friendly(Math.abs(velocity))} m/s` : ''
-                }`
+              ? t('collisions.sliders.sittingStill')
+              : t('collisions.sliders.movingAt', {
+                  direction: t(`directions.${directionKey(velocity)}`),
+                  speed: friendly(Math.abs(velocity)),
+                })
           }
         />
       </View>

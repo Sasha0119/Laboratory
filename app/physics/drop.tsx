@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import {
   LayoutChangeEvent,
   Platform,
@@ -33,14 +35,14 @@ import { resolveLaunch } from '../../lib/physics/kinematics';
 import {
   PRESETS_BY_ID,
   SHAPE_DRAG,
-  SHAPE_LABELS,
+  SHAPE_IDS,
   type ObjectPreset,
   type ShapeId,
 } from '../../lib/physics/presets';
 import { analyticBounds, type SimParams, type SimResult } from '../../lib/physics/simulation';
 import { colors, radius, scenes, spacing } from '../../theme';
 import { useDetailMode } from '../../context/DetailMode';
-import { friendly, friendlyTime, precise, speedComparison } from '../../lib/format';
+import { friendly, friendlyTime, precise, speedComparisonKey } from '../../lib/format';
 
 /** Playback speed choices. A feather on a long fall genuinely needs the 4x. */
 const SPEEDS = [
@@ -51,6 +53,7 @@ const SPEEDS = [
 
 export default function DropSimulator() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   // ------------------------------------------------------------ parameters
   const [presetId, setPresetId] = useState('ball');
@@ -157,7 +160,7 @@ export default function DropSimulator() {
     [params, env, airResistance]
   );
 
-  const runLabel = speed > 0 ? 'Launch' : 'Drop';
+  const runLabel = speed > 0 ? t('common.launch') : t('common.drop');
 
   // Bank each finished run so the next one can be compared against it. Doing
   // this when the run ends (rather than when the next one starts) means the
@@ -169,10 +172,10 @@ export default function DropSimulator() {
     if (frame.path.length > 2) {
       setGhost({
         path: frame.path.slice(),
-        label: `${base.label} · ${result.totalTime.toFixed(2)} s`,
+        label: `${t(`presets.${base.id}.label`)} · ${result.totalTime.toFixed(2)} s`,
       });
     }
-  }, [result, frame.path, base.label]);
+  }, [result, frame.path, base.id, t]);
 
   /**
    * Editing anything after a run returns the object to the release point and
@@ -210,6 +213,15 @@ export default function DropSimulator() {
   // ---------------------------------------------------------------- readout
   const { detailed } = useDetailMode();
 
+  /** Resolves the everyday-speed comparison key, or nothing when too slow. */
+  const comparisonCaption = useCallback(
+    (speedValue: number) => {
+      const key = speedComparisonKey(speedValue);
+      return key ? t(key) : undefined;
+    },
+    [t]
+  );
+
   /**
    * The bar reads against the fastest this object could possibly be going: the
    * drag-free impact speed. With air resistance on it visibly stops short of
@@ -229,16 +241,16 @@ export default function DropSimulator() {
     return [
       {
         key: 'speed',
-        label: 'Speed',
+        label: t('drop.stats.speed'),
         value: displayFrame.speed,
         unit: 'm/s',
         fill: displayFrame.speed / speedReference,
         showTrend: running,
-        caption: speedComparison(displayFrame.speed) ?? undefined,
+        caption: comparisonCaption(displayFrame.speed),
       },
       {
         key: 'height',
-        label: 'Height left',
+        label: t('drop.stats.heightLeft'),
         value: height,
         unit: 'm',
         fill: height / Math.max(bounds.maxY, 1e-6),
@@ -246,56 +258,56 @@ export default function DropSimulator() {
       },
       {
         key: 'time',
-        label: 'Time',
+        label: t('drop.stats.time'),
         value: displayFrame.t,
         unit: 's',
         format: friendlyTime,
         tone: colors.textMuted,
       },
     ];
-  }, [displayFrame, speedReference, bounds.maxY, running]);
+  }, [displayFrame, speedReference, bounds.maxY, running, t, comparisonCaption]);
 
   /** Raw figures — only rendered when detailed mode is on. */
   const liveDetails: DetailRow[] = useMemo(() => {
     if (!detailed) return [];
     return [
-      { label: 'Time  t', value: precise(displayFrame.t, 4), unit: 's' },
-      { label: 'Height  y', value: precise(displayFrame.y, 4), unit: 'm' },
-      { label: 'Horizontal  x', value: precise(displayFrame.x, 4), unit: 'm' },
-      { label: 'Speed  |v|', value: precise(displayFrame.speed, 4), unit: 'm/s' },
-      { label: 'Vertical  vy', value: precise(displayFrame.vy, 4), unit: 'm/s' },
-      { label: 'Horizontal  vx', value: precise(displayFrame.vx, 4), unit: 'm/s' },
-      { label: 'Gravity  g', value: precise(env.gravity, 2), unit: 'm/s²' },
+      { label: t('details.time'), value: precise(displayFrame.t, 4), unit: 's' },
+      { label: t('details.height'), value: precise(displayFrame.y, 4), unit: 'm' },
+      { label: t('details.horizontalPosition'), value: precise(displayFrame.x, 4), unit: 'm' },
+      { label: t('details.speed'), value: precise(displayFrame.speed, 4), unit: 'm/s' },
+      { label: t('details.verticalVelocity'), value: precise(displayFrame.vy, 4), unit: 'm/s' },
+      { label: t('details.horizontalVelocity'), value: precise(displayFrame.vx, 4), unit: 'm/s' },
+      { label: t('details.gravity'), value: precise(env.gravity, 2), unit: 'm/s²' },
       {
-        label: 'Air density  ρ',
+        label: t('details.airDensity'),
         value: airResistance ? precise(env.airDensity, 3) : '0',
         unit: 'kg/m³',
       },
-      { label: 'Drag coefficient  Cd', value: precise(dragCoefficient, 2), unit: '' },
-      { label: 'Cross-section  A', value: precise(area, 5), unit: 'm²' },
+      { label: t('details.dragCoefficient'), value: precise(dragCoefficient, 2), unit: '' },
+      { label: t('details.crossSection'), value: precise(area, 5), unit: 'm²' },
       {
-        label: 'Terminal velocity  v∞',
+        label: t('details.terminalVelocity'),
         value: Number.isFinite(vTerminal) ? precise(vTerminal, 3) : '∞',
         unit: Number.isFinite(vTerminal) ? 'm/s' : '',
       },
     ];
-  }, [detailed, displayFrame, env, airResistance, dragCoefficient, area, vTerminal]);
+  }, [detailed, displayFrame, env, airResistance, dragCoefficient, area, vTerminal, t]);
 
   /** One plain sentence describing what just happened. */
   const outcomeMessage = useMemo(() => {
     if (!result) return null;
-    if (result.outcome === 'floating') return 'Nothing is pulling on it, so it just floats.';
-    if (result.outcome === 'boundary') return 'It drifted until it reached the wall.';
-    if (result.outcome === 'timeout') return 'Still falling when the timer ran out.';
-    const t = friendlyTime(result.totalTime);
-    const v = friendly(result.impactSpeed);
-    const near =
+    if (result.outcome === 'floating') return t('drop.messages.floating');
+    if (result.outcome === 'boundary') return t('drop.messages.boundary');
+    if (result.outcome === 'timeout') return t('drop.messages.timeout');
+    const values = {
+      time: friendlyTime(result.totalTime),
+      speed: friendly(result.impactSpeed),
+    };
+    const atTerminal =
       Number.isFinite(result.terminalVelocity) &&
       result.impactSpeed > result.terminalVelocity * 0.98;
-    return near
-      ? `Landed after ${t} seconds at ${v} m/s — as fast as the air will let it fall.`
-      : `Landed after ${t} seconds, hitting the ground at ${v} m/s.`;
-  }, [result]);
+    return t(atTerminal ? 'drop.messages.landedTerminal' : 'drop.messages.landed', values);
+  }, [result, t]);
 
   return (
     <View style={styles.screen}>
@@ -318,13 +330,14 @@ export default function DropSimulator() {
 
         <View style={[styles.canvasBadge, { pointerEvents: 'none' }]}>
           <View style={[styles.badgeDot, { backgroundColor: palette.accent }]} />
-          <Text style={styles.badgeText}>{env.label}</Text>
+          <Text style={styles.badgeText}>{t(`environments.${env.id}.label`)}</Text>
           <Text style={styles.badgeDim}>g = {env.gravity.toFixed(2)} m/s²</Text>
-          {env.airDensity > 0 && airResistance ? (
-            <Text style={styles.badgeDim}>· air</Text>
-          ) : (
-            <Text style={styles.badgeDim}>· vacuum</Text>
-          )}
+          <Text style={styles.badgeDim}>
+            ·{' '}
+            {env.airDensity > 0 && airResistance
+              ? t('drop.badge.air')
+              : t('drop.badge.vacuum')}
+          </Text>
         </View>
 
       </View>
@@ -342,26 +355,23 @@ export default function DropSimulator() {
           <Readout stats={liveStats} details={liveDetails} message={outcomeMessage} />
         ) : null}
 
-        <Card title="Object" accessory={fmtTerminal(vTerminal)}>
+        <Card title={t('drop.cards.object')} accessory={fmtTerminal(vTerminal, t)}>
           <PresetPicker value={presetId} onChange={applyPreset} disabled={running} />
           <View style={styles.blurbRow}>
-            <Text style={styles.blurb}>{base.blurb}</Text>
+            <Text style={styles.blurb}>{t(`presets.${base.id}.blurb`)}</Text>
             {modified ? (
               <Pressable onPress={() => applyPreset(base)} disabled={running}>
-                <Text style={styles.restore}>Restore</Text>
+                <Text style={styles.restore}>{t('common.restore')}</Text>
               </Pressable>
             ) : null}
           </View>
 
           {base.editable ? (
             <View style={styles.customBlock}>
-              <Text style={styles.subLabel}>Shape</Text>
+              <Text style={styles.subLabel}>{t('drop.shape')}</Text>
               <Segmented<ShapeId>
                 compact
-                options={(['circle', 'square', 'disc'] as ShapeId[]).map((s) => ({
-                  value: s,
-                  label: SHAPE_LABELS[s],
-                }))}
+                options={SHAPE_IDS.map((id) => ({ value: id, label: t(`shapes.${id}`) }))}
                 value={shape}
                 onChange={(s) => {
                   setShape(s);
@@ -370,7 +380,7 @@ export default function DropSimulator() {
               />
               <View style={styles.customSliders}>
                 <ValueSlider
-                  label="Drag coefficient"
+                  label={t('drop.sliders.dragCoefficient')}
                   value={dragCoefficient}
                   min={0.04}
                   max={3}
@@ -379,7 +389,7 @@ export default function DropSimulator() {
                   onChange={setDragCoefficient}
                 />
                 <ValueSlider
-                  label="Cross-section"
+                  label={t('drop.sliders.crossSection')}
                   value={area}
                   min={0.0001}
                   max={1}
@@ -394,9 +404,9 @@ export default function DropSimulator() {
           ) : null}
         </Card>
 
-        <Card title="Release">
+        <Card title={t('drop.cards.release')}>
           <ValueSlider
-            label="Mass"
+            label={t('drop.sliders.mass')}
             value={mass}
             min={LIMITS.massMin}
             max={LIMITS.massMax}
@@ -408,11 +418,11 @@ export default function DropSimulator() {
             hint={
               airResistance && env.airDensity > 0
                 ? undefined
-                : 'No air — mass has no effect on the fall'
+                : t('drop.hints.noAirMass')
             }
           />
           <ValueSlider
-            label="Drop height"
+            label={t('drop.sliders.dropHeight')}
             value={dropHeight}
             min={LIMITS.heightMin}
             max={LIMITS.heightMax}
@@ -422,7 +432,7 @@ export default function DropSimulator() {
             onChange={setDropHeight}
           />
           <ValueSlider
-            label="Initial velocity"
+            label={t('drop.sliders.initialVelocity')}
             value={speed}
             min={LIMITS.velocityMin}
             max={LIMITS.velocityMax}
@@ -432,7 +442,7 @@ export default function DropSimulator() {
             onChange={setSpeed}
           />
           <ValueSlider
-            label="Launch angle"
+            label={t('drop.sliders.launchAngle')}
             value={angleDeg}
             min={LIMITS.angleMin}
             max={LIMITS.angleMax}
@@ -442,18 +452,16 @@ export default function DropSimulator() {
             disabled={running || angleDisabled}
             onChange={setAngleDeg}
             hint={
-              angleDisabled
-                ? 'Set an initial velocity to aim'
-                : '0° throws flat · 90° straight up'
+              angleDisabled ? t('drop.hints.needVelocity') : t('drop.hints.angle')
             }
           />
         </Card>
 
-        <Card title="Environment" accessory={env.note}>
+        <Card title={t('drop.cards.environment')} accessory={t(`environments.${env.id}.note`)}>
           <Segmented<EnvironmentId>
             options={ENVIRONMENT_ORDER.map((id) => ({
               value: id,
-              label: ENVIRONMENTS[id].label,
+              label: t(`environments.${id}.label`),
             }))}
             value={environmentId}
             onChange={setEnvironmentId}
@@ -463,11 +471,13 @@ export default function DropSimulator() {
 
           <View style={styles.toggles}>
             <Toggle
-              label="Air resistance"
+              label={t('drop.toggles.airResistance')}
               description={
                 env.airDensity > 0
-                  ? `Quadratic drag at ρ = ${env.airDensity} kg/m³`
-                  : `${env.label} is a vacuum — always off`
+                  ? t('drop.toggles.airResistanceOn', { density: env.airDensity })
+                  : t('drop.toggles.airResistanceVacuum', {
+                      environment: t(`environments.${env.id}.label`),
+                    })
               }
               value={airResistance && env.airDensity > 0}
               disabled={running || env.airDensity === 0}
@@ -475,22 +485,22 @@ export default function DropSimulator() {
             />
             <View style={styles.hr} />
             <Toggle
-              label="Live data"
-              description="Speed, height and time while the run is going"
+              label={t('drop.toggles.liveData')}
+              description={t('drop.toggles.liveDataDescription')}
               value={showLiveData}
               onChange={setShowLiveData}
             />
             <View style={styles.hr} />
             <Toggle
-              label="Ghost of last run"
-              description="Keep the previous trajectory on screen to compare"
+              label={t('drop.toggles.ghost')}
+              description={t('drop.toggles.ghostDescription')}
               value={showGhost}
               onChange={setShowGhost}
             />
           </View>
 
           <View style={styles.speedRow}>
-            <Text style={styles.subLabel}>Playback</Text>
+            <Text style={styles.subLabel}>{t('common.playback')}</Text>
             <View style={styles.speedControl}>
               <Segmented
                 compact
@@ -512,31 +522,27 @@ export default function DropSimulator() {
           />
         ) : null}
 
-        <Text style={styles.credits}>
-          Motion is integrated with RK4 at a fixed 1/240 s step. With air off, the closed-form
-          constant-acceleration solution is used instead — which is why every object lands
-          together in a vacuum, whatever its mass.
-        </Text>
+        <Text style={styles.credits}>{t('drop.credits')}</Text>
       </ScrollView>
 
       {/* ------------------------------------------------------- actions -- */}
       <View style={[styles.actions, { paddingBottom: insets.bottom + spacing.sm }]}>
         <Button
-          label={running ? 'Running…' : runLabel}
+          label={running ? t('common.running') : runLabel}
           icon={running ? undefined : speed > 0 ? '▲' : '▼'}
           onPress={start}
           disabled={running}
           flex={2}
         />
-        <Button label="Reset" variant="ghost" onPress={handleReset} flex={1} />
+        <Button label={t('common.reset')} variant="ghost" onPress={handleReset} flex={1} />
       </View>
     </View>
   );
 }
 
-function fmtTerminal(v: number): string {
-  if (!Number.isFinite(v) || v <= 0) return 'no drag';
-  return `v∞ ${v < 10 ? v.toFixed(2) : v.toFixed(1)} m/s`;
+function fmtTerminal(v: number, t: TFunction): string {
+  if (!Number.isFinite(v) || v <= 0) return t('drop.terminal.none');
+  return t('drop.terminal.value', { value: v < 10 ? v.toFixed(2) : v.toFixed(1) });
 }
 
 const styles = StyleSheet.create({

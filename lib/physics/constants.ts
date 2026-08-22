@@ -19,8 +19,11 @@
 export type EnvironmentId = 'earth' | 'moon' | 'mars' | 'zerog';
 
 export interface Environment {
+  /**
+   * Also the translation key: the display name and the note under the picker
+   * live at `environments.<id>.label` / `.note` in /locales.
+   */
   id: EnvironmentId;
-  label: string;
   /** Surface gravitational acceleration, m/s^2 (magnitude; always acts in -y). */
   gravity: number;
   /**
@@ -36,45 +39,35 @@ export interface Environment {
    * drifting chamber: nothing to hit but the walls of the viewport.
    */
   hasGround: boolean;
-  /** Short line shown under the environment picker. */
-  note: string;
 }
 
 export const ENVIRONMENTS: Record<EnvironmentId, Environment> = {
   earth: {
     id: 'earth',
-    label: 'Earth',
     gravity: 9.81,
     // Dry air at 15 degC, sea level.
     airDensity: 1.225,
     hasGround: true,
-    note: 'Sea-level air, 1.225 kg/m³',
   },
   moon: {
     id: 'moon',
-    label: 'Moon',
     gravity: 1.62,
     // Hard vacuum for all practical purposes (~10^-12 kg/m^3).
     airDensity: 0,
     hasGround: true,
-    note: 'Vacuum — drag is always zero',
   },
   mars: {
     id: 'mars',
-    label: 'Mars',
     gravity: 3.71,
     // Thin CO2 atmosphere, roughly 1/60th of Earth's density.
     airDensity: 0.02,
     hasGround: true,
-    note: 'Thin CO₂ air, 0.020 kg/m³',
   },
   zerog: {
     id: 'zerog',
-    label: 'Zero-G',
     gravity: 0,
     airDensity: 0,
     hasGround: false,
-    note: 'No gravity, no air, no floor',
   },
 };
 

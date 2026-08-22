@@ -1,5 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Animated, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { PRESETS, type ObjectPreset } from '../../lib/physics/presets';
@@ -44,6 +45,7 @@ function Chip({
   disabled: boolean;
   onPress: () => void;
 }) {
+  const { t } = useTranslation();
   const anim = useRef(new Animated.Value(active ? 1 : 0)).current;
   const press = useRef(new Animated.Value(1)).current;
 
@@ -118,7 +120,7 @@ function Chip({
               },
             ]}
           >
-            {preset.label}
+            {t(`presets.${preset.id}.label`)}
           </Animated.Text>
         </Animated.View>
       </Pressable>
@@ -140,15 +142,3 @@ const styles = StyleSheet.create({
   label: { fontSize: 12, fontWeight: '700', letterSpacing: 0.2 },
 });
 
-export function PresetBlurb({ preset }: { preset: ObjectPreset }) {
-  return (
-    <View style={blurbStyles.wrap}>
-      <Text style={blurbStyles.text}>{preset.blurb}</Text>
-    </View>
-  );
-}
-
-const blurbStyles = StyleSheet.create({
-  wrap: { marginTop: spacing.xs },
-  text: { color: colors.textFaint, fontSize: 11.5 },
-});

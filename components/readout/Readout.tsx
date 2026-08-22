@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { useDetailMode } from '../../context/DetailMode';
 import { friendly } from '../../lib/format';
@@ -61,6 +62,7 @@ export function Readout({
   showToggle = true,
   title,
 }: Props) {
+  const { t } = useTranslation();
   const { detailed, setDetailed } = useDetailMode();
 
   return (
@@ -80,8 +82,8 @@ export function Readout({
       {showToggle ? (
         <View style={styles.toggleWrap}>
           <Toggle
-            label="Show detailed data"
-            description="Exact figures, component velocities and symbols"
+            label={t('readout.detailToggle')}
+            description={t('readout.detailDescription')}
             value={detailed}
             onChange={setDetailed}
           />

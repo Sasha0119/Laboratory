@@ -1,43 +1,30 @@
 import { useRouter } from 'expo-router';
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, Ellipse, G, Line, Path, RadialGradient, Stop } from 'react-native-svg';
 import { colors, radius, spacing } from '../theme';
 
+/**
+ * Categories carry only an id and their styling. Every string is looked up at
+ * `home.categories.<id>.*`, so adding a language never touches this file.
+ */
 interface Category {
   id: string;
-  title: string;
-  subtitle: string;
-  detail: string;
   tint: string;
   href?: string;
-  modules: string;
 }
 
 const CATEGORIES: Category[] = [
-  {
-    id: 'physics',
-    title: 'Physics',
-    subtitle: 'Motion, forces, gravity',
-    detail: 'Drop things from a hundred metres and watch the maths hold up.',
-    tint: colors.accent,
-    href: '/physics',
-    modules: '2 simulations · 2 coming',
-  },
-  {
-    id: 'chemistry',
-    title: 'Chemistry',
-    subtitle: 'Reactions, states, bonds',
-    detail: 'Titrations, gas laws and reaction kinetics are being built.',
-    tint: colors.violet,
-    modules: 'In development',
-  },
+  { id: 'physics', tint: colors.accent, href: '/physics' },
+  { id: 'chemistry', tint: colors.violet },
 ];
 
 export default function Home() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <ScrollView
@@ -66,11 +53,26 @@ export default function Home() {
               <Circle cx="13.9" cy="18.1" r="0.85" fill={colors.accent} opacity={0.5} />
             </Svg>
           </View>
-          <Text style={styles.brand}>Laboratory</Text>
+          <Text style={styles.brand}>{t('app.name')}</Text>
+          <Pressable
+            onPress={() => router.push('/settings')}
+            accessibilityRole="button"
+            accessibilityLabel={t('home.settingsLabel')}
+            style={styles.settingsButton}
+          >
+            <Svg width={20} height={20} viewBox="0 0 24 24">
+              {/* Gear */}
+              <Circle cx="12" cy="12" r="3.1" stroke={colors.textMuted} strokeWidth={1.7} fill="none" />
+              <Path
+                d="M12 2.6v2.2M12 19.2v2.2M21.4 12h-2.2M4.8 12H2.6M18.6 5.4l-1.6 1.6M7 17l-1.6 1.6M18.6 18.6L17 17M7 7L5.4 5.4"
+                stroke={colors.textMuted}
+                strokeWidth={1.7}
+                strokeLinecap="round"
+              />
+            </Svg>
+          </Pressable>
         </View>
-        <Text style={styles.tagline}>
-          Real simulations, real equations. Pick a bench and start an experiment.
-        </Text>
+        <Text style={styles.tagline}>{t('home.tagline')}</Text>
       </View>
 
       {CATEGORIES.map((cat) => (
@@ -81,16 +83,16 @@ export default function Home() {
         />
       ))}
 
-      <Text style={styles.footnote}>
-        Everything runs on-device. No account, no network, no data leaves the phone.
-      </Text>
+      <Text style={styles.footnote}>{t('home.footnote')}</Text>
     </ScrollView>
   );
 }
 
 function CategoryCard({ category, onPress }: { category: Category; onPress?: () => void }) {
+  const { t } = useTranslation();
   const scale = useRef(new Animated.Value(1)).current;
   const disabled = !onPress;
+  const base = `home.categories.${category.id}`;
 
   const spring = (to: number) =>
     Animated.spring(scale, { toValue: to, useNativeDriver: true, speed: 40, bounciness: 5 }).start();
@@ -103,7 +105,7 @@ function CategoryCard({ category, onPress }: { category: Category; onPress?: () 
         onPressOut={() => spring(1)}
         onPress={onPress}
         accessibilityRole="button"
-        accessibilityLabel={category.title}
+        accessibilityLabel={t(`${base}.title`)}
         style={[styles.card, disabled && styles.cardDisabled]}
       >
         <View style={[styles.cardArt, { pointerEvents: 'none' }]}>
@@ -113,19 +115,19 @@ function CategoryCard({ category, onPress }: { category: Category; onPress?: () 
         <View style={styles.cardBody}>
           <View style={[styles.pill, { borderColor: category.tint + '55' }]}>
             <Text style={[styles.pillText, { color: disabled ? colors.textFaint : category.tint }]}>
-              {category.modules}
+              {t(`${base}.modules`)}
             </Text>
           </View>
           <Text style={[styles.cardTitle, disabled && { color: colors.textMuted }]}>
-            {category.title}
+            {t(`${base}.title`)}
           </Text>
-          <Text style={styles.cardSubtitle}>{category.subtitle}</Text>
-          <Text style={styles.cardDetail}>{category.detail}</Text>
+          <Text style={styles.cardSubtitle}>{t(`${base}.subtitle`)}</Text>
+          <Text style={styles.cardDetail}>{t(`${base}.detail`)}</Text>
         </View>
 
         <View style={styles.cardFooter}>
           <Text style={[styles.cta, { color: disabled ? colors.textFaint : category.tint }]}>
-            {disabled ? 'Coming soon' : 'Open bench  →'}
+            {disabled ? t('common.comingSoon') : t('home.openBench')}
           </Text>
         </View>
       </Pressable>
@@ -211,6 +213,17 @@ const styles = StyleSheet.create({
 
   masthead: { marginBottom: spacing.sm },
   brandRow: { flexDirection: 'row', alignItems: 'center', gap: 11 },
+  settingsButton: {
+    marginLeft: 'auto',
+    width: 38,
+    height: 38,
+    borderRadius: radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.stroke,
+  },
   mark: {
     width: 44,
     height: 44,

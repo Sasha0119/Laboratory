@@ -45,38 +45,39 @@ export function precise(v: number, digits = 3): string {
 }
 
 /**
- * An everyday thing that moves at roughly this speed.
+ * Translation key for an everyday thing that moves at roughly this speed.
  *
- * These are deliberately loose ("about", "like") — they are intuition pumps,
- * not measurements. Road speeds are the most recognisable anchor, so the
- * middle of the range leans on them: 8 m/s is 30 km/h, 14 m/s is 50 km/h,
- * 33 m/s is 120 km/h.
+ * Returns a key rather than a sentence so this stays free of English; the
+ * caller resolves it with `t(...)`. Returns null when a comparison would add
+ * nothing (barely moving, or so fast that nothing everyday compares).
  *
- * Returns null when a comparison would add nothing (barely moving, or so fast
- * that no everyday object compares).
+ * The bands are deliberately loose — they are intuition pumps, not
+ * measurements. Road speeds are the most recognisable anchor, so the middle of
+ * the range leans on them: 8 m/s is 30 km/h, 14 m/s is 50 km/h, 33 m/s is
+ * 120 km/h.
  */
-export function speedComparison(metersPerSecond: number): string | null {
+export function speedComparisonKey(metersPerSecond: number): string | null {
   const v = Math.abs(metersPerSecond);
   if (v < 0.4) return null;
-  if (v < 1.5) return 'slower than walking';
-  if (v < 2.5) return 'about walking pace';
-  if (v < 4.5) return 'about jogging pace';
-  if (v < 8) return 'about cycling pace';
-  if (v < 14) return 'like a car on a quiet street';
-  if (v < 22) return 'like a car in town';
-  if (v < 33) return 'like a car on the open road';
-  if (v < 50) return 'like a car on the motorway';
-  if (v < 75) return 'like a skydiver in freefall';
-  return 'faster than a skydiver falls';
+  if (v < 1.5) return 'comparisons.slowerThanWalking';
+  if (v < 2.5) return 'comparisons.walkingPace';
+  if (v < 4.5) return 'comparisons.joggingPace';
+  if (v < 8) return 'comparisons.cyclingPace';
+  if (v < 14) return 'comparisons.quietStreet';
+  if (v < 22) return 'comparisons.carInTown';
+  if (v < 33) return 'comparisons.openRoad';
+  if (v < 50) return 'comparisons.motorway';
+  if (v < 75) return 'comparisons.skydiver';
+  return 'comparisons.fasterThanSkydiver';
 }
 
-/** "left" / "right" / "stopped", for horizontal motion. */
-export function directionWord(velocity: number): string {
+/** Which of `directions.*` describes this horizontal velocity. */
+export function directionKey(velocity: number): 'left' | 'right' | 'stopped' {
   if (Math.abs(velocity) < 0.005) return 'stopped';
   return velocity > 0 ? 'right' : 'left';
 }
 
-/** "→" / "←" / "•" to sit next to a speed. */
+/** "→" / "←" / "•" to sit next to a speed. Direction glyphs need no translation. */
 export function directionArrow(velocity: number): string {
   if (Math.abs(velocity) < 0.005) return '•';
   return velocity > 0 ? '→' : '←';
