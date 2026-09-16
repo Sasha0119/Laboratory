@@ -35,6 +35,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "build": "expo export --platform web",
     "typecheck": "tsc --noEmit",
     "test:physics": "npx tsx lib/physics/__tests__/run.ts",
     "check:locales": "node scripts/check-locales.mjs"
