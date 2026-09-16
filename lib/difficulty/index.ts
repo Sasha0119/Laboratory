@@ -91,7 +91,7 @@ export interface Formula {
   minLevel: DifficultyLevel;
 }
 
-export type SimulationModule = 'drop' | 'collisions';
+export type SimulationModule = 'drop' | 'collisions' | 'circuits' | 'magnets';
 
 export const FORMULAS: Record<SimulationModule, Formula[]> = {
   drop: [
@@ -112,6 +112,13 @@ export const FORMULAS: Record<SimulationModule, Formula[]> = {
     { id: 'restitution', expression: 'e = (v₂′ − v₁′) / (v₁ − v₂)', minLevel: 'pro' },
     { id: 'kineticEnergy', expression: 'KE = ½·m·v²', minLevel: 'pro' },
   ],
+  circuits: [
+    { id: 'ohmsLaw', expression: 'V = I·R', minLevel: 'intermediate' },
+    { id: 'seriesResistance', expression: 'R_total = R₁ + R₂', minLevel: 'intermediate' },
+    { id: 'parallelResistance', expression: '1/R_total = 1/R₁ + 1/R₂', minLevel: 'intermediate' },
+    { id: 'power', expression: 'P = I²·R = V·I', minLevel: 'pro' },
+  ],
+  magnets: [{ id: 'poleForce', expression: 'F = k·p₁·p₂ / r²', minLevel: 'intermediate' }],
 };
 
 /** The equations worth showing for a module at a given level. */

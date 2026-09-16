@@ -7,6 +7,8 @@
     "physics": "物理",
     "drop": "下落与抛体",
     "collisions": "碰撞",
+    "circuits": "简单电路",
+    "magnets": "磁体与磁性",
     "settings": "设置"
   },
   "common": {
@@ -18,7 +20,8 @@
     "restore": "还原",
     "available": "可用",
     "comingSoon": "即将推出",
-    "playback": "播放速度"
+    "playback": "播放速度",
+    "gotIt": "知道了"
   },
   "directions": {
     "left": "向左",
@@ -28,7 +31,7 @@
   "home": {
     "tagline": "真实的模拟，真实的方程。选一张实验台，开始做实验。",
     "openBench": "进入实验台  →",
-    "footnote": "全部在本机运行。无需账号，无需联网，数据不会离开手机。",
+    "footnote": "每个模拟都在你的手机上运行。只有进阶和专业实验台才需要账号。",
     "settingsLabel": "设置",
     "categories": {
       "physics": {
@@ -123,7 +126,13 @@
       "oscillation": "振动",
       "damping": "阻尼",
       "friction": "摩擦",
-      "torque": "力矩"
+      "torque": "力矩",
+      "voltage": "电压",
+      "current": "电流",
+      "resistance": "电阻",
+      "magneticField": "磁场",
+      "attraction": "吸引",
+      "repulsion": "排斥"
     },
     "comingSoonMessage": "这个实验即将推出！"
   },
@@ -307,6 +316,113 @@
       "intermediate": "无论哪种碰撞，碰撞前的总动量都等于碰撞后的总动量。恢复系数决定有多少动能被保留下来。"
     }
   },
+  "circuits": {
+    "cards": {
+      "battery": "电池",
+      "bulbs": "灯泡",
+      "switch": "开关"
+    },
+    "sliders": {
+      "voltage": "电池电压",
+      "resistanceOf": "{{name}}电阻"
+    },
+    "bulbLabel": "灯泡 {{n}}",
+    "bulbCountLabel": "灯泡数量",
+    "bulbCount": {
+      "one": "1 个灯泡",
+      "two": "2 个灯泡"
+    },
+    "wiringLabel": "接线方式",
+    "wiring": {
+      "series": "串联",
+      "parallel": "并联"
+    },
+    "wiringHint": "串联：两个灯泡通过相同的电流。并联：每个灯泡都获得电池的全部电压，并各自拉取自己的电流。",
+    "toggles": {
+      "switch": "开关闭合",
+      "switchOn": "电路已接通 — 电流可以流动",
+      "switchOff": "电路已断开 — 什么都不会亮"
+    },
+    "replaceBulb": "更换灯泡",
+    "stats": {
+      "brightnessOf": "{{name}}亮度",
+      "currentOf": "{{name}}电流",
+      "burnedOut": "已烧坏",
+      "noCurrent": "无电流"
+    },
+    "messages": {
+      "switchOpen": "开关是断开的，所以电流无法流动。",
+      "noCurrent": "电路已接通，但没有电流流动。",
+      "dim": "电流正在流动 — 灯泡发出微弱的光。",
+      "glowing": "电流以适中的亮度流动。",
+      "bright": "电流很强 — 灯泡发出明亮的光。",
+      "oneBurnedOut": "{{name}}因功率过大而烧坏熄灭了。",
+      "bothBurnedOut": "两个灯泡都因功率过大而烧坏熄灭了。"
+    },
+    "details": {
+      "voltage": "电池电压  V",
+      "totalResistance": "总电阻  R",
+      "totalCurrent": "总电流  I",
+      "totalPower": "总功率  P",
+      "resistanceOf": "{{name}}电阻  R",
+      "voltageOf": "{{name}}电压降  V",
+      "currentOf": "{{name}}电流  I",
+      "powerOf": "{{name}}功率  P"
+    },
+    "credits": "每一个读数都是根据你所选的接线方式，直接用欧姆定律算出来的 — 这里没有预先编排的动画。",
+    "blurbs": {
+      "beginner": "电要流动，需要一个完整的回路。合上开关，电流就会从电池出发，经过灯泡再流回去 —— 流过灯泡的电越多，灯泡就越亮。",
+      "intermediate": "电压推动电流沿回路流动，电阻则会阻碍它。串联时，每个灯泡通过的电流相同；并联时，每个灯泡都获得电池的全部电压，并各自拉取自己的电流。"
+    }
+  },
+  "magnets": {
+    "intro": {
+      "title": "什么是磁铁？",
+      "body": "每块磁铁都有两个末端，叫做磁极：一个是北极，一个是南极。把一个北极和一个南极靠在一起，它们会相互吸引。把两个相同的磁极靠在一起（北极对北极，或南极对南极），它们会相互排斥。",
+      "tip": "试试在下面切换到「排斥」，看看箭头会发生什么变化！"
+    },
+    "cards": {
+      "magnets": "磁体"
+    },
+    "sliders": {
+      "distance": "磁体间距",
+      "strengthOf": "{{name}}强度",
+      "strengthHint": "这块磁铁有多强——数字越大，吸引或排斥的力就越大。"
+    },
+    "magnetLabel": "磁体 {{n}}",
+    "orientationLabel": "极性方向",
+    "orientation": {
+      "attract": "吸引",
+      "repel": "排斥"
+    },
+    "orientationHint": "吸引：相对的两极相互面对。排斥：相同的两极相互面对。",
+    "stats": {
+      "pulling": "正在相互吸引",
+      "pushing": "正在相互排斥",
+      "force": "力"
+    },
+    "messages": {
+      "pullingWeak": "磁体正在轻轻地相互吸引。",
+      "pulling": "磁体正在相互吸引。",
+      "pullingStrong": "磁体正在用力相互吸引。",
+      "pushingWeak": "磁体正在轻轻地相互排斥。",
+      "pushing": "磁体正在相互排斥。",
+      "pushingStrong": "磁体正在用力相互排斥。",
+      "snapped": "磁体被吸了过去，紧紧地吸在了一起！"
+    },
+    "details": {
+      "distance": "距离  r",
+      "strengthOf": "{{name}}磁极强度",
+      "force": "力  F",
+      "orientation": "极性方向"
+    },
+    "formulaNote": "这里使用的是简化的磁极强度模型（类似库仑定律），而不是完整的磁偶极子场方程。",
+    "credits": "力是根据你设置的磁极和距离，直接用 F = k·p₁·p₂ / r² 计算出来的 —— 这里没有预先编排的动画。",
+    "blurbs": {
+      "beginner": "每块磁铁都有两个末端——北极和南极。如果相对的两端不同（北极对南极），磁体会相互吸引。如果相对的两端相同（北极对北极，或南极对南极），磁体会相互排斥。",
+      "intermediate": "两个磁极之间的作用力会随着它们之间距离的平方而减弱，就像引力和电荷一样。相对的磁极相互面对时，磁体会相互吸引；相同的磁极相互面对时，磁体会相互排斥。"
+    }
+  },
   "details": {
     "time": "时间  t",
     "height": "高度  y",
@@ -404,6 +520,131 @@
     "yourLevel": "你的难度",
     "otherLevels": "其他难度"
   },
+  "access": {
+    "lockedHint": "打开订阅页面"
+  },
+  "account": {
+    "title": "账号",
+    "guestDescription": "你正在不使用账号的情况下使用 Laboratory。入门实验台在两种情况下完全一样。",
+    "createAccount": "创建账号",
+    "logIn": "登录",
+    "logOut": "退出登录",
+    "unnamed": "你的账号",
+    "plan": "方案",
+    "plans": {
+      "free": "免费",
+      "pro": "专业版"
+    },
+    "planNotes": {
+      "free": "入门实验台。进阶和专业需要订阅。",
+      "pro": "所有难度的全部实验台。"
+    }
+  },
+  "auth": {
+    "welcome": {
+      "tagline": "真实的模拟，真实的方程。创建账号把它们带在身边，或者直接开始做实验。",
+      "createAccount": "创建账号",
+      "logIn": "我已经有账号了",
+      "continueAsGuest": "不创建账号，继续使用",
+      "guestNote": "入门实验台是免费的，而且会一直免费。"
+    },
+    "fields": {
+      "displayName": "显示名称",
+      "displayNamePlaceholder": "我们该怎么称呼你？",
+      "displayNameHint": "只在你自己的账号页面显示。",
+      "email": "邮箱",
+      "emailPlaceholder": "you@example.com",
+      "password": "密码",
+      "passwordPlaceholder": "至少 8 个字符",
+      "showPassword": "显示",
+      "hidePassword": "隐藏"
+    },
+    "password": {
+      "rules": {
+        "length": "至少 8 个字符",
+        "uppercase": "一个大写字母（A–Z）",
+        "lowercase": "一个小写字母（a–z）",
+        "number": "一个数字（0–9）"
+      }
+    },
+    "validation": {
+      "displayName": "请输入账号显示的名称。",
+      "email": "这看起来不像邮箱地址。",
+      "passwordRequired": "请输入密码。"
+    },
+    "signIn": {
+      "title": "登录",
+      "intro": "欢迎回来。登录后可以从上次的地方继续。",
+      "submit": "登录",
+      "working": "正在登录…",
+      "forgotPassword": "我忘记密码了",
+      "noAccount": "我还没有账号"
+    },
+    "signUp": {
+      "title": "创建账号",
+      "intro": "账号会在所有设备上保留你的设置和订阅。",
+      "submit": "创建账号",
+      "working": "正在创建账号…",
+      "haveAccount": "我已经有账号了",
+      "privacyNote": "我们只保存你的邮箱、显示名称和当前方案，没有别的。",
+      "checkEmailTitle": "请查收邮件",
+      "checkEmailBody": "确认链接已发送到 {{email}}。打开它，然后回来登录。",
+      "backToLogIn": "返回登录"
+    },
+    "reset": {
+      "title": "重设密码",
+      "intro": "输入账号使用的邮箱地址，我们会发一个设置新密码的链接给你。",
+      "sendLink": "发送链接",
+      "working": "处理中…",
+      "sentTitle": "请查收邮件",
+      "sentBody": "如果 {{email}} 有对应的账号，重设链接已在路上。链接只能用一次，一小时后失效。",
+      "backToLogIn": "返回登录",
+      "setIntro": "为你的账号设置一个新密码。",
+      "newPassword": "新密码",
+      "savePassword": "保存新密码",
+      "doneTitle": "密码已修改",
+      "doneBody": "你已用新密码登录。",
+      "continue": "继续",
+      "linkExpired": "该链接已过期或已被使用。请在下面重新申请一个。"
+    },
+    "errors": {
+      "notConfigured": "账号功能尚未接通。请把 Supabase 项目 URL 和 anon 密钥填入 .env 文件，然后重启应用。",
+      "invalidCredentials": "这个邮箱和密码对不上任何账号。",
+      "emailTaken": "这个邮箱已经有账号了，试试直接登录。",
+      "emailNotConfirmed": "请先打开我们发送的确认链接，然后再登录。",
+      "weakPassword": "这个密码太弱了，请对照上面的规则。",
+      "rateLimited": "尝试次数过多。等一分钟再试。",
+      "network": "无法连接服务器。请检查网络后重试。",
+      "unknown": "出了点问题，请再试一次。"
+    }
+  },
+  "paywall": {
+    "title": "订阅",
+    "headline": "解锁进阶和专业实验台",
+    "reachedFor": "你点开的是「{{level}}」级别的实验台",
+    "lede": "入门实验台是免费的，而且会一直免费。订阅可以打开上面两个难度。",
+    "benefits": {
+      "depth": {
+        "title": "更深入的讲解",
+        "body": "同样的模拟，用你所在难度的语言来讲解。"
+      },
+      "formulas": {
+        "title": "方程本身",
+        "body": "模拟真正在积分的每一个公式，就显示在运行旁边。"
+      },
+      "topics": {
+        "title": "以后会有更多实验台",
+        "body": "波动、光学、电路、热力学等等正在开发，都会出现在这两个难度。"
+      }
+    },
+    "freeNote": "你现在能用的东西不会被拿走。入门实验台不需要账号，也不需要订阅。",
+    "accountNote": "订阅是绑定在账号上的，所以第一步是账号。",
+    "createAccount": "创建账号",
+    "logIn": "登录",
+    "subscribe": "订阅",
+    "comingSoon": "订阅功能即将推出！没有产生任何扣费。",
+    "maybeLater": "以后再说"
+  },
   "input": {
     "range": "最小：{{min}} {{unit}} — 最大：{{max}} {{unit}}",
     "clampedMin": "最小为 {{min}} {{unit}} — 已调整",
@@ -426,6 +667,15 @@
       "elastic": "完全弹性 — 弹开",
       "restitution": "恢复系数",
       "kineticEnergy": "动能"
+    },
+    "circuits": {
+      "ohmsLaw": "欧姆定律",
+      "seriesResistance": "串联电阻",
+      "parallelResistance": "并联电阻",
+      "power": "耗散功率"
+    },
+    "magnets": {
+      "poleForce": "磁极间的力"
     }
   }
 }

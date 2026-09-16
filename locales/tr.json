@@ -7,6 +7,8 @@
     "physics": "Fizik",
     "drop": "Düşme ve Atış",
     "collisions": "Çarpışmalar",
+    "circuits": "Basit Devreler",
+    "magnets": "Mıknatıslar ve Manyetizma",
     "settings": "Ayarlar"
   },
   "common": {
@@ -18,7 +20,8 @@
     "restore": "Geri al",
     "available": "Kullanılabilir",
     "comingSoon": "Yakında",
-    "playback": "Oynatma"
+    "playback": "Oynatma",
+    "gotIt": "Anladım"
   },
   "directions": {
     "left": "sola",
@@ -28,7 +31,7 @@
   "home": {
     "tagline": "Gerçek simülasyonlar, gerçek denklemler. Bir tezgâh seç ve deneye başla.",
     "openBench": "Tezgâhı aç  →",
-    "footnote": "Her şey cihazda çalışır. Hesap yok, ağ yok; hiçbir veri telefondan çıkmaz.",
+    "footnote": "Her simülasyon senin telefonunda çalışır. Hesap yalnızca Orta ve İleri tezgâhlar için gerekir.",
     "settingsLabel": "Ayarlar",
     "categories": {
       "physics": {
@@ -123,7 +126,13 @@
       "oscillation": "Salınım",
       "damping": "Sönümleme",
       "friction": "Sürtünme",
-      "torque": "Tork"
+      "torque": "Tork",
+      "voltage": "Gerilim",
+      "current": "Akım",
+      "resistance": "Direnç",
+      "magneticField": "Manyetik alan",
+      "attraction": "Çekme",
+      "repulsion": "İtme"
     },
     "comingSoonMessage": "Bu deney yakında geliyor!"
   },
@@ -307,6 +316,113 @@
       "intermediate": "Çarpışma türü ne olursa olsun, çarpışmadan önceki toplam momentum sonrakine eşittir. Geri verme katsayısı kinetik enerjinin ne kadarının kalacağını belirler."
     }
   },
+  "circuits": {
+    "cards": {
+      "battery": "Pil",
+      "bulbs": "Ampuller",
+      "switch": "Anahtar"
+    },
+    "sliders": {
+      "voltage": "Pil gerilimi",
+      "resistanceOf": "{{name}} direnci"
+    },
+    "bulbLabel": "Ampul {{n}}",
+    "bulbCountLabel": "Ampul sayısı",
+    "bulbCount": {
+      "one": "1 ampul",
+      "two": "2 ampul"
+    },
+    "wiringLabel": "Bağlantı şekli",
+    "wiring": {
+      "series": "Seri",
+      "parallel": "Paralel"
+    },
+    "wiringHint": "Seri: her iki ampulden de aynı akım geçer. Paralel: her ampul pilin tam gerilimini görür ve kendi akımını çeker.",
+    "toggles": {
+      "switch": "Anahtar kapalı",
+      "switchOn": "Devre tamamlandı — akım akabilir",
+      "switchOff": "Devre kesildi — hiçbir şey yanmaz"
+    },
+    "replaceBulb": "Ampul(leri) değiştir",
+    "stats": {
+      "brightnessOf": "{{name}} parlaklığı",
+      "currentOf": "{{name}} akımı",
+      "burnedOut": "Yandı",
+      "noCurrent": "Akım yok"
+    },
+    "messages": {
+      "switchOpen": "Anahtar açık, bu yüzden akım akamıyor.",
+      "noCurrent": "Devre tamamlandı ama akım akmıyor.",
+      "dim": "Akım akıyor — ampul hafifçe parlıyor.",
+      "glowing": "Akım rahat bir parlaklıkla akıyor.",
+      "bright": "Akım güçlü akıyor — ampul parlak parlıyor.",
+      "oneBurnedOut": "{{name}} aşırı güçten yandı ve söndü.",
+      "bothBurnedOut": "Her iki ampul de aşırı güçten yandı ve söndü."
+    },
+    "details": {
+      "voltage": "Pil gerilimi  V",
+      "totalResistance": "Toplam direnç  R",
+      "totalCurrent": "Toplam akım  I",
+      "totalPower": "Toplam güç  P",
+      "resistanceOf": "{{name}} direnci  R",
+      "voltageOf": "{{name}} gerilim düşümü  V",
+      "currentOf": "{{name}} akımı  I",
+      "powerOf": "{{name}} gücü  P"
+    },
+    "credits": "Her değer, seçtiğiniz bağlantı şekli için doğrudan Ohm Yasası'ndan hesaplanır — burada kurgulanmış bir animasyon yoktur.",
+    "blurbs": {
+      "beginner": "Elektriğin akması için kapalı bir devre gerekir. Anahtarı kapatın; akım pilden ampulün içinden geçip geri döner — ampulden geçen akım arttıkça parlaklık da artar.",
+      "intermediate": "Gerilim akımı devre boyunca iter, direnç ise ona karşı koyar. Seri bağlantıda her ampulden aynı akım geçer; paralel bağlantıda her ampul pilin tam gerilimini görür ve kendi akımını çeker."
+    }
+  },
+  "magnets": {
+    "intro": {
+      "title": "Mıknatıs nedir?",
+      "body": "Her mıknatısın kutup denen iki ucu vardır: biri Kuzey, biri Güney. Bir Kuzey kutbunu bir Güney kutbunun yanına getirirsen birbirlerini çekerler. Aynı iki kutbu yan yana getirirsen (Kuzey-Kuzey ya da Güney-Güney) birbirlerini iterler.",
+      "tip": "Aşağıdan İtme'yi seçip oklara ne olduğuna bak!"
+    },
+    "cards": {
+      "magnets": "Mıknatıslar"
+    },
+    "sliders": {
+      "distance": "Mıknatıslar arası mesafe",
+      "strengthOf": "{{name}} gücü",
+      "strengthHint": "Bu mıknatısın ne kadar güçlü olduğu — sayı büyüdükçe çekme veya itme de güçlenir."
+    },
+    "magnetLabel": "Mıknatıs {{n}}",
+    "orientationLabel": "Yönelim",
+    "orientation": {
+      "attract": "Çekme",
+      "repel": "İtme"
+    },
+    "orientationHint": "Çekme: birbirine zıt kutuplar bakar. İtme: birbirine aynı kutuplar bakar.",
+    "stats": {
+      "pulling": "Birbirini çekiyor",
+      "pushing": "Birbirini itiyor",
+      "force": "Kuvvet"
+    },
+    "messages": {
+      "pullingWeak": "Mıknatıslar hafifçe birbirini çekiyor.",
+      "pulling": "Mıknatıslar birbirini çekiyor.",
+      "pullingStrong": "Mıknatıslar birbirini güçlü şekilde çekiyor.",
+      "pushingWeak": "Mıknatıslar hafifçe birbirini itiyor.",
+      "pushing": "Mıknatıslar birbirini itiyor.",
+      "pushingStrong": "Mıknatıslar birbirini güçlü şekilde itiyor.",
+      "snapped": "Mıknatıslar birbirini çekip şıpınsı birleşti!"
+    },
+    "details": {
+      "distance": "Mesafe  r",
+      "strengthOf": "{{name}} kutup gücü",
+      "force": "Kuvvet  F",
+      "orientation": "Yönelim"
+    },
+    "formulaNote": "Burada tam manyetik dipol alan denklemleri yerine, basitleştirilmiş bir kutup gücü modeli (Coulomb Yasası'na benzer) kullanılır.",
+    "credits": "Kuvvet, belirlediğiniz kutuplar ve mesafe için doğrudan F = k·p₁·p₂ / r² formülünden hesaplanır — burada kurgulanmış bir animasyon yoktur.",
+    "blurbs": {
+      "beginner": "Her mıknatısın iki ucu vardır — Kuzey ve Güney kutbu. Birbirine bakan uçlar farklıysa (Kuzey ve Güney) mıknatıslar çekilir. Birbirine bakan uçlar aynıysa (iki Kuzey ya da iki Güney) itilirler.",
+      "intermediate": "İki manyetik kutup arasındaki kuvvet, aralarındaki mesafenin karesiyle ters orantılı olarak azalır — tıpkı yerçekimi ve elektrik yükü gibi. Zıt kutuplar birbirine bakınca mıknatıslar çekilir; aynı kutuplar bakınca itilir."
+    }
+  },
   "details": {
     "time": "Süre  t",
     "height": "Yükseklik  y",
@@ -404,6 +520,131 @@
     "yourLevel": "Senin seviyen",
     "otherLevels": "Diğer seviyeler"
   },
+  "access": {
+    "lockedHint": "Abonelik ekranını açar"
+  },
+  "account": {
+    "title": "Hesap",
+    "guestDescription": "Laboratory'yi hesapsız kullanıyorsun. Başlangıç tezgâhları her iki durumda da tıpatıp aynı çalışır.",
+    "createAccount": "Hesap oluştur",
+    "logIn": "Giriş yap",
+    "logOut": "Çıkış yap",
+    "unnamed": "Hesabın",
+    "plan": "Plan",
+    "plans": {
+      "free": "Ücretsiz",
+      "pro": "Pro"
+    },
+    "planNotes": {
+      "free": "Başlangıç tezgâhları. Orta ve İleri için abonelik gerekir.",
+      "pro": "Her seviyede, bütün tezgâhlar."
+    }
+  },
+  "auth": {
+    "welcome": {
+      "tagline": "Gerçek simülasyonlar, gerçek denklemler. Yanında taşımak için hesap oluştur ya da doğrudan deneye başla.",
+      "createAccount": "Hesap oluştur",
+      "logIn": "Zaten hesabım var",
+      "continueAsGuest": "Hesapsız devam et",
+      "guestNote": "Başlangıç tezgâhları ücretsiz ve öyle kalacak."
+    },
+    "fields": {
+      "displayName": "Görünen ad",
+      "displayNamePlaceholder": "Sana nasıl hitap edelim?",
+      "displayNameHint": "Yalnızca sana, kendi hesap ekranında görünür.",
+      "email": "E-posta",
+      "emailPlaceholder": "sen@ornek.com",
+      "password": "Parola",
+      "passwordPlaceholder": "En az 8 karakter",
+      "showPassword": "Göster",
+      "hidePassword": "Gizle"
+    },
+    "password": {
+      "rules": {
+        "length": "En az 8 karakter",
+        "uppercase": "Bir büyük harf (A–Z)",
+        "lowercase": "Bir küçük harf (a–z)",
+        "number": "Bir rakam (0–9)"
+      }
+    },
+    "validation": {
+      "displayName": "Hesabında görünecek bir ad gir.",
+      "email": "Bu bir e-posta adresine benzemiyor.",
+      "passwordRequired": "Parolanı gir."
+    },
+    "signIn": {
+      "title": "Giriş",
+      "intro": "Tekrar hoş geldin. Kaldığın yerden devam etmek için giriş yap.",
+      "submit": "Giriş yap",
+      "working": "Giriş yapılıyor…",
+      "forgotPassword": "Parolamı unuttum",
+      "noAccount": "Henüz hesabım yok"
+    },
+    "signUp": {
+      "title": "Hesap oluştur",
+      "intro": "Hesap, ayarlarını ve aboneliğini bütün cihazlarında yanında tutar.",
+      "submit": "Hesap oluştur",
+      "working": "Hesabın oluşturuluyor…",
+      "haveAccount": "Zaten hesabım var",
+      "privacyNote": "E-postanı, görünen adını ve hangi planda olduğunu saklıyoruz. Başka hiçbir şeyi değil.",
+      "checkEmailTitle": "E-postanı kontrol et",
+      "checkEmailBody": "{{email}} adresine bir onay bağlantısı yolda. Bağlantıyı aç, sonra dönüp giriş yap.",
+      "backToLogIn": "Girişe dön"
+    },
+    "reset": {
+      "title": "Parola sıfırlama",
+      "intro": "Hesabındaki e-posta adresini gir, yeni parola belirlemen için sana bir bağlantı gönderelim.",
+      "sendLink": "Bağlantıyı gönder",
+      "working": "Çalışıyor…",
+      "sentTitle": "E-postanı kontrol et",
+      "sentBody": "{{email}} için bir hesap varsa, sıfırlama bağlantısı yolda. Bağlantı bir kez çalışır ve bir saat sonra geçersiz olur.",
+      "backToLogIn": "Girişe dön",
+      "setIntro": "Hesabın için yeni bir parola seç.",
+      "newPassword": "Yeni parola",
+      "savePassword": "Yeni parolayı kaydet",
+      "doneTitle": "Parola değişti",
+      "doneBody": "Yeni parolanla giriş yaptın.",
+      "continue": "Devam et",
+      "linkExpired": "Bu bağlantının süresi dolmuş ya da zaten kullanılmış. Aşağıdan yenisini iste."
+    },
+    "errors": {
+      "notConfigured": "Hesaplar henüz bağlı değil. Supabase proje URL'sini ve anon anahtarını .env dosyasına yapıştır, sonra uygulamayı yeniden başlat.",
+      "invalidCredentials": "Bu e-posta ve parola hiçbir hesapla eşleşmiyor.",
+      "emailTaken": "Bu e-postayla zaten bir hesap var. Giriş yapmayı dene.",
+      "emailNotConfirmed": "Önce sana gönderdiğimiz onay bağlantısını aç, sonra giriş yap.",
+      "weakPassword": "Bu parola çok zayıf. Yukarıdaki kurallara bak.",
+      "rateLimited": "Çok fazla deneme. Bir dakika bekleyip tekrar dene.",
+      "network": "Sunucuya ulaşılamadı. Bağlantını kontrol edip tekrar dene.",
+      "unknown": "Bir şeyler ters gitti. Lütfen tekrar dene."
+    }
+  },
+  "paywall": {
+    "title": "Abonelik",
+    "headline": "Orta ve İleri tezgâhların kilidini aç",
+    "reachedFor": "{{level}} seviyesinde bir tezgâha dokundunuz",
+    "lede": "Başlangıç tezgâhları ücretsiz ve öyle kalacak. Abonelik, üstündeki iki seviyeyi açar.",
+    "benefits": {
+      "depth": {
+        "title": "Daha derin açıklamalar",
+        "body": "Aynı simülasyonlar, çalıştığın seviyenin diliyle anlatılıyor."
+      },
+      "formulas": {
+        "title": "Denklemlerin kendisi",
+        "body": "Simülasyonun gerçekten entegre ettiği her formül, çalışmanın yanında."
+      },
+      "topics": {
+        "title": "Zamanla daha çok tezgâh",
+        "body": "Dalgalar, optik, devreler, termodinamik ve gerisi hazırlanıyor; hepsi bu seviyelerde çıkacak."
+      }
+    },
+    "freeNote": "Şu an kullanabildiğin hiçbir şey elinden alınmıyor. Başlangıç tezgâhları için ne hesap ne abonelik gerekir.",
+    "accountNote": "Abonelik bir hesaba bağlıdır, o yüzden ilk adım bu.",
+    "createAccount": "Hesap oluştur",
+    "logIn": "Giriş yap",
+    "subscribe": "Abone ol",
+    "comingSoon": "Abonelikler çok yakında! Hiçbir ücret alınmadı.",
+    "maybeLater": "Belki sonra"
+  },
   "input": {
     "range": "En az: {{min}} {{unit}} — En çok: {{max}} {{unit}}",
     "clampedMin": "En az {{min}} {{unit}} olabilir — düzeltildi",
@@ -426,6 +667,15 @@
       "elastic": "Tam esnek — sekerler",
       "restitution": "Geri verme katsayısı",
       "kineticEnergy": "Kinetik enerji"
+    },
+    "circuits": {
+      "ohmsLaw": "Ohm Yasası",
+      "seriesResistance": "Seri direnç",
+      "parallelResistance": "Paralel direnç",
+      "power": "Harcanan güç"
+    },
+    "magnets": {
+      "poleForce": "Kutuplar arasındaki kuvvet"
     }
   }
 }

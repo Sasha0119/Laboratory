@@ -30,8 +30,10 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
+# local env files — .env holds the Supabase credentials; .env.example is tracked
+.env
 .env*.local
+!.env.example
 
 # typescript
 *.tsbuildinfo

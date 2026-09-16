@@ -1,9 +1,10 @@
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, Ellipse, G, Line, Path, RadialGradient, Stop } from 'react-native-svg';
+import { useAuth } from '../context/Auth';
 import { colors, radius, spacing } from '../theme';
 
 /**
@@ -25,6 +26,12 @@ export default function Home() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const { mode } = useAuth();
+
+  // First launch only: nobody has said whether they want an account. Asked
+  // once, remembered, and never brought up again unasked — a `Redirect`
+  // rather than an effect so the home screen is not painted first.
+  if (mode === 'undecided') return <Redirect href="/auth/welcome" />;
 
   return (
     <ScrollView

@@ -7,6 +7,8 @@
     "physics": "Fizika",
     "drop": "Tushish va otish",
     "collisions": "To'qnashuvlar",
+    "circuits": "Oddiy elektr zanjirlari",
+    "magnets": "Magnitlar va magnetizm",
     "settings": "Sozlamalar"
   },
   "common": {
@@ -18,7 +20,8 @@
     "restore": "Tiklash",
     "available": "Mavjud",
     "comingSoon": "Tez orada",
-    "playback": "Tezlik"
+    "playback": "Tezlik",
+    "gotIt": "Tushunarli"
   },
   "directions": {
     "left": "chapga",
@@ -28,7 +31,7 @@
   "home": {
     "tagline": "Haqiqiy simulyatsiyalar, haqiqiy tenglamalar. Stolni tanlang va tajribani boshlang.",
     "openBench": "Ochish  →",
-    "footnote": "Hammasi qurilmaning o'zida ishlaydi. Hisob ham, tarmoq ham kerak emas — ma'lumot telefondan chiqmaydi.",
+    "footnote": "Har bir simulyatsiya telefoningizda ishlaydi. Hisob faqat o‘rta va yuqori stollar uchun kerak.",
     "settingsLabel": "Sozlamalar",
     "categories": {
       "physics": {
@@ -123,7 +126,13 @@
       "oscillation": "Tebranish",
       "damping": "So'nish",
       "friction": "Ishqalanish",
-      "torque": "Aylantiruvchi moment"
+      "torque": "Aylantiruvchi moment",
+      "voltage": "Kuchlanish",
+      "current": "Tok",
+      "resistance": "Qarshilik",
+      "magneticField": "Magnit maydon",
+      "attraction": "Tortishish",
+      "repulsion": "Itarilish"
     },
     "comingSoonMessage": "Bu tajriba tez orada qo‘shiladi!"
   },
@@ -307,6 +316,113 @@
       "intermediate": "To‘qnashuv turidan qat’i nazar, zarbadan oldingi umumiy impuls keyingisiga teng. Tiklanish koeffitsienti kinetik energiyaning qanchasi saqlanishini belgilaydi."
     }
   },
+  "circuits": {
+    "cards": {
+      "battery": "Batareya",
+      "bulbs": "Lampochkalar",
+      "switch": "Kalit"
+    },
+    "sliders": {
+      "voltage": "Batareya kuchlanishi",
+      "resistanceOf": "{{name}} qarshiligi"
+    },
+    "bulbLabel": "{{n}}-lampochka",
+    "bulbCountLabel": "Lampochkalar soni",
+    "bulbCount": {
+      "one": "1 lampochka",
+      "two": "2 lampochka"
+    },
+    "wiringLabel": "Ulanish sxemasi",
+    "wiring": {
+      "series": "Ketma-ket",
+      "parallel": "Parallel"
+    },
+    "wiringHint": "Ketma-ket: ikkala lampochkadan bir xil tok o'tadi. Parallel: har bir lampochka batareyaning to'liq kuchlanishini oladi va o'z tokini tortadi.",
+    "toggles": {
+      "switch": "Kalit yopiq",
+      "switchOn": "Zanjir yopiq — tok oqishi mumkin",
+      "switchOff": "Zanjir uzilgan — hech narsa yonmaydi"
+    },
+    "replaceBulb": "Lampochka(lar)ni almashtirish",
+    "stats": {
+      "brightnessOf": "{{name}} yorqinligi",
+      "currentOf": "{{name}} toki",
+      "burnedOut": "Kuydi",
+      "noCurrent": "Tok yo'q"
+    },
+    "messages": {
+      "switchOpen": "Kalit ochiq, shuning uchun tok oqa olmaydi.",
+      "noCurrent": "Zanjir yopiq, lekin tok oqmayapti.",
+      "dim": "Tok oqmoqda — lampochka xira yonmoqda.",
+      "glowing": "Tok qulay yorqinlikda oqmoqda.",
+      "bright": "Tok kuchli oqmoqda — lampochka yorqin yonmoqda.",
+      "oneBurnedOut": "{{name}} ortiqcha quvvatdan kuyib, o'chdi.",
+      "bothBurnedOut": "Ikkala lampochka ham ortiqcha quvvatdan kuyib, o'chdi."
+    },
+    "details": {
+      "voltage": "Batareya kuchlanishi  V",
+      "totalResistance": "Umumiy qarshilik  R",
+      "totalCurrent": "Umumiy tok  I",
+      "totalPower": "Umumiy quvvat  P",
+      "resistanceOf": "{{name}} qarshiligi  R",
+      "voltageOf": "{{name}} kuchlanish tushishi  V",
+      "currentOf": "{{name}} toki  I",
+      "powerOf": "{{name}} quvvati  P"
+    },
+    "credits": "Har bir qiymat tanlangan ulanish sxemasi uchun to'g'ridan-to'g'ri Om qonuni bo'yicha hisoblanadi — bu yerda oldindan yozilgan animatsiya yo'q.",
+    "blurbs": {
+      "beginner": "Elektr oqishi uchun yopiq zanjir kerak. Kalitni yoping — tok batareyadan lampochka orqali o'tib, qaytib keladi: lampochkadan qancha ko'p tok o'tsa, u shuncha yorqin yonadi.",
+      "intermediate": "Kuchlanish tokni zanjir bo'ylab harakatlantiradi, qarshilik esa unga qarshilik ko'rsatadi. Ketma-ket ulanishda har bir lampochkadan bir xil tok o'tadi; parallel ulanishda har bir lampochka batareyaning to'liq kuchlanishini oladi va o'z tokini tortadi."
+    }
+  },
+  "magnets": {
+    "intro": {
+      "title": "Magnit nima?",
+      "body": "Har bir magnitning qutb deb ataladigan ikkita uchi bor: biri Shimoliy, biri Janubiy. Shimoliy qutbni Janubiy qutb yoniga olib kelsangiz, ular bir-birini tortadi. Ikkita bir xil qutbni (Shimoliy-Shimoliy yoki Janubiy-Janubiy) yaqinlashtirsangiz, ular bir-birini itaradi.",
+      "tip": "Pastda 'Itarilish'ni tanlab, o'qlarga nima bo'lishini ko'ring!"
+    },
+    "cards": {
+      "magnets": "Magnitlar"
+    },
+    "sliders": {
+      "distance": "Magnitlar orasidagi masofa",
+      "strengthOf": "{{name}} kuchi",
+      "strengthHint": "Bu magnit qanchalik kuchli — son qancha katta bo'lsa, tortish yoki itarish shuncha kuchli bo'ladi."
+    },
+    "magnetLabel": "{{n}}-magnit",
+    "orientationLabel": "Yo'nalish",
+    "orientation": {
+      "attract": "Tortishish",
+      "repel": "Itarilish"
+    },
+    "orientationHint": "Tortishish: bir-biriga qarama-qarshi qutblar qaragan. Itarilish: bir-biriga bir xil qutblar qaragan.",
+    "stats": {
+      "pulling": "Bir-birini tortmoqda",
+      "pushing": "Bir-birini itarmoqda",
+      "force": "Kuch"
+    },
+    "messages": {
+      "pullingWeak": "Magnitlar bir-birini sekin tortmoqda.",
+      "pulling": "Magnitlar bir-birini tortmoqda.",
+      "pullingStrong": "Magnitlar bir-birini kuchli tortmoqda.",
+      "pushingWeak": "Magnitlar bir-birini sekin itarmoqda.",
+      "pushing": "Magnitlar bir-birini itarmoqda.",
+      "pushingStrong": "Magnitlar bir-birini kuchli itarmoqda.",
+      "snapped": "Magnitlar bir-birini tortib, birlashib qoldi!"
+    },
+    "details": {
+      "distance": "Masofa  r",
+      "strengthOf": "{{name}} qutb kuchi",
+      "force": "Kuch  F",
+      "orientation": "Yo'nalish"
+    },
+    "formulaNote": "Bu yerda to'liq magnit dipol maydon tenglamalari o'rniga soddalashtirilgan qutb kuchi modeli (Kulon qonuniga o'xshash) ishlatiladi.",
+    "credits": "Kuch siz belgilagan qutblar va masofa uchun to'g'ridan-to'g'ri F = k·p₁·p₂ / r² formulasi bo'yicha hisoblanadi — bu yerda oldindan yozilgan animatsiya yo'q.",
+    "blurbs": {
+      "beginner": "Har bir magnitning ikkita uchi bor — Shimoliy va Janubiy qutb. Bir-biriga qaragan uchlar har xil bo'lsa (Shimoliy va Janubiy), magnitlar tortiladi. Bir-biriga qaragan uchlar bir xil bo'lsa (ikkita Shimoliy yoki ikkita Janubiy), ular itariladi.",
+      "intermediate": "Ikki magnit qutb orasidagi kuch ular orasidagi masofaning kvadratiga teskari proportsional kamayadi — xuddi tortishish kuchi va elektr zaryadi kabi. Qarama-qarshi qutblar bir-biriga qaragan bo'lsa, magnitlar tortiladi; bir xil qutblar qaragan bo'lsa, itariladi."
+    }
+  },
   "details": {
     "time": "Vaqt  t",
     "height": "Balandlik  y",
@@ -404,6 +520,131 @@
     "yourLevel": "Sizning darajangiz",
     "otherLevels": "Boshqa darajalar"
   },
+  "access": {
+    "lockedHint": "Obuna ekranini ochadi"
+  },
+  "account": {
+    "title": "Hisob",
+    "guestDescription": "Siz Laboratory’dan hisobsiz foydalanyapsiz. Boshlang‘ich stollar har ikki holatda ham bir xil ishlaydi.",
+    "createAccount": "Hisob yaratish",
+    "logIn": "Kirish",
+    "logOut": "Chiqish",
+    "unnamed": "Sizning hisobingiz",
+    "plan": "Tarif",
+    "plans": {
+      "free": "Bepul",
+      "pro": "Pro"
+    },
+    "planNotes": {
+      "free": "Boshlang‘ich stollar. O‘rta va yuqori uchun obuna kerak.",
+      "pro": "Barcha darajadagi barcha stollar."
+    }
+  },
+  "auth": {
+    "welcome": {
+      "tagline": "Haqiqiy simulyatsiyalar, haqiqiy tenglamalar. Hammasi yoningizda bo‘lishi uchun hisob yarating yoki shunchaki tajriba boshlang.",
+      "createAccount": "Hisob yaratish",
+      "logIn": "Menda hisob bor",
+      "continueAsGuest": "Hisobsiz davom etish",
+      "guestNote": "Boshlang‘ich stollar bepul va bepulligicha qoladi."
+    },
+    "fields": {
+      "displayName": "Ko‘rsatiladigan ism",
+      "displayNamePlaceholder": "Sizni qanday chaqiraylik?",
+      "displayNameHint": "Faqat sizga, o‘z hisobingiz ekranida ko‘rinadi.",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Parol",
+      "passwordPlaceholder": "Kamida 8 belgi",
+      "showPassword": "Ko‘rsatish",
+      "hidePassword": "Yashirish"
+    },
+    "password": {
+      "rules": {
+        "length": "Kamida 8 ta belgi",
+        "uppercase": "Bitta bosh harf (A–Z)",
+        "lowercase": "Bitta kichik harf (a–z)",
+        "number": "Bitta raqam (0–9)"
+      }
+    },
+    "validation": {
+      "displayName": "Hisobingiz uchun ism kiriting.",
+      "email": "Bu email manzilga o‘xshamaydi.",
+      "passwordRequired": "Parolni kiriting."
+    },
+    "signIn": {
+      "title": "Kirish",
+      "intro": "Xush kelibsiz. To‘xtagan joyingizdan davom etish uchun kiring.",
+      "submit": "Kirish",
+      "working": "Kirilmoqda…",
+      "forgotPassword": "Parolni unutdim",
+      "noAccount": "Menda hali hisob yo‘q"
+    },
+    "signUp": {
+      "title": "Hisob yaratish",
+      "intro": "Hisob sozlamalaringiz va obunangizni barcha qurilmalarda saqlab qoladi.",
+      "submit": "Hisob yaratish",
+      "working": "Hisob yaratilmoqda…",
+      "haveAccount": "Menda hisob bor",
+      "privacyNote": "Biz emailingiz, ko‘rsatiladigan ismingiz va tarifingizni saqlaymiz. Boshqa hech narsani emas.",
+      "checkEmailTitle": "Emailingizni tekshiring",
+      "checkEmailBody": "{{email}} manziliga tasdiqlash havolasi yuborildi. Uni oching, so‘ng qaytib kiring.",
+      "backToLogIn": "Kirishga qaytish"
+    },
+    "reset": {
+      "title": "Parolni tiklash",
+      "intro": "Hisobingizdagi email manzilni kiriting — yangi parol o‘rnatish uchun havola yuboramiz.",
+      "sendLink": "Havolani yuborish",
+      "working": "Bajarilmoqda…",
+      "sentTitle": "Emailingizni tekshiring",
+      "sentBody": "Agar {{email}} uchun hisob mavjud bo‘lsa, havola yo‘lda. U bir marta ishlaydi va bir soatdan keyin muddati tugaydi.",
+      "backToLogIn": "Kirishga qaytish",
+      "setIntro": "Hisobingiz uchun yangi parol tanlang.",
+      "newPassword": "Yangi parol",
+      "savePassword": "Yangi parolni saqlash",
+      "doneTitle": "Parol o‘zgartirildi",
+      "doneBody": "Siz yangi parol bilan kirdingiz.",
+      "continue": "Davom etish",
+      "linkExpired": "Havola muddati tugagan yoki allaqachon ishlatilgan. Quyidan yangisini so‘rang."
+    },
+    "errors": {
+      "notConfigured": "Hisoblar hali ulanmagan. Supabase loyiha URL va anon kalitini .env fayliga qo‘ying va ilovani qayta ishga tushiring.",
+      "invalidCredentials": "Bu email va parol hech bir hisobga to‘g‘ri kelmadi.",
+      "emailTaken": "Bu email bilan hisob allaqachon bor. Kirishga urinib ko‘ring.",
+      "emailNotConfirmed": "Emaildagi tasdiqlash havolasini oching, so‘ng kiring.",
+      "weakPassword": "Bu parol juda oddiy. Yuqoridagi qoidalarni tekshiring.",
+      "rateLimited": "Juda ko‘p urinish. Bir daqiqa kuting va qayta urinib ko‘ring.",
+      "network": "Serverga ulanib bo‘lmadi. Aloqani tekshirib, qayta urinib ko‘ring.",
+      "unknown": "Nimadir xato ketdi. Qayta urinib ko‘ring."
+    }
+  },
+  "paywall": {
+    "title": "Obuna",
+    "headline": "O‘rta va yuqori stollarni oching",
+    "reachedFor": "«{{level}}» darajasidagi stolni ochdingiz",
+    "lede": "Boshlang‘ich stollar bepul va shunday qoladi. Obuna undan yuqoridagi ikki darajani ochadi.",
+    "benefits": {
+      "depth": {
+        "title": "Chuqurroq tushuntirishlar",
+        "body": "O‘sha simulyatsiyalar, siz ishlayotgan daraja tilida tushuntirilgan."
+      },
+      "formulas": {
+        "title": "Tenglamalarning o‘zi",
+        "body": "Simulyatsiya haqiqatan integrallaydigan har bir formula, ish jarayonining yonida."
+      },
+      "topics": {
+        "title": "Vaqt o‘tishi bilan ko‘proq stollar",
+        "body": "To‘lqinlar, optika, zanjirlar, termodinamika va qolganlari tayyorlanmoqda va shu darajalarda paydo bo‘ladi."
+      }
+    },
+    "freeNote": "Siz allaqachon foydalanayotgan hech narsa olib qo‘yilmaydi. Boshlang‘ich stollarga na hisob, na obuna kerak.",
+    "accountNote": "Obuna hisobga bog‘lanadi, shuning uchun birinchi qadam shu.",
+    "createAccount": "Hisob yaratish",
+    "logIn": "Kirish",
+    "subscribe": "Obuna bo‘lish",
+    "comingSoon": "Obunalar tez orada! Hech qanday to‘lov olinmadi.",
+    "maybeLater": "Keyinroq"
+  },
   "input": {
     "range": "Eng kam: {{min}} {{unit}} — Eng ko‘p: {{max}} {{unit}}",
     "clampedMin": "Eng kami {{min}} {{unit}} — to‘g‘rilandi",
@@ -426,6 +667,15 @@
       "elastic": "Mutlaq elastik — sakraydi",
       "restitution": "Tiklanish koeffitsienti",
       "kineticEnergy": "Kinetik energiya"
+    },
+    "circuits": {
+      "ohmsLaw": "Om qonuni",
+      "seriesResistance": "Ketma-ket qarshilik",
+      "parallelResistance": "Parallel qarshilik",
+      "power": "Sarflanadigan quvvat"
+    },
+    "magnets": {
+      "poleForce": "Qutblar orasidagi kuch"
     }
   }
 }

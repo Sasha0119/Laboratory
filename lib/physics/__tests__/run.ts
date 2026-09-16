@@ -23,6 +23,14 @@ import {
 import { PRESETS_BY_ID } from '../presets';
 import { simulate, type SimParams } from '../simulation';
 import { resolveCollision, simulateCollision } from '../collision';
+import { REFERENCE_SAFE_VOLTAGE, resolveCircuit, safePowerFor } from '../circuit';
+import {
+  computeForce,
+  fieldVectorAt,
+  forceFraction,
+  magnetPoles,
+  traceFieldLines,
+} from '../magnetism';
 
 // ---------------------------------------------------------------- harness --
 
@@ -519,6 +527,404 @@ section('Collisions — the track');
   near('contact time is timestep-independent', fine.event!.time, coarse.event!.time, 2e-2);
   near("v1' is timestep-independent", fine.event!.aAfter, coarse.event!.aAfter, 1e-9);
   near("v2' is timestep-independent", fine.event!.bAfter, coarse.event!.bAfter, 1e-9);
+}
+
+// -------------------------------------------------------------------- circuits --
+
+section('Circuits — Ohm\'s Law');
+
+{
+  const r = resolveCircuit({
+    voltage: 9,
+    switchClosed: true,
+    bulbCount: 1,
+    wiring: 'series',
+    bulbs: [{ resistance: 3 }],
+    burnedOut: [false, false],
+  });
+  near('single bulb: I = V/R', r.totalCurrent, 3, 1e-12);
+  near('single bulb: full voltage across it', r.bulbs[0].voltage, 9, 1e-12);
+  near('single bulb: power = V·I', r.bulbs[0].power, 27, 1e-9);
+}
+
+{
+  const r = resolveCircuit({
+    voltage: 9,
+    switchClosed: false,
+    bulbCount: 1,
+    wiring: 'series',
+    bulbs: [{ resistance: 3 }],
+    burnedOut: [false, false],
+  });
+  check('open switch: no current', r.totalCurrent === 0);
+  check('open switch: bulb is dark', r.bulbs[0].brightness === 0);
+}
+
+section('Circuits — series');
+
+{
+  const r = resolveCircuit({
+    voltage: 12,
+    switchClosed: true,
+    bulbCount: 2,
+    wiring: 'series',
+    bulbs: [{ resistance: 4 }, { resistance: 8 }],
+    burnedOut: [false, false],
+  });
+  near('series: R_total = R1 + R2', r.totalResistance, 12, 1e-12);
+  near('series: same current through both', r.bulbs[0].current, r.bulbs[1].current, 1e-12);
+  near('series: I = V / R_total', r.totalCurrent, 1, 1e-12);
+  near('series: voltage divides by resistance', r.bulbs[1].voltage, 8, 1e-9);
+  near(
+    'series: voltage drops sum to the battery voltage',
+    r.bulbs[0].voltage + r.bulbs[1].voltage,
+    12,
+    1e-9
+  );
+}
+
+{
+  // A burned-out bulb in series breaks the whole loop.
+  const r = resolveCircuit({
+    voltage: 9,
+    switchClosed: true,
+    bulbCount: 2,
+    wiring: 'series',
+    bulbs: [{ resistance: 4 }, { resistance: 8 }],
+    burnedOut: [true, false],
+  });
+  check('series: a burned-out bulb kills the current', r.totalCurrent === 0);
+  check('series: the intact bulb goes dark too', r.bulbs[1].current === 0 && r.bulbs[1].brightness === 0);
+}
+
+section('Circuits — parallel');
+
+{
+  const r = resolveCircuit({
+    voltage: 12,
+    switchClosed: true,
+    bulbCount: 2,
+    wiring: 'parallel',
+    bulbs: [{ resistance: 4 }, { resistance: 8 }],
+    burnedOut: [false, false],
+  });
+  near('parallel: 1/R_total = 1/R1 + 1/R2', r.totalResistance, 1 / (1 / 4 + 1 / 8), 1e-9);
+  near('parallel: full voltage across each bulb', r.bulbs[0].voltage, 12, 1e-12);
+  near('parallel: full voltage across each bulb', r.bulbs[1].voltage, 12, 1e-12);
+  near('parallel: current divides inversely with resistance', r.bulbs[0].current, 3, 1e-9);
+  near('parallel: current divides inversely with resistance', r.bulbs[1].current, 1.5, 1e-9);
+  near(
+    'parallel: total current is the sum of the branches',
+    r.totalCurrent,
+    r.bulbs[0].current + r.bulbs[1].current,
+    1e-9
+  );
+}
+
+{
+  // A burned-out bulb in parallel only takes out its own branch.
+  const r = resolveCircuit({
+    voltage: 9,
+    switchClosed: true,
+    bulbCount: 2,
+    wiring: 'parallel',
+    bulbs: [{ resistance: 4 }, { resistance: 8 }],
+    burnedOut: [true, false],
+  });
+  check('parallel: the burned-out branch carries nothing', r.bulbs[0].current === 0);
+  near('parallel: the other bulb is unaffected', r.bulbs[1].current, 9 / 8, 1e-9);
+}
+
+section('Circuits — power and burnout');
+
+{
+  // Overload reduces to "more than the reference voltage across the bulb",
+  // independent of resistance — check that identity directly.
+  for (const resistance of [1, 10, 50, 100]) {
+    const safe = safePowerFor(resistance);
+    near(
+      `safe power at R=${resistance} matches Vref²/R`,
+      safe,
+      (REFERENCE_SAFE_VOLTAGE * REFERENCE_SAFE_VOLTAGE) / resistance,
+      1e-9
+    );
+  }
+}
+
+{
+  const under = resolveCircuit({
+    voltage: 10,
+    switchClosed: true,
+    bulbCount: 1,
+    wiring: 'series',
+    bulbs: [{ resistance: 20 }],
+    burnedOut: [false, false],
+  });
+  check('under the safe voltage: not overloaded', !under.bulbs[0].overloaded);
+
+  const over = resolveCircuit({
+    voltage: 24,
+    switchClosed: true,
+    bulbCount: 1,
+    wiring: 'series',
+    bulbs: [{ resistance: 20 }],
+    burnedOut: [false, false],
+  });
+  check('over the safe voltage: overloaded', over.bulbs[0].overloaded);
+}
+
+{
+  // Brightness must climb monotonically with power up to the overload point.
+  let previous = -1;
+  for (const voltage of [1, 4, 8, 11.9]) {
+    const r = resolveCircuit({
+      voltage,
+      switchClosed: true,
+      bulbCount: 1,
+      wiring: 'series',
+      bulbs: [{ resistance: 10 }],
+      burnedOut: [false, false],
+    });
+    check(`brightness rises with voltage (${voltage}V)`, r.bulbs[0].brightness > previous);
+    previous = r.bulbs[0].brightness;
+  }
+  const atLimit = resolveCircuit({
+    voltage: REFERENCE_SAFE_VOLTAGE,
+    switchClosed: true,
+    bulbCount: 1,
+    wiring: 'series',
+    bulbs: [{ resistance: 10 }],
+    burnedOut: [false, false],
+  });
+  near('brightness saturates at exactly the safe limit', atLimit.bulbs[0].brightness, 1, 1e-9);
+}
+
+{
+  const burned = resolveCircuit({
+    voltage: 9,
+    switchClosed: true,
+    bulbCount: 1,
+    wiring: 'series',
+    bulbs: [{ resistance: 10 }],
+    burnedOut: [true, false],
+  });
+  check('a burned-out bulb draws no current', burned.bulbs[0].current === 0);
+  check('a burned-out bulb is never counted as overloaded again', !burned.bulbs[0].overloaded);
+  check('a burned-out bulb has zero brightness', burned.bulbs[0].brightness === 0);
+}
+
+// -------------------------------------------------------------------- magnetism --
+
+section('Magnetism — force');
+
+{
+  // Textbook inverse-square, and doubling either pole strength doubles F.
+  const base = computeForce({ distance: 10, strengthA: 20, strengthB: 20, orientation: 'attract' });
+  near('F = k·p1·p2/r²', base.magnitude, (20 * 20) / 100, 1e-9);
+  check('attract orientation reports attracting', base.attracting);
+
+  const doubledA = computeForce({ distance: 10, strengthA: 40, strengthB: 20, orientation: 'attract' });
+  near('doubling one pole strength doubles the force', doubledA.magnitude, base.magnitude * 2, 1e-9);
+
+  const doubledDistance = computeForce({ distance: 20, strengthA: 20, strengthB: 20, orientation: 'attract' });
+  near('doubling distance quarters the force', doubledDistance.magnitude, base.magnitude / 4, 1e-9);
+
+  const repel = computeForce({ distance: 10, strengthA: 20, strengthB: 20, orientation: 'repel' });
+  near('magnitude does not depend on orientation', repel.magnitude, base.magnitude, 1e-9);
+  check('repel orientation reports not attracting', !repel.attracting);
+}
+
+{
+  // forceFraction must stay bounded and rise monotonically with magnitude.
+  check('forceFraction(0) is 0', forceFraction(0) === 0);
+  let previous = -1;
+  for (const m of [0, 1, 10, 100, 1000, 100000]) {
+    const f = forceFraction(m);
+    check(`forceFraction rises with magnitude (${m})`, f >= previous);
+    check(`forceFraction(${m}) stays within [0,1]`, f >= 0 && f <= 1);
+    previous = f;
+  }
+}
+
+section('Magnetism — field model');
+
+{
+  // A lone north pole's field points straight away from it, falling off as 1/r².
+  const poles = [{ x: 0, y: 0, strength: 10 }];
+  const near1 = fieldVectorAt(5, 0, poles);
+  const near2 = fieldVectorAt(10, 0, poles);
+  check('field points away from an isolated north pole', near1.x > 0 && Math.abs(near1.y) < 1e-9);
+  near(
+    'field falls off as 1/r² (doubling r quarters the magnitude)',
+    Math.hypot(near2.x, near2.y),
+    Math.hypot(near1.x, near1.y) / 4,
+    1e-6
+  );
+}
+
+{
+  // Two poles of a bar magnet: N at +half, S at -half. Between them, on the
+  // axis, both poles push/pull a test point in the same +x direction.
+  const [n, s] = magnetPoles(0, 15, true);
+  check('magnetPoles: north carries positive strength', n.strength > 0);
+  check('magnetPoles: south carries negative strength', s.strength < 0);
+  const mid = fieldVectorAt(0, 0, [n, s]);
+  check('field between the poles points from N to S', mid.x < 0);
+}
+
+section('Magnetism — field lines');
+
+{
+  const [n, s] = magnetPoles(0, 20, true);
+  const bounds = { minX: -20, maxX: 20, minY: -20, maxY: 20 };
+  const lines = traceFieldLines([n, s], {
+    count: 6,
+    maxSteps: 200,
+    stepLength: 0.3,
+    captureRadius: 0.8,
+    bounds,
+  });
+  check('field lines are traced from the north pole', lines.length === 6);
+  check('every line has more than one point', lines.every((l) => l.points.length > 1));
+  check(
+    'every point stays within the requested bounds',
+    lines.every((l) =>
+      l.points.every(
+        (p) => p.x >= bounds.minX - 1e-6 && p.x <= bounds.maxX + 1e-6 && p.y >= bounds.minY - 1e-6 && p.y <= bounds.maxY + 1e-6
+      )
+    )
+  );
+  // A field line seeded near the N pole of a simple isolated bar magnet
+  // should curve around and arrive near the S pole, not wander off to infinity.
+  const closestToS = Math.min(
+    ...lines.map((l) => Math.min(...l.points.map((p) => Math.hypot(p.x - s.x, p.y - s.y))))
+  );
+  check('at least one field line arrives close to the south pole', closestToS < 2);
+}
+
+// ---------------------------------------------------------- boundary values --
+//
+// What actually happens at the extreme ends of every slider in the app —
+// the exact min/max pairs from LIMITS, plus a couple of values a user could
+// never reach through the UI (R = 0, distance = 0) but that the pure
+// functions should still survive, since nothing stops another caller from
+// passing them in directly.
+
+section('Boundary values — Drop & Projectile');
+
+{
+  const combos: Partial<SimParams>[] = [
+    { mass: 0.0005, dropHeight: 0.5, speed: 0, angleDeg: 0, airResistance: false },
+    { mass: 0.0005, dropHeight: 100, speed: 50, angleDeg: 90, airResistance: true },
+    { mass: 50, dropHeight: 100, speed: 50, angleDeg: 0, airResistance: true },
+    { mass: 50, dropHeight: 0.5, speed: 0, angleDeg: 0, airResistance: false },
+  ];
+  for (const over of combos) {
+    const p = params({ presetId: 'ball', ...over });
+    const r = simulate(p, FIXED_DT);
+    const label = `m=${p.mass} h=${p.dropHeight} v=${p.speed} θ=${p.angleDeg} air=${p.airResistance}`;
+    check(`finite total time (${label})`, Number.isFinite(r.totalTime));
+    check(`finite impact speed (${label})`, Number.isFinite(r.impactSpeed));
+    check(`finite distance travelled (${label})`, Number.isFinite(r.distance));
+    check(`a recognised outcome (${label})`, ['landed', 'boundary', 'timeout', 'floating'].includes(r.outcome));
+  }
+}
+
+section('Boundary values — Collisions');
+
+{
+  const extremes: [number, number, number, number][] = [
+    [0.0005, 15, 0.0005, -15],
+    [50, 15, 50, -15],
+    [0.0005, 15, 50, -15],
+    [50, 15, 0.0005, -15],
+  ];
+  for (const [m1, v1, m2, v2] of extremes) {
+    for (const e of [0, 1] as const) {
+      const sim = runCollision(m1, v1, m2, v2, e === 1 ? 'bouncy' : 'sticky', e);
+      const label = `m1=${m1} m2=${m2} e=${e}`;
+      check(`a contact is resolved (${label})`, sim.event !== null);
+      check(`finite post-impact velocities (${label})`, Number.isFinite(sim.event!.aAfter) && Number.isFinite(sim.event!.bAfter));
+      check(`finite energy figures (${label})`, Number.isFinite(sim.event!.energyLost));
+      near(`momentum still conserved at the extremes (${label})`, sim.event!.momentumAfter, sim.event!.momentumBefore, 1e-6);
+    }
+  }
+}
+
+section('Boundary values — Circuits');
+
+{
+  const cases: { voltage: number; resistance: number; bulbCount: 1 | 2; wiring: 'series' | 'parallel' }[] = [
+    { voltage: 1, resistance: 1, bulbCount: 1, wiring: 'series' },
+    { voltage: 24, resistance: 100, bulbCount: 1, wiring: 'series' },
+    { voltage: 24, resistance: 1, bulbCount: 2, wiring: 'series' },
+    { voltage: 24, resistance: 1, bulbCount: 2, wiring: 'parallel' },
+    { voltage: 1, resistance: 100, bulbCount: 2, wiring: 'parallel' },
+  ];
+  for (const c of cases) {
+    const r = resolveCircuit({
+      voltage: c.voltage,
+      switchClosed: true,
+      bulbCount: c.bulbCount,
+      wiring: c.wiring,
+      bulbs: [{ resistance: c.resistance }, { resistance: c.resistance }],
+      burnedOut: [false, false],
+    });
+    const label = `V=${c.voltage} R=${c.resistance} n=${c.bulbCount} ${c.wiring}`;
+    check(`finite total current (${label})`, Number.isFinite(r.totalCurrent));
+    check(`finite total power (${label})`, Number.isFinite(r.totalPower));
+    check(
+      `every bulb reading is finite (${label})`,
+      r.bulbs.every((b) => Number.isFinite(b.current) && Number.isFinite(b.voltage) && Number.isFinite(b.power))
+    );
+  }
+}
+
+{
+  // R = 0 can never reach this function through the UI (LIMITS.resistanceMin
+  // is 1), but the pure function is still exercised directly here. A 0 Ω
+  // bulb makes the parallel combination 0 Ω too — this model has no internal
+  // battery resistance to bound the resulting current, so rather than
+  // reporting Infinity it treats a dead short as an open loop (no current
+  // anywhere). That is a deliberate simplification, not a crash — this test
+  // exists to pin the behaviour down and flag it if it ever changes.
+  const shorted = resolveCircuit({
+    voltage: 9,
+    switchClosed: true,
+    bulbCount: 2,
+    wiring: 'parallel',
+    bulbs: [{ resistance: 0 }, { resistance: 20 }],
+    burnedOut: [false, false],
+  });
+  check('a 0 Ω branch does not produce NaN or Infinity', Number.isFinite(shorted.totalCurrent));
+  check('a 0 Ω branch is treated as an open loop, not infinite current', shorted.totalCurrent === 0);
+}
+
+section('Boundary values — Magnets');
+
+{
+  const cases: { distance: number; strength: number }[] = [
+    { distance: 1, strength: 1 },
+    { distance: 1, strength: 100 },
+    { distance: 50, strength: 1 },
+    { distance: 50, strength: 100 },
+  ];
+  for (const c of cases) {
+    for (const orientation of ['attract', 'repel'] as const) {
+      const f = computeForce({ distance: c.distance, strengthA: c.strength, strengthB: c.strength, orientation });
+      const label = `r=${c.distance} p=${c.strength} ${orientation}`;
+      check(`finite force magnitude (${label})`, Number.isFinite(f.magnitude));
+      const frac = forceFraction(f.magnitude);
+      check(`forceFraction stays in [0,1] (${label})`, frac >= 0 && frac <= 1);
+    }
+  }
+}
+
+{
+  // distance = 0 can never reach the UI either (min is 1 cm), but the
+  // formula clamps internally rather than dividing by zero.
+  const touching = computeForce({ distance: 0, strengthA: 100, strengthB: 100, orientation: 'attract' });
+  check('distance = 0 does not produce NaN or Infinity', Number.isFinite(touching.magnitude));
 }
 
 // ------------------------------------------------------------------ report --

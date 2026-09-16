@@ -89,6 +89,16 @@ export const LIMITS = {
   velocityMax: 50,
   angleMin: 0,
   angleMax: 90,
+
+  voltageMin: 1,
+  voltageMax: 24,
+  resistanceMin: 1,
+  resistanceMax: 100,
+
+  magnetDistanceMin: 1,
+  magnetDistanceMax: 50,
+  magnetStrengthMin: 1,
+  magnetStrengthMax: 100,
 } as const;
 
 /** Hard stop so a feather drifting down 100 m of Martian air cannot hang the loop. */

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AccessGate } from '../../components/access/AccessGate';
 import { Readout, type DetailRow, type Stat } from '../../components/readout/Readout';
 import { FormulaPanel } from '../../components/sim/FormulaPanel';
 import { LevelBlurb } from '../../components/sim/LevelBlurb';
@@ -23,8 +24,9 @@ import { Segmented } from '../../components/ui/Segmented';
 import { NumberField } from '../../components/ui/NumberField';
 import { useDetailMode } from '../../context/DetailMode';
 import { useDifficulty } from '../../context/Difficulty';
+import { topicById } from '../../lib/catalogue';
 import { LIMITS } from '../../lib/physics/constants';
-import { usesPreciseTerms } from '../../lib/difficulty';
+import { usesPreciseTerms, type DifficultyLevel } from '../../lib/difficulty';
 import { useCollisionSim } from '../../hooks/useCollisionSim';
 import { useImpactSound } from '../../hooks/useImpactSound';
 import {
@@ -66,7 +68,27 @@ const SPEEDS = [
   { value: '2', label: '2×' },
 ];
 
-export default function CollisionsSimulator() {
+/**
+ * What this screen costs, read from the catalogue rather than restated, so the
+ * card in the topic list and the guard here can never disagree. The fallback
+ * is the gated level: a lookup that somehow fails should lock, not open.
+ */
+const REQUIRED_LEVEL: DifficultyLevel = topicById('collisions')?.level ?? 'intermediate';
+
+/**
+ * The route. Guards first, simulation second — a deep link, a restored
+ * navigation stack or a subscription that lapsed mid-session all land here
+ * without going past the topic list.
+ */
+export default function CollisionsRoute() {
+  return (
+    <AccessGate level={REQUIRED_LEVEL}>
+      <CollisionsSimulator />
+    </AccessGate>
+  );
+}
+
+function CollisionsSimulator() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { detailed } = useDetailMode();

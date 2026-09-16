@@ -7,6 +7,8 @@
     "physics": "Physics",
     "drop": "Drop & Projectile",
     "collisions": "Collisions",
+    "circuits": "Simple Circuits",
+    "magnets": "Magnets & Magnetism",
     "settings": "Settings"
   },
   "common": {
@@ -18,7 +20,8 @@
     "restore": "Restore",
     "available": "Available",
     "comingSoon": "Coming soon",
-    "playback": "Playback"
+    "playback": "Playback",
+    "gotIt": "Got it"
   },
   "directions": {
     "left": "left",
@@ -28,7 +31,7 @@
   "home": {
     "tagline": "Real simulations, real equations. Pick a bench and start an experiment.",
     "openBench": "Open bench  →",
-    "footnote": "Everything runs on-device. No account, no network, no data leaves the phone.",
+    "footnote": "Every simulation runs on your phone. An account is only needed for the Intermediate and Pro benches.",
     "settingsLabel": "Settings",
     "categories": {
       "physics": {
@@ -123,7 +126,13 @@
       "oscillation": "Oscillation",
       "damping": "Damping",
       "friction": "Friction",
-      "torque": "Torque"
+      "torque": "Torque",
+      "voltage": "Voltage",
+      "current": "Current",
+      "resistance": "Resistance",
+      "magneticField": "Magnetic field",
+      "attraction": "Attraction",
+      "repulsion": "Repulsion"
     },
     "comingSoonMessage": "This experiment is coming soon!"
   },
@@ -307,6 +316,113 @@
       "intermediate": "Total momentum before the impact equals total momentum after it, whatever the collision type. The coefficient of restitution sets how much kinetic energy survives."
     }
   },
+  "circuits": {
+    "cards": {
+      "battery": "Battery",
+      "bulbs": "Bulbs",
+      "switch": "Switch"
+    },
+    "sliders": {
+      "voltage": "Battery voltage",
+      "resistanceOf": "{{name}} resistance"
+    },
+    "bulbLabel": "Bulb {{n}}",
+    "bulbCountLabel": "Number of bulbs",
+    "bulbCount": {
+      "one": "1 bulb",
+      "two": "2 bulbs"
+    },
+    "wiringLabel": "Wiring",
+    "wiring": {
+      "series": "Series",
+      "parallel": "Parallel"
+    },
+    "wiringHint": "Series: the same current passes through both bulbs. Parallel: both bulbs get the full battery voltage and draw their own current.",
+    "toggles": {
+      "switch": "Switch closed",
+      "switchOn": "The loop is complete — current can flow",
+      "switchOff": "The loop is broken — nothing lights up"
+    },
+    "replaceBulb": "Replace bulb(s)",
+    "stats": {
+      "brightnessOf": "{{name}} brightness",
+      "currentOf": "{{name}} current",
+      "burnedOut": "Burned out",
+      "noCurrent": "No current"
+    },
+    "messages": {
+      "switchOpen": "The switch is open, so no current can flow.",
+      "noCurrent": "The loop is complete, but no current is flowing.",
+      "dim": "Current is flowing — the bulb glows faintly.",
+      "glowing": "Current is flowing at a comfortable brightness.",
+      "bright": "Current is flowing hard — the bulb is glowing brightly.",
+      "oneBurnedOut": "{{name}} burned out from too much power and has gone dark.",
+      "bothBurnedOut": "Both bulbs burned out from too much power and have gone dark."
+    },
+    "details": {
+      "voltage": "Battery voltage  V",
+      "totalResistance": "Total resistance  R",
+      "totalCurrent": "Total current  I",
+      "totalPower": "Total power  P",
+      "resistanceOf": "{{name}} resistance  R",
+      "voltageOf": "{{name}} voltage drop  V",
+      "currentOf": "{{name}} current  I",
+      "powerOf": "{{name}} power  P"
+    },
+    "credits": "Every reading is computed directly from Ohm's Law for the wiring you have chosen — nothing here is a scripted animation.",
+    "blurbs": {
+      "beginner": "Electricity needs a complete loop to flow. Close the switch and it runs from the battery, through the bulb, and back — more electricity through the bulb means a brighter glow.",
+      "intermediate": "Voltage drives current around the loop, and resistance opposes it. In series the same current passes through every bulb; in parallel each bulb gets the full battery voltage and draws its own current."
+    }
+  },
+  "magnets": {
+    "intro": {
+      "title": "What is a magnet?",
+      "body": "Every magnet has two ends called poles — one North, one South. Bring a North pole next to a South pole and they pull together. Bring two matching poles together (North-North or South-South) and they push apart.",
+      "tip": "Try switching to Repel below and watch the arrows flip!"
+    },
+    "cards": {
+      "magnets": "Magnets"
+    },
+    "sliders": {
+      "distance": "Distance between magnets",
+      "strengthOf": "{{name}} strength",
+      "strengthHint": "How powerful this magnet is — a bigger number means a stronger pull or push."
+    },
+    "magnetLabel": "Magnet {{n}}",
+    "orientationLabel": "Orientation",
+    "orientation": {
+      "attract": "Attract",
+      "repel": "Repel"
+    },
+    "orientationHint": "Attract: opposite poles face each other. Repel: matching poles face each other.",
+    "stats": {
+      "pulling": "Pulling together",
+      "pushing": "Pushing apart",
+      "force": "Force"
+    },
+    "messages": {
+      "pullingWeak": "The magnets are pulling together, gently.",
+      "pulling": "The magnets are pulling together.",
+      "pullingStrong": "The magnets are pulling together hard.",
+      "pushingWeak": "The magnets are pushing apart, gently.",
+      "pushing": "The magnets are pushing apart.",
+      "pushingStrong": "The magnets are pushing apart hard.",
+      "snapped": "The magnets pulled in and snapped together!"
+    },
+    "details": {
+      "distance": "Distance  r",
+      "strengthOf": "{{name}} pole strength",
+      "force": "Force  F",
+      "orientation": "Orientation"
+    },
+    "formulaNote": "This uses a simplified pole-strength model (like Coulomb's law), not the full magnetic dipole field equations.",
+    "credits": "Force is computed live from F = k·p₁·p₂ / r² for whatever poles and distance you set — nothing here is a scripted animation.",
+    "blurbs": {
+      "beginner": "Every magnet has two ends called poles: North and South. Facing opposite poles (North to South) pulls the magnets together. Facing matching poles (North to North, or South to South) pushes them apart.",
+      "intermediate": "The force between two magnetic poles falls off with the square of the distance between them, just like gravity and electric charge. Facing opposite poles pulls the magnets together; facing matching poles pushes them apart."
+    }
+  },
   "details": {
     "time": "Time  t",
     "height": "Height  y",
@@ -404,6 +520,131 @@
     "yourLevel": "Your level",
     "otherLevels": "Other levels"
   },
+  "access": {
+    "lockedHint": "Opens the subscription screen"
+  },
+  "account": {
+    "title": "Account",
+    "guestDescription": "You are using Laboratory without an account. The Beginner benches work exactly the same either way.",
+    "createAccount": "Create an account",
+    "logIn": "Log in",
+    "logOut": "Log out",
+    "unnamed": "Your account",
+    "plan": "Plan",
+    "plans": {
+      "free": "Free",
+      "pro": "Pro"
+    },
+    "planNotes": {
+      "free": "The Beginner benches. Intermediate and Pro need a subscription.",
+      "pro": "Every bench, at every level."
+    }
+  },
+  "auth": {
+    "welcome": {
+      "tagline": "Real simulations, real equations. Make an account to keep it with you, or just start experimenting.",
+      "createAccount": "Create an account",
+      "logIn": "I already have an account",
+      "continueAsGuest": "Continue without an account",
+      "guestNote": "The Beginner benches are free, and stay free."
+    },
+    "fields": {
+      "displayName": "Display name",
+      "displayNamePlaceholder": "What should we call you?",
+      "displayNameHint": "Only shown to you, on your own account screen.",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "showPassword": "Show",
+      "hidePassword": "Hide"
+    },
+    "password": {
+      "rules": {
+        "length": "At least 8 characters",
+        "uppercase": "One capital letter (A–Z)",
+        "lowercase": "One small letter (a–z)",
+        "number": "One number (0–9)"
+      }
+    },
+    "validation": {
+      "displayName": "Enter a name to show on your account.",
+      "email": "That does not look like an email address.",
+      "passwordRequired": "Enter your password."
+    },
+    "signIn": {
+      "title": "Log in",
+      "intro": "Welcome back. Log in to pick up where you left off.",
+      "submit": "Log in",
+      "working": "Logging in…",
+      "forgotPassword": "I forgot my password",
+      "noAccount": "I do not have an account yet"
+    },
+    "signUp": {
+      "title": "Create account",
+      "intro": "An account keeps your settings and your subscription with you across devices.",
+      "submit": "Create account",
+      "working": "Creating your account…",
+      "haveAccount": "I already have an account",
+      "privacyNote": "We store your email, your display name, and which plan you are on. Nothing else.",
+      "checkEmailTitle": "Check your email",
+      "checkEmailBody": "A confirmation link is on its way to {{email}}. Open it, then come back and log in.",
+      "backToLogIn": "Back to log in"
+    },
+    "reset": {
+      "title": "Reset password",
+      "intro": "Enter the email address on your account and we will send you a link to set a new password.",
+      "sendLink": "Send the link",
+      "working": "Working…",
+      "sentTitle": "Check your email",
+      "sentBody": "If there is an account for {{email}}, a reset link is on its way. It works once, and expires after an hour.",
+      "backToLogIn": "Back to log in",
+      "setIntro": "Choose a new password for your account.",
+      "newPassword": "New password",
+      "savePassword": "Save new password",
+      "doneTitle": "Password changed",
+      "doneBody": "You are logged in with your new password.",
+      "continue": "Continue",
+      "linkExpired": "That link has expired or has already been used. Ask for a new one below."
+    },
+    "errors": {
+      "notConfigured": "Accounts are not connected yet. Paste your Supabase project URL and anon key into the .env file, then restart the app.",
+      "invalidCredentials": "That email and password do not match an account.",
+      "emailTaken": "There is already an account with that email. Try logging in instead.",
+      "emailNotConfirmed": "Open the confirmation link we emailed you, then log in.",
+      "weakPassword": "That password is too weak. Check the rules above.",
+      "rateLimited": "Too many attempts. Wait a minute, then try again.",
+      "network": "Could not reach the server. Check your connection and try again.",
+      "unknown": "Something went wrong. Please try again."
+    }
+  },
+  "paywall": {
+    "title": "Subscription",
+    "headline": "Unlock the Intermediate and Pro benches",
+    "reachedFor": "You tapped a bench at {{level}} level",
+    "lede": "The Beginner benches are free and always will be. A subscription opens the two levels above them.",
+    "benefits": {
+      "depth": {
+        "title": "Deeper explanations",
+        "body": "The same simulations, explained in the language of the level you are working at."
+      },
+      "formulas": {
+        "title": "The equations themselves",
+        "body": "Every formula the simulation actually integrates, shown alongside the run."
+      },
+      "topics": {
+        "title": "More benches over time",
+        "body": "Waves, optics, circuits, thermodynamics and the rest are being built, and land at these levels."
+      }
+    },
+    "freeNote": "Nothing you can already use is being taken away. The Beginner benches need no account and no subscription.",
+    "accountNote": "A subscription belongs to an account, so that is the first step.",
+    "createAccount": "Create an account",
+    "logIn": "Log in",
+    "subscribe": "Subscribe",
+    "comingSoon": "Subscriptions are coming soon! Nothing has been charged.",
+    "maybeLater": "Maybe later"
+  },
   "input": {
     "range": "Min: {{min}} {{unit}} — Max: {{max}} {{unit}}",
     "clampedMin": "Min is {{min}} {{unit}} — adjusted",
@@ -426,6 +667,15 @@
       "elastic": "Perfectly elastic — they bounce",
       "restitution": "Coefficient of restitution",
       "kineticEnergy": "Kinetic energy"
+    },
+    "circuits": {
+      "ohmsLaw": "Ohm's Law",
+      "seriesResistance": "Series resistance",
+      "parallelResistance": "Parallel resistance",
+      "power": "Power dissipated"
+    },
+    "magnets": {
+      "poleForce": "Force between the poles"
     }
   }
 }
