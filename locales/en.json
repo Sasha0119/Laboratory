@@ -520,25 +520,13 @@
     "yourLevel": "Your level",
     "otherLevels": "Other levels"
   },
-  "access": {
-    "lockedHint": "Opens the subscription screen"
-  },
   "account": {
     "title": "Account",
-    "guestDescription": "You are using Laboratory without an account. The Beginner benches work exactly the same either way.",
+    "guestDescription": "You are using Laboratory without an account. Everything works exactly the same either way.",
     "createAccount": "Create an account",
     "logIn": "Log in",
     "logOut": "Log out",
-    "unnamed": "Your account",
-    "plan": "Plan",
-    "plans": {
-      "free": "Free",
-      "pro": "Pro"
-    },
-    "planNotes": {
-      "free": "The Beginner benches. Intermediate and Pro need a subscription.",
-      "pro": "Every bench, at every level."
-    }
+    "unnamed": "Your account"
   },
   "auth": {
     "welcome": {
@@ -546,7 +534,7 @@
       "createAccount": "Create an account",
       "logIn": "I already have an account",
       "continueAsGuest": "Continue without an account",
-      "guestNote": "The Beginner benches are free, and stay free."
+      "guestNote": "Every bench is free to use, with or without an account."
     },
     "fields": {
       "displayName": "Display name",
@@ -582,7 +570,7 @@
     },
     "signUp": {
       "title": "Create account",
-      "intro": "An account keeps your settings and your subscription with you across devices.",
+      "intro": "An account keeps your settings with you across devices.",
       "submit": "Create account",
       "working": "Creating your account…",
       "haveAccount": "I already have an account",
@@ -617,33 +605,6 @@
       "network": "Could not reach the server. Check your connection and try again.",
       "unknown": "Something went wrong. Please try again."
     }
-  },
-  "paywall": {
-    "title": "Subscription",
-    "headline": "Unlock the Intermediate and Pro benches",
-    "reachedFor": "You tapped a bench at {{level}} level",
-    "lede": "The Beginner benches are free and always will be. A subscription opens the two levels above them.",
-    "benefits": {
-      "depth": {
-        "title": "Deeper explanations",
-        "body": "The same simulations, explained in the language of the level you are working at."
-      },
-      "formulas": {
-        "title": "The equations themselves",
-        "body": "Every formula the simulation actually integrates, shown alongside the run."
-      },
-      "topics": {
-        "title": "More benches over time",
-        "body": "Waves, optics, circuits, thermodynamics and the rest are being built, and land at these levels."
-      }
-    },
-    "freeNote": "Nothing you can already use is being taken away. The Beginner benches need no account and no subscription.",
-    "accountNote": "A subscription belongs to an account, so that is the first step.",
-    "createAccount": "Create an account",
-    "logIn": "Log in",
-    "subscribe": "Subscribe",
-    "comingSoon": "Subscriptions are coming soon! Nothing has been charged.",
-    "maybeLater": "Maybe later"
   },
   "input": {
     "range": "Min: {{min}} {{unit}} — Max: {{max}} {{unit}}",

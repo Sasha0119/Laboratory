@@ -13,20 +13,17 @@ import {
 import { AppState, type AppStateStatus } from 'react-native';
 
 import { authErrorKey } from '../lib/auth/errors';
-import { PASSWORD_RESET_REDIRECT, isSupabaseConfigured } from '../lib/supabase/config';
+import { isSupabaseConfigured, passwordResetRedirect } from '../lib/supabase/config';
 import { startAutoRefresh, stopAutoRefresh, supabase } from '../lib/supabase/client';
-import { isSubscriptionStatus, type Profile, type SubscriptionStatus } from '../lib/supabase/types';
+import type { Profile } from '../lib/supabase/types';
 
 /**
- * Who is using the app, and what they have paid for.
+ * Who is using the app.
  *
  * Same shape as `LanguageProvider` and `DifficultyProvider` — a `ready` flag
  * the navigator waits on, state restored from storage at startup — with one
  * addition: the session itself is restored by supabase-js from AsyncStorage,
  * so a returning user is signed in before the first screen paints.
- *
- * This provider knows nothing about which content costs money. It reports the
- * subscription status; `lib/access` decides what that buys.
  */
 
 /** Remembers that the reader chose to look around without an account. */
@@ -50,8 +47,6 @@ interface AuthValue {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
-  /** null for guests and logged-out readers. */
-  subscriptionStatus: SubscriptionStatus | null;
   displayName: string | null;
   /** False until real Supabase credentials are pasted into .env. */
   configured: boolean;
@@ -61,7 +56,7 @@ interface AuthValue {
   signOut: () => Promise<void>;
   sendPasswordReset: (email: string) => Promise<AuthResult>;
   continueAsGuest: () => void;
-  /** Re-reads the profile — how a manual upgrade in the dashboard is picked up. */
+  /** Re-reads the profile from the database. */
   refreshProfile: () => Promise<void>;
 }
 
@@ -73,7 +68,6 @@ const AuthContext = createContext<AuthValue>({
   session: null,
   user: null,
   profile: null,
-  subscriptionStatus: null,
   displayName: null,
   configured: false,
   signUp: async () => NOT_CONFIGURED,
@@ -105,21 +99,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Ignore a response for a user who has since signed out.
     if (currentUserId.current !== userId) return;
 
-    if (error || !data) {
-      // No row yet — the sign-up trigger may not have fired, or the schema was
-      // never installed. Treat it as a free account rather than blocking the
-      // app: the worst case is that a paying user sees the paywall until the
-      // next refresh, which is far better than a reader stuck on a spinner.
-      setProfile(null);
-      return;
-    }
+    // On a failed or empty read, keep whatever profile is already held: a
+    // dropped connection must not blank the display name. The name falls back
+    // to the sign-up metadata when there is no row at all.
+    if (error || !data) return;
 
-    setProfile({
-      ...data,
-      subscription_status: isSubscriptionStatus(data.subscription_status)
-        ? data.subscription_status
-        : 'free',
-    });
+    setProfile(data);
   }, []);
 
   const refreshProfile = useCallback(async () => {
@@ -195,6 +180,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Deferred by a tick on purpose: supabase-js holds an internal lock for
       // the duration of this callback, and a `from()` query needs that same
       // lock to attach the access token. Starting it here would deadlock.
+      if (changedUser) setProfile(null);
       if (changedUser) setTimeout(() => void loadProfile(nextUserId), 0);
     });
 
@@ -202,8 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [loadProfile]);
 
   // Refresh tokens only while the app is on screen, and take the chance to
-  // re-read the profile — this is what makes a manual upgrade in the Supabase
-  // dashboard show up without the user reinstalling anything.
+  // re-read the profile.
   useEffect(() => {
     if (!isSupabaseConfigured) return;
 
@@ -290,7 +275,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!isSupabaseConfigured) return NOT_CONFIGURED;
 
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: PASSWORD_RESET_REDIRECT,
+      redirectTo: passwordResetRedirect(),
     });
 
     if (error) return { ok: false, errorKey: authErrorKey(error) };
@@ -316,7 +301,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       session,
       user: session?.user ?? null,
       profile,
-      subscriptionStatus: session ? profile?.subscription_status ?? 'free' : null,
       displayName:
         profile?.display_name ||
         (session?.user.user_metadata?.display_name as string | undefined) ||

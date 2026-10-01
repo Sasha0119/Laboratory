@@ -1,15 +1,12 @@
 /**
  * The topic catalogue.
  *
- * Lifted out of the Physics index screen so that the list and the route guards
- * cannot disagree. A card that shows a lock and a screen that refuses to open
- * now read the same row, which means a topic added here is gated correctly
- * everywhere without touching either.
+ * Lifted out of the Physics index screen so the list and the routes read the
+ * same rows.
  *
  * Ids and metadata only — every title and summary is looked up at
- * `physicsIndex.sims.<id>.*`. `level` is the level the topic is aimed at, and
- * therefore also what decides whether it is free (see `lib/access`). `href` is
- * what makes a topic real: anything without one renders as a Coming Soon card.
+ * `physicsIndex.sims.<id>.*`. `level` is the level the topic is aimed at.
+ * `href` is what makes a topic real: anything without one renders as a Coming Soon card.
  */
 
 import type { DifficultyLevel } from '../difficulty';

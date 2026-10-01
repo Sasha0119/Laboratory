@@ -8,22 +8,6 @@
  */
 
 /**
- * What a user is entitled to.
- *
- *   free  — Beginner content only. Every new account starts here.
- *   pro   — Everything.
- *
- * For now this is set by hand in the Supabase table editor. When real payments
- * arrive, the purchase webhook writes this same column and nothing else in the
- * app has to change.
- */
-export type SubscriptionStatus = 'free' | 'pro';
-
-export function isSubscriptionStatus(value: unknown): value is SubscriptionStatus {
-  return value === 'free' || value === 'pro';
-}
-
-/**
  * A type alias rather than an interface on purpose: supabase-js requires each
  * `Row` to satisfy `Record<string, unknown>`, and TypeScript only allows that
  * for type aliases. Declared as an interface, every query would come back
@@ -32,7 +16,6 @@ export function isSubscriptionStatus(value: unknown): value is SubscriptionStatu
 export type Profile = {
   id: string;
   display_name: string;
-  subscription_status: SubscriptionStatus;
   created_at: string;
   updated_at: string;
 };
@@ -45,13 +28,11 @@ export interface Database {
         Insert: {
           id: string;
           display_name: string;
-          subscription_status?: SubscriptionStatus;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           display_name?: string;
-          subscription_status?: SubscriptionStatus;
           updated_at?: string;
         };
         Relationships: [];
@@ -64,8 +45,7 @@ export interface Database {
     Views: { [_ in never]: never };
     Functions: { [_ in never]: never };
     Enums: {
-      subscription_status: SubscriptionStatus;
-    };
+        };
     CompositeTypes: { [_ in never]: never };
   };
 }

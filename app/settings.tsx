@@ -102,14 +102,12 @@ export default function Settings() {
 /**
  * Account state, and the only place to sign in or out.
  *
- * Deliberately factual: it reports which plan the account is on and stops
- * there. There is no upgrade button here — the paywall is reached by tapping
- * into content that needs it, and nowhere else.
+ * Deliberately factual: who is signed in, and a way to sign out.
  */
 function AccountCard() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { mode, user, displayName, subscriptionStatus, signOut } = useAuth();
+  const { mode, user, displayName, signOut } = useAuth();
 
   if (mode !== 'account') {
     return (
@@ -136,18 +134,6 @@ function AccountCard() {
         <Text style={styles.name}>{displayName ?? t('account.unnamed')}</Text>
         {user?.email ? <Text style={styles.email}>{user.email}</Text> : null}
       </View>
-
-      <View style={styles.planRow}>
-        <Text style={styles.planLabel}>{t('account.plan')}</Text>
-        <Text
-          style={[styles.planValue, subscriptionStatus === 'pro' && { color: colors.violet }]}
-        >
-          {t(`account.plans.${subscriptionStatus ?? 'free'}`)}
-        </Text>
-      </View>
-      <Text style={styles.planNote}>
-        {t(`account.planNotes.${subscriptionStatus ?? 'free'}`)}
-      </Text>
 
       <View style={styles.accountActions}>
         <Button label={t('account.logOut')} variant="ghost" onPress={() => void signOut()} />
@@ -239,26 +225,6 @@ const styles = StyleSheet.create({
   identity: { marginBottom: spacing.md },
   name: { color: colors.text, fontSize: 18, fontWeight: '800' },
   email: { color: colors.textMuted, fontSize: 12.5, marginTop: 2 },
-  planRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.sm + 2,
-    paddingHorizontal: spacing.md,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.strokeSoft,
-    backgroundColor: colors.bgElevated,
-  },
-  planLabel: { color: colors.textMuted, fontSize: 13.5, fontWeight: '600' },
-  planValue: { color: colors.text, fontSize: 14, fontWeight: '800' },
-  planNote: {
-    color: colors.textFaint,
-    fontSize: 11.5,
-    lineHeight: 17,
-    marginTop: spacing.sm,
-    paddingHorizontal: 2,
-  },
   accountActions: { gap: spacing.sm, marginTop: spacing.md },
 
   notes: { gap: spacing.sm, paddingHorizontal: 2, marginTop: spacing.xs },

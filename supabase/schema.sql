@@ -9,8 +9,7 @@
 --  CREATE OR REPLACE.
 --
 --  What it sets up:
---    * a `profiles` row for every auth user, holding the display name and the
---      subscription status
+--    * a `profiles` row for every auth user, holding the display name
 --    * Row Level Security so a user can only ever read and write their own row
 --    * a trigger that creates the profile automatically on sign-up, so the app
 --      never has to insert one (and never has to be trusted to)
@@ -18,35 +17,17 @@
 -- =============================================================================
 
 
--- ---------------------------------------------------------------- enum ------
--- Kept as an enum rather than free text so a typo can never silently grant or
--- revoke access.
-
-do $$
-begin
-  if not exists (select 1 from pg_type where typname = 'subscription_status') then
-    create type public.subscription_status as enum ('free', 'pro');
-  end if;
-end
-$$;
-
-
 -- -------------------------------------------------------------- table -------
 
 create table if not exists public.profiles (
   id                  uuid primary key references auth.users (id) on delete cascade,
   display_name        text not null default '',
-  -- Every account starts free. Upgrading is a manual edit in the table editor
-  -- for now; a payment webhook will write this same column later.
-  subscription_status public.subscription_status not null default 'free',
   created_at          timestamptz not null default now(),
   updated_at          timestamptz not null default now()
 );
 
 comment on table public.profiles is
-  'One row per auth user. Holds the display name and what content they may open.';
-comment on column public.profiles.subscription_status is
-  'free = Beginner content only. pro = everything. Set by hand until payments ship.';
+  'One row per auth user. Holds the display name.';
 
 
 -- ---------------------------------------------------------------- RLS -------
@@ -66,9 +47,8 @@ create policy "Profiles are updatable by their owner"
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
--- Deliberately NO insert policy and NO update policy on subscription_status
--- beyond the column grant below: profiles are created by the trigger, and the
--- client must never be able to promote itself to `pro`.
+-- Deliberately NO insert policy: profiles are created by the trigger. Updates
+-- are limited to the columns granted below.
 
 revoke update on public.profiles from anon, authenticated;
 grant  update (display_name, updated_at) on public.profiles to authenticated;
@@ -134,16 +114,3 @@ select u.id,
        )
 from auth.users u
 on conflict (id) do nothing;
-
-
--- =============================================================================
---  Granting Pro to a user (manual, until payments ship)
--- =============================================================================
---
---    update public.profiles
---       set subscription_status = 'pro'
---     where id = (select id from auth.users where email = 'someone@example.com');
---
---  The app picks the change up the next time that user opens it, or straight
---  away if they pull down on the Settings screen.
--- =============================================================================

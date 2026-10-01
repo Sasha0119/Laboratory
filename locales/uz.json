@@ -520,25 +520,13 @@
     "yourLevel": "Sizning darajangiz",
     "otherLevels": "Boshqa darajalar"
   },
-  "access": {
-    "lockedHint": "Obuna ekranini ochadi"
-  },
   "account": {
     "title": "Hisob",
-    "guestDescription": "Siz Laboratory’dan hisobsiz foydalanyapsiz. Boshlang‘ich stollar har ikki holatda ham bir xil ishlaydi.",
+    "guestDescription": "Siz Laboratory’dan hisobsiz foydalanyapsiz. Hamma narsa har ikki holatda ham bir xil ishlaydi.",
     "createAccount": "Hisob yaratish",
     "logIn": "Kirish",
     "logOut": "Chiqish",
-    "unnamed": "Sizning hisobingiz",
-    "plan": "Tarif",
-    "plans": {
-      "free": "Bepul",
-      "pro": "Pro"
-    },
-    "planNotes": {
-      "free": "Boshlang‘ich stollar. O‘rta va yuqori uchun obuna kerak.",
-      "pro": "Barcha darajadagi barcha stollar."
-    }
+    "unnamed": "Sizning hisobingiz"
   },
   "auth": {
     "welcome": {
@@ -546,7 +534,7 @@
       "createAccount": "Hisob yaratish",
       "logIn": "Menda hisob bor",
       "continueAsGuest": "Hisobsiz davom etish",
-      "guestNote": "Boshlang‘ich stollar bepul va bepulligicha qoladi."
+      "guestNote": "Barcha stollardan hisobli yoki hisobsiz bepul foydalanish mumkin."
     },
     "fields": {
       "displayName": "Ko‘rsatiladigan ism",
@@ -582,7 +570,7 @@
     },
     "signUp": {
       "title": "Hisob yaratish",
-      "intro": "Hisob sozlamalaringiz va obunangizni barcha qurilmalarda saqlab qoladi.",
+      "intro": "Hisob sozlamalaringizni barcha qurilmalarda saqlab turadi.",
       "submit": "Hisob yaratish",
       "working": "Hisob yaratilmoqda…",
       "haveAccount": "Menda hisob bor",
@@ -617,33 +605,6 @@
       "network": "Serverga ulanib bo‘lmadi. Aloqani tekshirib, qayta urinib ko‘ring.",
       "unknown": "Nimadir xato ketdi. Qayta urinib ko‘ring."
     }
-  },
-  "paywall": {
-    "title": "Obuna",
-    "headline": "O‘rta va yuqori stollarni oching",
-    "reachedFor": "«{{level}}» darajasidagi stolni ochdingiz",
-    "lede": "Boshlang‘ich stollar bepul va shunday qoladi. Obuna undan yuqoridagi ikki darajani ochadi.",
-    "benefits": {
-      "depth": {
-        "title": "Chuqurroq tushuntirishlar",
-        "body": "O‘sha simulyatsiyalar, siz ishlayotgan daraja tilida tushuntirilgan."
-      },
-      "formulas": {
-        "title": "Tenglamalarning o‘zi",
-        "body": "Simulyatsiya haqiqatan integrallaydigan har bir formula, ish jarayonining yonida."
-      },
-      "topics": {
-        "title": "Vaqt o‘tishi bilan ko‘proq stollar",
-        "body": "To‘lqinlar, optika, zanjirlar, termodinamika va qolganlari tayyorlanmoqda va shu darajalarda paydo bo‘ladi."
-      }
-    },
-    "freeNote": "Siz allaqachon foydalanayotgan hech narsa olib qo‘yilmaydi. Boshlang‘ich stollarga na hisob, na obuna kerak.",
-    "accountNote": "Obuna hisobga bog‘lanadi, shuning uchun birinchi qadam shu.",
-    "createAccount": "Hisob yaratish",
-    "logIn": "Kirish",
-    "subscribe": "Obuna bo‘lish",
-    "comingSoon": "Obunalar tez orada! Hech qanday to‘lov olinmadi.",
-    "maybeLater": "Keyinroq"
   },
   "input": {
     "range": "Eng kam: {{min}} {{unit}} — Eng ko‘p: {{max}} {{unit}}",

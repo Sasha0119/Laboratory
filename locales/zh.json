@@ -520,25 +520,13 @@
     "yourLevel": "你的难度",
     "otherLevels": "其他难度"
   },
-  "access": {
-    "lockedHint": "打开订阅页面"
-  },
   "account": {
     "title": "账号",
-    "guestDescription": "你正在不使用账号的情况下使用 Laboratory。入门实验台在两种情况下完全一样。",
+    "guestDescription": "你正在不使用账户的情况下使用 Laboratory。无论是否有账户，一切功能都完全相同。",
     "createAccount": "创建账号",
     "logIn": "登录",
     "logOut": "退出登录",
-    "unnamed": "你的账号",
-    "plan": "方案",
-    "plans": {
-      "free": "免费",
-      "pro": "专业版"
-    },
-    "planNotes": {
-      "free": "入门实验台。进阶和专业需要订阅。",
-      "pro": "所有难度的全部实验台。"
-    }
+    "unnamed": "你的账号"
   },
   "auth": {
     "welcome": {
@@ -546,7 +534,7 @@
       "createAccount": "创建账号",
       "logIn": "我已经有账号了",
       "continueAsGuest": "不创建账号，继续使用",
-      "guestNote": "入门实验台是免费的，而且会一直免费。"
+      "guestNote": "所有实验台都可免费使用，无论是否有账户。"
     },
     "fields": {
       "displayName": "显示名称",
@@ -582,7 +570,7 @@
     },
     "signUp": {
       "title": "创建账号",
-      "intro": "账号会在所有设备上保留你的设置和订阅。",
+      "intro": "账户可让你的设置在各设备间同步。",
       "submit": "创建账号",
       "working": "正在创建账号…",
       "haveAccount": "我已经有账号了",
@@ -617,33 +605,6 @@
       "network": "无法连接服务器。请检查网络后重试。",
       "unknown": "出了点问题，请再试一次。"
     }
-  },
-  "paywall": {
-    "title": "订阅",
-    "headline": "解锁进阶和专业实验台",
-    "reachedFor": "你点开的是「{{level}}」级别的实验台",
-    "lede": "入门实验台是免费的，而且会一直免费。订阅可以打开上面两个难度。",
-    "benefits": {
-      "depth": {
-        "title": "更深入的讲解",
-        "body": "同样的模拟，用你所在难度的语言来讲解。"
-      },
-      "formulas": {
-        "title": "方程本身",
-        "body": "模拟真正在积分的每一个公式，就显示在运行旁边。"
-      },
-      "topics": {
-        "title": "以后会有更多实验台",
-        "body": "波动、光学、电路、热力学等等正在开发，都会出现在这两个难度。"
-      }
-    },
-    "freeNote": "你现在能用的东西不会被拿走。入门实验台不需要账号，也不需要订阅。",
-    "accountNote": "订阅是绑定在账号上的，所以第一步是账号。",
-    "createAccount": "创建账号",
-    "logIn": "登录",
-    "subscribe": "订阅",
-    "comingSoon": "订阅功能即将推出！没有产生任何扣费。",
-    "maybeLater": "以后再说"
   },
   "input": {
     "range": "最小：{{min}} {{unit}} — 最大：{{max}} {{unit}}",

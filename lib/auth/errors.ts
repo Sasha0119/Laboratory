@@ -22,7 +22,7 @@ export type AuthErrorId =
 export function authErrorId(error: unknown): AuthErrorId {
   if (!error) return 'unknown';
 
-  const err = error as Partial<AuthError> & { message?: string; status?: number };
+  const err = error as Partial<AuthError> & { message?: string; status?: number; name?: string };
   const code = typeof err.code === 'string' ? err.code : '';
   const message = (err.message ?? '').toLowerCase();
 
@@ -43,7 +43,13 @@ export function authErrorId(error: unknown): AuthErrorId {
   if (code === 'over_request_rate_limit' || code === 'over_email_send_rate_limit' || err.status === 429) {
     return 'rateLimited';
   }
-  if (message.includes('network') || message.includes('fetch failed') || message.includes('timeout')) {
+  if (
+    err.name === 'AuthRetryableFetchError' ||
+    message.includes('network') ||
+    message.includes('failed to fetch') ||
+    message.includes('fetch failed') ||
+    message.includes('timeout')
+  ) {
     return 'network';
   }
   return 'unknown';

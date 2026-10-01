@@ -24,6 +24,8 @@
  *  keeps credentials out of git.
  */
 
+import { Platform } from 'react-native';
+
 const PLACEHOLDER_URL = 'https://YOUR-PROJECT-REF.supabase.co';
 const PLACEHOLDER_ANON_KEY = 'YOUR-SUPABASE-ANON-KEY';
 
@@ -46,10 +48,18 @@ export const isSupabaseConfigured =
   SUPABASE_ANON_KEY.length > 20;
 
 /**
- * Deep link the password-reset email sends the user back to.
+ * Where the password-reset email sends the user back to.
  *
- * Matches the `scheme` in app.json. Add this exact URL to
- * Authentication → URL Configuration → Redirect URLs in the Supabase
- * dashboard, otherwise Supabase refuses the redirect.
+ * On a phone that is the app's deep link (the `scheme` in app.json); on the web
+ * build it is the site's own /auth/reset-password page, since a browser cannot
+ * open a custom scheme. Add BOTH to Authentication → URL Configuration →
+ * Redirect URLs in the Supabase dashboard (the site one as
+ * `https://your-domain/auth/reset-password`, plus `http://localhost:8081/**`
+ * for local web), otherwise Supabase refuses the redirect.
  */
-export const PASSWORD_RESET_REDIRECT = 'laboratory://auth/reset-password';
+export function passwordResetRedirect(): string {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    return `${window.location.origin}/auth/reset-password`;
+  }
+  return 'laboratory://auth/reset-password';
+}

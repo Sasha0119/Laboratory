@@ -520,25 +520,13 @@
     "yourLevel": "Senin seviyen",
     "otherLevels": "Diğer seviyeler"
   },
-  "access": {
-    "lockedHint": "Abonelik ekranını açar"
-  },
   "account": {
     "title": "Hesap",
-    "guestDescription": "Laboratory'yi hesapsız kullanıyorsun. Başlangıç tezgâhları her iki durumda da tıpatıp aynı çalışır.",
+    "guestDescription": "Laboratory’yi hesapsız kullanıyorsunuz. Her şey, hesapla da hesapsız da tamamen aynı çalışır.",
     "createAccount": "Hesap oluştur",
     "logIn": "Giriş yap",
     "logOut": "Çıkış yap",
-    "unnamed": "Hesabın",
-    "plan": "Plan",
-    "plans": {
-      "free": "Ücretsiz",
-      "pro": "Pro"
-    },
-    "planNotes": {
-      "free": "Başlangıç tezgâhları. Orta ve İleri için abonelik gerekir.",
-      "pro": "Her seviyede, bütün tezgâhlar."
-    }
+    "unnamed": "Hesabın"
   },
   "auth": {
     "welcome": {
@@ -546,7 +534,7 @@
       "createAccount": "Hesap oluştur",
       "logIn": "Zaten hesabım var",
       "continueAsGuest": "Hesapsız devam et",
-      "guestNote": "Başlangıç tezgâhları ücretsiz ve öyle kalacak."
+      "guestNote": "Tüm tezgâhlar hesapla ya da hesapsız ücretsiz kullanılır."
     },
     "fields": {
       "displayName": "Görünen ad",
@@ -582,7 +570,7 @@
     },
     "signUp": {
       "title": "Hesap oluştur",
-      "intro": "Hesap, ayarlarını ve aboneliğini bütün cihazlarında yanında tutar.",
+      "intro": "Hesap, ayarlarınızı tüm cihazlarda sizinle tutar.",
       "submit": "Hesap oluştur",
       "working": "Hesabın oluşturuluyor…",
       "haveAccount": "Zaten hesabım var",
@@ -617,33 +605,6 @@
       "network": "Sunucuya ulaşılamadı. Bağlantını kontrol edip tekrar dene.",
       "unknown": "Bir şeyler ters gitti. Lütfen tekrar dene."
     }
-  },
-  "paywall": {
-    "title": "Abonelik",
-    "headline": "Orta ve İleri tezgâhların kilidini aç",
-    "reachedFor": "{{level}} seviyesinde bir tezgâha dokundunuz",
-    "lede": "Başlangıç tezgâhları ücretsiz ve öyle kalacak. Abonelik, üstündeki iki seviyeyi açar.",
-    "benefits": {
-      "depth": {
-        "title": "Daha derin açıklamalar",
-        "body": "Aynı simülasyonlar, çalıştığın seviyenin diliyle anlatılıyor."
-      },
-      "formulas": {
-        "title": "Denklemlerin kendisi",
-        "body": "Simülasyonun gerçekten entegre ettiği her formül, çalışmanın yanında."
-      },
-      "topics": {
-        "title": "Zamanla daha çok tezgâh",
-        "body": "Dalgalar, optik, devreler, termodinamik ve gerisi hazırlanıyor; hepsi bu seviyelerde çıkacak."
-      }
-    },
-    "freeNote": "Şu an kullanabildiğin hiçbir şey elinden alınmıyor. Başlangıç tezgâhları için ne hesap ne abonelik gerekir.",
-    "accountNote": "Abonelik bir hesaba bağlıdır, o yüzden ilk adım bu.",
-    "createAccount": "Hesap oluştur",
-    "logIn": "Giriş yap",
-    "subscribe": "Abone ol",
-    "comingSoon": "Abonelikler çok yakında! Hiçbir ücret alınmadı.",
-    "maybeLater": "Belki sonra"
   },
   "input": {
     "range": "En az: {{min}} {{unit}} — En çok: {{max}} {{unit}}",

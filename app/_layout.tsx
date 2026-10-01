@@ -86,7 +86,6 @@ function Navigator() {
       <Stack.Screen name="auth/sign-in" options={{ title: t('auth.signIn.title') }} />
       <Stack.Screen name="auth/sign-up" options={{ title: t('auth.signUp.title') }} />
       <Stack.Screen name="auth/reset-password" options={{ title: t('auth.reset.title') }} />
-      <Stack.Screen name="paywall" options={{ title: t('paywall.title') }} />
     </Stack>
   );
 }

@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -6,7 +7,6 @@ import Svg, { Circle, Ellipse, Line, Path, Rect } from 'react-native-svg';
 
 import { Segmented } from '../../components/ui/Segmented';
 import { useDifficulty } from '../../context/Difficulty';
-import { useContentAccess } from '../../hooks/useContentAccess';
 import { TOPICS, type Topic } from '../../lib/catalogue';
 import { DIFFICULTY_ORDER, type DifficultyLevel } from '../../lib/difficulty';
 import { colors, radius, spacing } from '../../theme';
@@ -22,7 +22,7 @@ export default function PhysicsIndex() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { level, setLevel } = useDifficulty();
-  const access = useContentAccess();
+  const router = useRouter();
 
   /**
    * Every topic stays visible whatever the level — a curious reader should be
@@ -82,10 +82,7 @@ export default function PhysicsIndex() {
             <TopicCard
               key={topic.id}
               topic={topic}
-              // `open` decides for itself whether this leads to the simulation
-              // or to the paywall — the card never has to know.
-              onPress={topic.href ? () => access.open(topic) : undefined}
-              locked={!!topic.href && access.isLocked(topic)}
+              onPress={topic.href ? () => router.push(topic.href as never) : undefined}
             />
           ))}
         </View>
@@ -97,12 +94,9 @@ export default function PhysicsIndex() {
 function TopicCard({
   topic,
   onPress,
-  locked = false,
 }: {
   topic: Topic;
   onPress?: () => void;
-  /** Built, but out of reach without a subscription. */
-  locked?: boolean;
 }) {
   const { t } = useTranslation();
   const scale = useRef(new Animated.Value(1)).current;
@@ -123,7 +117,6 @@ function TopicCard({
         onPress={onPress ?? (() => setShowNotice((v) => !v))}
         accessibilityRole="button"
         accessibilityState={{ disabled }}
-        accessibilityHint={locked ? t('access.lockedHint') : undefined}
         style={[styles.card, disabled && styles.cardDisabled]}
       >
         <View style={styles.cardTop}>
@@ -161,21 +154,7 @@ function TopicCard({
               ))}
             </View>
           </View>
-          {/* A lock rather than a chevron: the card still opens, it just does
-              not open onto the simulation. Saying so up front is honest — an
-              unannounced paywall would be the dark pattern. */}
-          {locked ? (
-            <Svg width={17} height={17} viewBox="0 0 24 24" style={styles.lock}>
-              <Rect x={5} y={10.5} width={14} height={9.5} rx={2.2} fill={colors.textMuted} opacity={0.8} />
-              <Path
-                d="M8.4 10.5V8.2a3.6 3.6 0 0 1 7.2 0v2.3"
-                stroke={colors.textMuted}
-                strokeWidth={1.9}
-                fill="none"
-                strokeLinecap="round"
-              />
-            </Svg>
-          ) : !disabled ? (
+          {!disabled ? (
             <Text style={styles.chevron}>›</Text>
           ) : null}
         </View>
@@ -360,7 +339,6 @@ const styles = StyleSheet.create({
   },
   topicText: { color: colors.textFaint, fontSize: 10, fontWeight: '600', letterSpacing: 0.3 },
   chevron: { color: colors.accent, fontSize: 26, fontWeight: '300', marginLeft: 2 },
-  lock: { marginLeft: 2, marginRight: 3 },
 
   notice: {
     marginTop: spacing.sm,
