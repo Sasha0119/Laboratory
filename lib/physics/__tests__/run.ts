@@ -31,6 +31,28 @@ import {
   magnetPoles,
   traceFieldLines,
 } from '../magnetism';
+import {
+  ABSOLUTE_ZERO_C,
+  CUSTOM_DEFAULT,
+  MAX_TEMPERATURE_C,
+  PRESET_ORDER,
+  PRESET_SUBSTANCES,
+  SUBSTANCE_MASS,
+  addHeat,
+  atLimit,
+  enthalpyForTemperature,
+  heatBetween,
+  heatLevel,
+  heatToChangePhase,
+  heatToWarm,
+  isValidSubstance,
+  latentHeatFor,
+  specificHeatFor,
+  stateAt,
+  thresholds,
+  type Substance,
+} from '../thermo';
+import { MatterEngine, PARTICLE_COUNT, type EngineInput } from '../../matter/engine';
 
 // ---------------------------------------------------------------- harness --
 
@@ -925,6 +947,331 @@ section('Boundary values — Magnets');
   // formula clamps internally rather than dividing by zero.
   const touching = computeForce({ distance: 0, strengthA: 100, strengthB: 100, orientation: 'attract' });
   check('distance = 0 does not produce NaN or Infinity', Number.isFinite(touching.magnitude));
+}
+
+
+// ----------------------------------------------------------------- thermo --
+
+const WATER = PRESET_SUBSTANCES.water;
+const M = SUBSTANCE_MASS;
+
+section('Thermodynamics — Q = m·c·ΔT within a phase');
+
+{
+  near('heatToWarm: 1 kg ice, 10 K', heatToWarm(1, WATER.cSolid, 10), 20_900, 1e-9);
+  near('heatToWarm: scales with mass', heatToWarm(2, WATER.cLiquid, 5), 2 * 4186 * 5, 1e-9);
+  near('heatToChangePhase: 1 kg melting water', heatToChangePhase(1, WATER.latentFusion), 334_000, 1e-9);
+
+  // −20 °C ice, add the heat for +10 K: it should read −10 °C and still be solid.
+  const h0 = enthalpyForTemperature(WATER, -20);
+  const h1 = addHeat(WATER, h0, heatToWarm(M, WATER.cSolid, 10));
+  const st = stateAt(WATER, h1);
+  near('ice warms by exactly Q/(m·c)', st.temperature, -10, 1e-9);
+  check('still solid after warming ice', st.phase === 'solid');
+
+  // Liquid water: 4186 J raises 1 kg by 1 K.
+  const hl = enthalpyForTemperature(WATER, 20);
+  near('water warms 1 K for 4186 J', stateAt(WATER, addHeat(WATER, hl, 4186)).temperature, 21, 1e-9);
+  check('20 °C is liquid', stateAt(WATER, hl).phase === 'liquid');
+
+  // Steam.
+  const hg = enthalpyForTemperature(WATER, 130);
+  check('130 °C is gas', stateAt(WATER, hg).phase === 'gas');
+  near('steam warms by Q/(m·c)', stateAt(WATER, addHeat(WATER, hg, 2010 * 5)).temperature, 135, 1e-9);
+}
+
+section('Thermodynamics — the plateaus (latent heat)');
+
+{
+  const th = thresholds(WATER);
+  near('melting needs m·L_f', th.meltEnd - th.meltStart, 334_000, 1e-6);
+  near('boiling needs m·L_v', th.boilEnd - th.boilStart, 2_260_000, 1e-6);
+
+  // Temperature is flat the whole way through melting.
+  let flatMelt = true;
+  let flatBoil = true;
+  for (let i = 1; i < 200; i++) {
+    const m = stateAt(WATER, th.meltEnd * (i / 200));
+    if (m.phase !== 'melting' || Math.abs(m.temperature - WATER.meltingPoint) > 1e-12) flatMelt = false;
+    const b = stateAt(WATER, th.boilStart + (th.boilEnd - th.boilStart) * (i / 200));
+    if (b.phase !== 'boiling' || Math.abs(b.temperature - WATER.boilingPoint) > 1e-12) flatBoil = false;
+  }
+  check('temperature stays at 0 °C throughout melting', flatMelt);
+  check('temperature stays at 100 °C throughout boiling', flatBoil);
+
+  near('half the latent heat → half melted', stateAt(WATER, th.meltEnd / 2).fraction, 0.5, 1e-12);
+  near('a quarter of L_v → a quarter boiled', stateAt(WATER, th.boilStart + (th.boilEnd - th.boilStart) / 4).fraction, 0.25, 1e-12);
+
+  // Only once the latent heat is paid does the temperature move again.
+  const justAfterMelt = stateAt(WATER, th.meltEnd + 4186 * 0.5);
+  check('liquid once melting is paid for', justAfterMelt.phase === 'liquid');
+  near('...and then it warms', justAfterMelt.temperature, 0.5, 1e-9);
+  const justAfterBoil = stateAt(WATER, th.boilEnd + 2010 * 2);
+  check('gas once boiling is paid for', justAfterBoil.phase === 'gas');
+  near('...and then steam warms', justAfterBoil.temperature, 102, 1e-9);
+
+  check('latentHeatFor melting is L_f', latentHeatFor(WATER, 'melting') === WATER.latentFusion);
+  check('latentHeatFor boiling is L_v', latentHeatFor(WATER, 'boiling') === WATER.latentVaporization);
+  check('latentHeatFor liquid is null', latentHeatFor(WATER, 'liquid') === null);
+  check('specificHeatFor liquid is c_l', specificHeatFor(WATER, 'liquid') === WATER.cLiquid);
+  check('specificHeatFor melting is null', specificHeatFor(WATER, 'melting') === null);
+}
+
+section('Thermodynamics — energy bookkeeping');
+
+{
+  // −20 °C ice to 120 °C steam, summed by hand.
+  const byHand =
+    heatToWarm(M, WATER.cSolid, 20) +
+    heatToChangePhase(M, WATER.latentFusion) +
+    heatToWarm(M, WATER.cLiquid, 100) +
+    heatToChangePhase(M, WATER.latentVaporization) +
+    heatToWarm(M, WATER.cGas, 20);
+  near('hand-summed total for water −20 → 120 °C', byHand, 3_094_600, 1e-6);
+  near('heatBetween agrees with the hand sum', heatBetween(WATER, -20, 120), byHand, 1e-6);
+
+  for (const id of PRESET_ORDER) {
+    const sub = PRESET_SUBSTANCES[id];
+    const lo = sub.meltingPoint - 30;
+    const hi = sub.boilingPoint + 30;
+    const hand =
+      heatToWarm(M, sub.cSolid, 30) +
+      heatToChangePhase(M, sub.latentFusion) +
+      heatToWarm(M, sub.cLiquid, sub.boilingPoint - sub.meltingPoint) +
+      heatToChangePhase(M, sub.latentVaporization) +
+      heatToWarm(M, sub.cGas, 30);
+    near(`${id}: heatBetween matches the hand sum`, heatBetween(sub, lo, hi), hand, Math.abs(hand) * 1e-9);
+  }
+
+  // Round trips: temperature → enthalpy → temperature.
+  for (const id of PRESET_ORDER) {
+    const sub = PRESET_SUBSTANCES[id];
+    const temps = [sub.meltingPoint - 25, sub.meltingPoint - 1, (sub.meltingPoint + sub.boilingPoint) / 2, sub.boilingPoint + 1, sub.boilingPoint + 40];
+    for (const T of temps) {
+      near(`${id}: temperature round-trips at ${T.toFixed(1)} °C`, stateAt(sub, enthalpyForTemperature(sub, T)).temperature, T, 1e-7);
+    }
+  }
+
+  // Heating then cooling by the same Q returns to the start.
+  for (const id of PRESET_ORDER) {
+    const sub = PRESET_SUBSTANCES[id];
+    const start = enthalpyForTemperature(sub, sub.meltingPoint - 10);
+    const Q = heatBetween(sub, sub.meltingPoint - 10, sub.boilingPoint + 10) * 0.7;
+    const back = addHeat(sub, addHeat(sub, start, Q), -Q);
+    near(`${id}: heat then cool by the same Q is reversible`, back, start, Math.abs(Q) * 1e-12);
+  }
+
+  // The time step must not matter.
+  const hA = addHeat(WATER, enthalpyForTemperature(WATER, -20), 1_500_000);
+  let hB = enthalpyForTemperature(WATER, -20);
+  for (let i = 0; i < 1500; i++) hB = addHeat(WATER, hB, 1000);
+  near('one big step equals 1500 small ones', hA, hB, 1e-4);
+  near('...and gives the same temperature', stateAt(WATER, hA).temperature, stateAt(WATER, hB).temperature, 1e-9);
+}
+
+section('Thermodynamics — shape of the curve');
+
+{
+  for (const id of PRESET_ORDER) {
+    const sub = PRESET_SUBSTANCES[id];
+    const th = thresholds(sub);
+    const lo = enthalpyForTemperature(sub, sub.meltingPoint - 40);
+    const hi = enthalpyForTemperature(sub, sub.boilingPoint + 40);
+    let prev = -Infinity;
+    let monotonic = true;
+    let finite = true;
+    for (let i = 0; i <= 2000; i++) {
+      const T = stateAt(sub, lo + (hi - lo) * (i / 2000)).temperature;
+      if (!Number.isFinite(T)) finite = false;
+      if (T < prev - 1e-9) monotonic = false;
+      prev = T;
+    }
+    check(`${id}: temperature never falls as heat is added`, monotonic);
+    check(`${id}: temperature always finite`, finite);
+
+    // No jump at either end of a plateau.
+    const eps = 1e-3;
+    const a = stateAt(sub, th.meltEnd - eps).temperature;
+    const b = stateAt(sub, th.meltEnd + eps).temperature;
+    check(`${id}: no jump at the end of melting`, Math.abs(a - b) < 1e-4);
+    const c = stateAt(sub, th.boilStart - eps).temperature;
+    const d = stateAt(sub, th.boilStart + eps).temperature;
+    check(`${id}: no jump at the start of boiling`, Math.abs(c - d) < 1e-4);
+    check(`${id}: preset passes validation`, isValidSubstance(sub));
+  }
+
+  // Same heat, different substance, different result.
+  const iron = PRESET_SUBSTANCES.iron;
+  const hw = addHeat(WATER, enthalpyForTemperature(WATER, 20), 100_000);
+  const hi = addHeat(iron, enthalpyForTemperature(iron, 20), 100_000);
+  const dW = stateAt(WATER, hw).temperature - 20;
+  const dI = stateAt(iron, hi).temperature - 20;
+  near('100 kJ warms water by 100000/4186 K', dW, 100_000 / 4186, 1e-9);
+  near('100 kJ warms iron by 100000/449 K', dI, 100_000 / 449, 1e-9);
+  check('iron warms far more than water for the same heat', dI > dW * 5);
+
+  // Starting exactly on a transition point.
+  check('starting at the melting point is fully solid', stateAt(WATER, enthalpyForTemperature(WATER, 0)).phase === 'solid');
+  check('starting at the boiling point is fully liquid', stateAt(WATER, enthalpyForTemperature(WATER, 100)).phase === 'liquid');
+
+  // heatLevel is a clean 0..1 for the colour scale.
+  const levels = [-300, -100, 0, 50, 100, 500].map((T) => heatLevel(WATER, T));
+  check('heatLevel stays within [0,1]', levels.every((v) => v >= 0 && v <= 1));
+  check('heatLevel rises with temperature', heatLevel(WATER, 100) > heatLevel(WATER, 0));
+}
+
+section('Thermodynamics — limits and custom substances');
+
+{
+  const floorH = addHeat(WATER, 0, -1e15);
+  near('cooling stops at absolute zero', stateAt(WATER, floorH).temperature, ABSOLUTE_ZERO_C, 1e-9);
+  check('atLimit reports cold', atLimit(WATER, floorH) === 'cold');
+  const topH = addHeat(WATER, 0, 1e15);
+  near('heating stops at the ceiling', stateAt(WATER, topH).temperature, MAX_TEMPERATURE_C, 1e-6);
+  check('atLimit reports hot', atLimit(WATER, topH) === 'hot');
+  check('atLimit is null in between', atLimit(WATER, 0) === null);
+
+  const start = enthalpyForTemperature(WATER, ABSOLUTE_ZERO_C - 50);
+  near('a starting temperature below absolute zero is clamped', stateAt(WATER, start).temperature, ABSOLUTE_ZERO_C, 1e-9);
+
+  check('the custom default is valid', isValidSubstance(CUSTOM_DEFAULT));
+  const bad = (patch: Partial<Substance>) => isValidSubstance({ ...CUSTOM_DEFAULT, ...patch });
+  check('melting point at/above boiling point is rejected', !bad({ meltingPoint: 200 }) && !bad({ meltingPoint: 300 }));
+  check('zero or negative specific heat is rejected', !bad({ cSolid: 0 }) && !bad({ cGas: -5 }));
+  check('zero latent heat is rejected', !bad({ latentFusion: 0 }) && !bad({ latentVaporization: -1 }));
+  check('NaN is rejected', !bad({ cLiquid: NaN }) && !bad({ boilingPoint: NaN }));
+  check('below absolute zero is rejected', !bad({ meltingPoint: -300, boilingPoint: -280 }));
+}
+
+section('Thermodynamics — boundary values');
+
+{
+  const extremes = [0, 1, -1, 1e-9, 1e9, -1e9, Number.MAX_SAFE_INTEGER];
+  let allFinite = true;
+  for (const id of PRESET_ORDER) {
+    const sub = PRESET_SUBSTANCES[id];
+    for (const q of extremes) {
+      const st = stateAt(sub, addHeat(sub, enthalpyForTemperature(sub, sub.meltingPoint), q));
+      if (!Number.isFinite(st.temperature) || st.fraction < 0 || st.fraction > 1) allFinite = false;
+    }
+  }
+  check('extreme heat inputs never give NaN, Infinity or a fraction outside 0..1', allFinite);
+}
+
+// ------------------------------------------------------- particle engine --
+
+section('Particle engine — the picture follows the state');
+
+{
+  const water = PRESET_SUBSTANCES.water;
+  const frame = (engine: MatterEngine, input: EngineInput, seconds: number) => {
+    for (let i = 0; i < Math.round(seconds * 60); i++) engine.step(1 / 60, input, water);
+  };
+  const make = (input: EngineInput) => {
+    const e = new MatterEngine(3);
+    e.resize(420, 300);
+    e.settle(input);
+    return e;
+  };
+  const solid: EngineInput = { phase: 'solid', fraction: 0, temperature: -10, heatRate: 20000, running: true };
+  const liquid: EngineInput = { phase: 'liquid', fraction: 1, temperature: 50, heatRate: 20000, running: true };
+  const gas: EngineInput = { phase: 'gas', fraction: 1, temperature: 130, heatRate: 20000, running: true };
+
+  const es = make(solid);
+  const el = make(liquid);
+  const eg = make(gas);
+  frame(es, solid, 3);
+  frame(el, liquid, 3);
+  frame(eg, gas, 3);
+
+  const inside = (e: MatterEngine) =>
+    e.particles.every(
+      (p) =>
+        Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.vx) && Number.isFinite(p.vy) &&
+        p.x >= e.bounds.left && p.x <= e.bounds.right && p.y >= e.bounds.top && p.y <= e.bounds.bottom
+    );
+  check('solid: particles finite and inside the box', inside(es));
+  check('liquid: particles finite and inside the box', inside(el));
+  check('gas: particles finite and inside the box', inside(eg));
+  check('there are the expected number of particles', es.particles.length === PARTICLE_COUNT);
+
+  const maxDrift = Math.max(...es.particles.map((p) => Math.hypot(p.x - p.homeX, p.y - p.homeY)));
+  check('solid: every particle stays near its lattice site', maxDrift < es.spacing * 0.6, `max drift ${maxDrift.toFixed(2)} vs spacing ${es.spacing.toFixed(2)}`);
+  check('solid: all particles are in the lattice', es.modeShares().lattice === 1);
+  check('liquid: all particles are free but not gas', el.modeShares().liquid === 1);
+  check('gas: all particles are gas', eg.modeShares().gas === 1);
+
+  const vs = es.meanSpeed();
+  const vl = el.meanSpeed();
+  const vg = eg.meanSpeed();
+  check('speed order: solid < liquid < gas', vs < vl && vl < vg, `${vs.toFixed(0)} / ${vl.toFixed(0)} / ${vg.toFixed(0)}`);
+
+}
+
+{
+  const water = PRESET_SUBSTANCES.water;
+  const make = (input: EngineInput) => {
+    const e = new MatterEngine(5);
+    e.resize(420, 300);
+    e.settle(input);
+    return e;
+  };
+  const run = (e: MatterEngine, input: EngineInput, seconds: number) => {
+    for (let i = 0; i < Math.round(seconds * 60); i++) e.step(1 / 60, input, water);
+  };
+
+  const meanY = (e: MatterEngine) => e.particles.reduce((a, p) => a + p.y, 0) / e.particles.length;
+  const gasInput: EngineInput = { phase: 'gas', fraction: 1, temperature: 130, heatRate: 1, running: true };
+  const liquidInput: EngineInput = { phase: 'liquid', fraction: 1, temperature: 50, heatRate: 1, running: true };
+  const eg = make(gasInput);
+  const el = make(liquidInput);
+  run(eg, gasInput, 4);
+  run(el, liquidInput, 4);
+  const centre = (eg.bounds.top + eg.bounds.bottom) / 2;
+  check('liquid sits low in the box', meanY(el) > centre, `${meanY(el).toFixed(0)} vs centre ${centre.toFixed(0)}`);
+  check('gas fills the box (mean height near the middle)', Math.abs(meanY(eg) - centre) < (eg.bounds.bottom - eg.bounds.top) * 0.2, `${meanY(eg).toFixed(0)} vs centre ${centre.toFixed(0)}`);
+  check('liquid has a surface above the floor', el.surfaceY < el.bounds.bottom - el.radius);
+
+  // Halfway through melting, about half the lattice has let go.
+  const melting: EngineInput = { phase: 'melting', fraction: 0.5, temperature: 0, heatRate: 20000, running: true };
+  const em = make(melting);
+  const shares = em.modeShares();
+  check('halfway through melting, about half the particles are still in the lattice', Math.abs(shares.lattice - 0.5) < 0.05, `lattice share ${shares.lattice.toFixed(2)}`);
+
+  // Halfway through boiling, about half have left as gas.
+  const boiling: EngineInput = { phase: 'boiling', fraction: 0.5, temperature: 100, heatRate: 20000, running: true };
+  const eb = make(boiling);
+  check('halfway through boiling, about half the particles are gas', Math.abs(eb.modeShares().gas - 0.5) < 0.05);
+  run(eb, boiling, 3);
+  check('boiling makes steam', eb.wisps.length > 0);
+  check('boiling makes bubbles or has released them at the surface', eb.bubbles.length > 0 || eb.wisps.length > 0);
+  check('particles stay finite and inside the box while boiling', eb.particles.every((p) => Number.isFinite(p.x + p.y) && p.x >= eb.bounds.left && p.x <= eb.bounds.right && p.y >= eb.bounds.top && p.y <= eb.bounds.bottom));
+
+  // Freezing: lattice grows back, with crystal flashes.
+  const freezing: EngineInput = { phase: 'melting', fraction: 0.5, temperature: 0, heatRate: -20000, running: true };
+  const ef = make({ ...freezing, fraction: 1, phase: 'liquid' });
+  run(ef, { phase: 'liquid', fraction: 1, temperature: 5, heatRate: -20000, running: true }, 1);
+  let sparkled = false;
+  for (let i = 0; i <= 100; i++) {
+    const f = Math.max(0, 1 - i / 100);
+    const input: EngineInput = { phase: f > 0 ? 'melting' : 'solid', fraction: f, temperature: 0, heatRate: -20000, running: true };
+    for (let k = 0; k < 6; k++) ef.step(1 / 60, input, water);
+    if (ef.sparkles.length > 0) sparkled = true;
+  }
+  check('freezing produces crystal sparkles', sparkled);
+  check('after freezing, the particles are back in the lattice', ef.modeShares().lattice === 1);
+
+  // No instant swap: the first frame of melting moves nobody far.
+  const e0 = make({ phase: 'solid', fraction: 0, temperature: 0, heatRate: 1, running: true });
+  const before = e0.particles.map((p) => ({ x: p.x, y: p.y }));
+  e0.step(1 / 60, { phase: 'melting', fraction: 1, temperature: 0, heatRate: 1, running: true }, water);
+  const maxJump = Math.max(...e0.particles.map((p, i) => Math.hypot(p.x - before[i].x, p.y - before[i].y)));
+  check('a change of state does not teleport particles', maxJump < e0.spacing * 0.5, `max jump ${maxJump.toFixed(2)}`);
+
+  // Resizing mid-run keeps everything finite and inside.
+  eg.resize(300, 220);
+  run(eg, gasInput, 1);
+  check('resizing keeps particles inside the new box', eg.particles.every((p) => Number.isFinite(p.x + p.y) && p.x >= eg.bounds.left - 0.01 && p.x <= eg.bounds.right + 0.01 && p.y >= eg.bounds.top - 0.01 && p.y <= eg.bounds.bottom + 0.01));
 }
 
 // ------------------------------------------------------------------ report --

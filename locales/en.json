@@ -10,7 +10,8 @@
     "circuits": "Simple Circuits",
     "magnets": "Magnets & Magnetism",
     "settings": "Settings",
-    "back": "Back"
+    "back": "Back",
+    "matter": "States of Matter & Heat"
   },
   "common": {
     "reset": "Reset",
@@ -133,7 +134,10 @@
       "resistance": "Resistance",
       "magneticField": "Magnetic field",
       "attraction": "Attraction",
-      "repulsion": "Repulsion"
+      "repulsion": "Repulsion",
+      "phases": "States of matter",
+      "specificHeat": "Specific heat",
+      "latentHeat": "Latent heat"
     },
     "comingSoonMessage": "This experiment is coming soon!"
   },
@@ -494,7 +498,10 @@
     "language": "Language",
     "languageDescription": "Choose the language for every screen. Your choice is saved on this device.",
     "translationNote": "Translations other than English were produced with AI assistance and have not yet been checked by a native speaker. Physics wording in particular may need review.",
-    "unitsNote": "Unit symbols (kg, m, m/s) are international and stay the same in every language."
+    "unitsNote": "Unit symbols (kg, m, m/s) are international and stay the same in every language.",
+    "sound": "Sound",
+    "soundLabel": "Sound effects",
+    "soundDescription": "Turns the sounds in the simulations on or off. Your choice is saved on this device."
   },
   "difficulty": {
     "title": "Difficulty",
@@ -638,6 +645,139 @@
     },
     "magnets": {
       "poleForce": "Force between the poles"
+    },
+    "matter": {
+      "heating": "Heat to change the temperature",
+      "fusion": "Heat to melt (latent heat of fusion)",
+      "vaporization": "Heat to boil (latent heat of vaporization)"
+    }
+  },
+  "matter": {
+    "intro": {
+      "title": "What is a state of matter?",
+      "body": "Everything is made of tiny particles. In a solid they are packed into a grid and only wiggle on the spot. In a liquid they slide past each other. In a gas they fly about freely. Heat makes particles move faster — and with enough heat, a solid melts into a liquid, and a liquid boils into a gas.",
+      "tip": "Try heating the ice and watch what happens to the temperature right as it starts melting."
+    },
+    "cards": {
+      "facts": "Substance facts",
+      "graph": "Temperature over time",
+      "substance": "Substance",
+      "custom": "Your own substance",
+      "heating": "Heating"
+    },
+    "states": {
+      "solid": "Solid",
+      "liquid": "Liquid",
+      "gas": "Gas"
+    },
+    "transitions": {
+      "melting": "Melting",
+      "freezing": "Freezing",
+      "boiling": "Boiling",
+      "condensing": "Condensing"
+    },
+    "stats": {
+      "temperature": "Temperature",
+      "meltingProgress": "Melted so far",
+      "freezingProgress": "Frozen so far",
+      "boilingProgress": "Boiled so far",
+      "condensingProgress": "Condensed so far"
+    },
+    "details": {
+      "temperatureK": "Temperature  T",
+      "energy": "Heat added  Q",
+      "heatRate": "Heat rate  P",
+      "mass": "Mass  m",
+      "specificHeat": "Specific heat  c",
+      "latentHeatNow": "Latent heat in use  L",
+      "meltingPoint": "Melting point",
+      "boilingPoint": "Boiling point",
+      "latentFusion": "Latent heat of fusion  L_f",
+      "latentVaporization": "Latent heat of vaporization  L_v"
+    },
+    "facts": {
+      "duringChange": "none (it is changing state)"
+    },
+    "messages": {
+      "limitCold": "It can't get any colder — that's absolute zero (−273.15 °C).",
+      "limitHot": "That's as hot as this simulation goes.",
+      "ready": "Press Start heating to begin.",
+      "readyCooling": "Press Start cooling to begin.",
+      "paused": "Paused. Press Resume to carry on.",
+      "noHeat": "The heat rate is 0, so nothing is heating or cooling it and the temperature stays put.",
+      "heating": "Heating up…",
+      "cooling": "Cooling down…",
+      "melting": "Melting now…",
+      "freezing": "Freezing now…",
+      "boiling": "Boiling now…",
+      "condensing": "Turning back into a liquid…",
+      "tech": {
+        "heating": "Warming: the temperature rises in proportion to the heat added, Q = m·c·ΔT.",
+        "cooling": "Cooling: the temperature falls in proportion to the heat removed, Q = m·c·ΔT.",
+        "melting": "Melting: the temperature holds at {{temp}} °C. The heat goes into loosening the solid, not into warming it.",
+        "freezing": "Freezing: the temperature holds at {{temp}} °C while the liquid gives up its latent heat.",
+        "boiling": "Boiling: the temperature holds at {{temp}} °C. The heat goes into turning liquid into gas.",
+        "condensing": "Condensing: the temperature holds at {{temp}} °C while the gas gives up its latent heat."
+      }
+    },
+    "graph": {
+      "empty": "Press Start heating, and the temperature will be drawn here as time passes.",
+      "series": "Temperature",
+      "x": "Time (s)",
+      "y": "Temperature (°C)",
+      "hint": "Watch for the flat steps: while the substance melts or boils, the heat goes into changing its state, so the temperature stops rising.",
+      "meltingPoint": "Melting point {{value}} °C",
+      "boilingPoint": "Boiling point {{value}} °C",
+      "band": {
+        "melting": "Melting",
+        "boiling": "Boiling",
+        "meltingPro": "Melting · {{energy}} kJ",
+        "boilingPro": "Boiling · {{energy}} kJ"
+      }
+    },
+    "substances": {
+      "water": "Water",
+      "iron": "Iron",
+      "nitrogen": "Nitrogen",
+      "custom": "Custom"
+    },
+    "substanceHint": {
+      "preset": "Real values for this substance: its melting and boiling points, and how much heat it takes to warm it. There is 1 kg of it.",
+      "custom": "Set your own substance below. The melting point must stay below the boiling point."
+    },
+    "fields": {
+      "meltingPoint": "Melting point",
+      "boilingPoint": "Boiling point",
+      "cSolid": "Specific heat — solid",
+      "cLiquid": "Specific heat — liquid",
+      "cGas": "Specific heat — gas",
+      "latentFusion": "Latent heat of melting",
+      "latentVaporization": "Latent heat of boiling",
+      "specificHeatHint": "How much heat it takes to warm 1 kg by 1 °C. A bigger number means it warms up more slowly.",
+      "latentHint": "How much heat it takes to change 1 kg from one state to the next, with no change in temperature.",
+      "startTemperature": "Starting temperature",
+      "startTemperatureHint": "Where it starts. Water freezes at 0 °C and boils at 100 °C.",
+      "heatRate": "Heat rate",
+      "heatRateHint": "How fast you're heating or cooling it. A positive number heats it, a negative number cools it.",
+      "speed": "Playback speed",
+      "speedHint": "Heating takes a long time in real life, so this speeds the clock up. It doesn't change the physics.",
+      "soundHint": "Bubbling when it boils, crackling when it freezes."
+    },
+    "thermometer": {
+      "melts": "melts",
+      "boils": "boils"
+    },
+    "buttons": {
+      "pause": "Pause",
+      "resume": "Resume",
+      "startHeating": "Start heating",
+      "startCooling": "Start cooling"
+    },
+    "formulaNote": "Specific heat is treated as constant within each state, at standard atmospheric pressure. Pressure effects are not modelled.",
+    "credits": "The temperature is computed from the heat you put in, using Q = m·c·ΔT and Q = m·L with real values for each substance — the flat steps are not scripted.",
+    "blurbs": {
+      "beginner": "Heat makes the tiny particles move faster. In a solid they just wiggle on the spot; in a liquid they slide around; in a gas they zoom about. Add enough heat and a solid melts, then a liquid boils.",
+      "intermediate": "Heat raises the temperature of a substance by an amount that depends on its specific heat (Q = m·c·ΔT). At the melting and boiling points the temperature stops rising while latent heat is absorbed to change the state."
     }
   }
 }

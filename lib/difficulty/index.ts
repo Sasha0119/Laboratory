@@ -91,7 +91,7 @@ export interface Formula {
   minLevel: DifficultyLevel;
 }
 
-export type SimulationModule = 'drop' | 'collisions' | 'circuits' | 'magnets';
+export type SimulationModule = 'drop' | 'collisions' | 'circuits' | 'magnets' | 'matter';
 
 export const FORMULAS: Record<SimulationModule, Formula[]> = {
   drop: [
@@ -119,6 +119,11 @@ export const FORMULAS: Record<SimulationModule, Formula[]> = {
     { id: 'power', expression: 'P = I²·R = V·I', minLevel: 'pro' },
   ],
   magnets: [{ id: 'poleForce', expression: 'F = k·p₁·p₂ / r²', minLevel: 'intermediate' }],
+  matter: [
+    { id: 'heating', expression: 'Q = m·c·ΔT', minLevel: 'intermediate' },
+    { id: 'fusion', expression: 'Q = m·L_f', minLevel: 'pro' },
+    { id: 'vaporization', expression: 'Q = m·L_v', minLevel: 'pro' },
+  ],
 };
 
 /** The equations worth showing for a module at a given level. */

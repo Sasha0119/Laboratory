@@ -39,7 +39,12 @@ export const TOPICS: Topic[] = [
     topics: ['magneticField', 'attraction', 'repulsion'],
     href: '/physics/magnets',
   },
-  { id: 'statesOfMatter', level: 'beginner' },
+  {
+    id: 'statesOfMatter',
+    level: 'beginner',
+    topics: ['phases', 'specificHeat', 'latentHeat'],
+    href: '/physics/matter',
+  },
   { id: 'simpleMachines', level: 'beginner' },
 
   // --- Intermediate -------------------------------------------------------

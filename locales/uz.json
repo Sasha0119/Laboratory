@@ -10,7 +10,8 @@
     "circuits": "Oddiy elektr zanjirlari",
     "magnets": "Magnitlar va magnetizm",
     "settings": "Sozlamalar",
-    "back": "Orqaga"
+    "back": "Orqaga",
+    "matter": "Modda holatlari va issiqlik"
   },
   "common": {
     "reset": "Tozalash",
@@ -133,7 +134,10 @@
       "resistance": "Qarshilik",
       "magneticField": "Magnit maydon",
       "attraction": "Tortishish",
-      "repulsion": "Itarilish"
+      "repulsion": "Itarilish",
+      "phases": "Modda holatlari",
+      "specificHeat": "Solishtirma issiqlik sig‘imi",
+      "latentHeat": "Yashirin issiqlik"
     },
     "comingSoonMessage": "Bu tajriba tez orada qo‘shiladi!"
   },
@@ -494,7 +498,10 @@
     "language": "Til",
     "languageDescription": "Barcha ekranlar uchun tilni tanlang. Tanlovingiz shu qurilmada saqlanadi.",
     "translationNote": "Ingliz tilidan boshqa tarjimalar sun'iy intellekt yordamida tayyorlangan va hali ona tili sohibi tomonidan tekshirilmagan. Ayniqsa fizika atamalarini ko'rib chiqish tavsiya etiladi.",
-    "unitsNote": "O'lchov belgilari (kg, m, m/s) xalqaro bo'lib, barcha tillarda bir xil qoladi."
+    "unitsNote": "O'lchov belgilari (kg, m, m/s) xalqaro bo'lib, barcha tillarda bir xil qoladi.",
+    "sound": "Tovush",
+    "soundLabel": "Tovush effektlari",
+    "soundDescription": "Simulyatsiyalardagi tovushlarni yoqadi yoki o‘chiradi. Tanlovingiz shu qurilmada saqlanadi."
   },
   "difficulty": {
     "title": "Daraja",
@@ -638,6 +645,139 @@
     },
     "magnets": {
       "poleForce": "Qutblar orasidagi kuch"
+    },
+    "matter": {
+      "heating": "Haroratni o‘zgartirish uchun issiqlik",
+      "fusion": "Eritish uchun issiqlik (erishning yashirin issiqligi)",
+      "vaporization": "Qaynatish uchun issiqlik (bug‘lanishning yashirin issiqligi)"
+    }
+  },
+  "matter": {
+    "intro": {
+      "title": "Moddaning holati nima?",
+      "body": "Hamma narsa mayda zarrachalardan tuzilgan. Qattiq jismda zarrachalar tartibli to‘rda joylashib, o‘z joyida titraydi. Suyuqlikda ular bir-birining yonidan sirpanib o‘tadi. Gazda esa erkin uchib yuradi. Issiqlik zarrachalarni tezroq harakatlantiradi — issiqlik yetarli bo‘lsa, qattiq jism erib suyuqlikka, suyuqlik esa qaynab gazga aylanadi.",
+      "tip": "Muzni qizdirib ko‘ring va u erishni boshlagan zahoti harorat nima bo‘lishini kuzating."
+    },
+    "cards": {
+      "facts": "Modda haqida ma’lumot",
+      "graph": "Haroratning vaqt bo‘yicha o‘zgarishi",
+      "substance": "Modda",
+      "custom": "O‘z moddangiz",
+      "heating": "Qizdirish"
+    },
+    "states": {
+      "solid": "Qattiq",
+      "liquid": "Suyuq",
+      "gas": "Gaz"
+    },
+    "transitions": {
+      "melting": "Erimoqda",
+      "freezing": "Muzlamoqda",
+      "boiling": "Qaynamoqda",
+      "condensing": "Quyuqlashmoqda"
+    },
+    "stats": {
+      "temperature": "Harorat",
+      "meltingProgress": "Hozircha erigan",
+      "freezingProgress": "Hozircha muzlagan",
+      "boilingProgress": "Hozircha qaynagan",
+      "condensingProgress": "Hozircha quyuqlashgan"
+    },
+    "details": {
+      "temperatureK": "Harorat  T",
+      "energy": "Berilgan issiqlik  Q",
+      "heatRate": "Issiqlik tezligi  P",
+      "mass": "Massa  m",
+      "specificHeat": "Solishtirma issiqlik sig‘imi  c",
+      "latentHeatNow": "Ishlatilayotgan yashirin issiqlik  L",
+      "meltingPoint": "Erish harorati",
+      "boilingPoint": "Qaynash harorati",
+      "latentFusion": "Erishning yashirin issiqligi  L_f",
+      "latentVaporization": "Bug‘lanishning yashirin issiqligi  L_v"
+    },
+    "facts": {
+      "duringChange": "yo‘q (holat o‘zgarmoqda)"
+    },
+    "messages": {
+      "limitCold": "Bundan sovuq bo‘lmaydi — bu absolyut nol (−273,15 °C).",
+      "limitHot": "Bu simulyatsiyadagi eng yuqori harorat.",
+      "ready": "Boshlash uchun «Qizdirishni boshlash» tugmasini bosing.",
+      "readyCooling": "Boshlash uchun «Sovitishni boshlash» tugmasini bosing.",
+      "paused": "To‘xtatildi. Davom ettirish uchun «Davom etish»ni bosing.",
+      "noHeat": "Issiqlik tezligi 0, ya’ni hech narsa qizdirmayapti ham, sovitmayapti ham — harorat o‘zgarmaydi.",
+      "heating": "Qizimoqda…",
+      "cooling": "Sovimoqda…",
+      "melting": "Hozir erimoqda…",
+      "freezing": "Hozir muzlamoqda…",
+      "boiling": "Hozir qaynamoqda…",
+      "condensing": "Yana suyuqlikka aylanmoqda…",
+      "tech": {
+        "heating": "Qizish: harorat berilgan issiqlikka mutanosib ravishda ko‘tariladi, Q = m·c·ΔT.",
+        "cooling": "Sovish: harorat olib tashlangan issiqlikka mutanosib ravishda pasayadi, Q = m·c·ΔT.",
+        "melting": "Erish: harorat {{temp}} °C da turib qoladi. Issiqlik qattiq jismni bo‘shatishga sarflanadi, qizdirishga emas.",
+        "freezing": "Muzlash: suyuqlik yashirin issiqligini bergan paytda harorat {{temp}} °C da turib qoladi.",
+        "boiling": "Qaynash: harorat {{temp}} °C da turib qoladi. Issiqlik suyuqlikni gazga aylantirishga sarflanadi.",
+        "condensing": "Kondensatsiya: gaz yashirin issiqligini bergan paytda harorat {{temp}} °C da turib qoladi."
+      }
+    },
+    "graph": {
+      "empty": "«Qizdirishni boshlash»ni bosing — vaqt o‘tishi bilan harorat shu yerda chiziladi.",
+      "series": "Harorat",
+      "x": "Vaqt (s)",
+      "y": "Harorat (°C)",
+      "hint": "Tekis pog‘onalarga e’tibor bering: modda erayotganda yoki qaynayotganda issiqlik holatni o‘zgartirishga sarflanadi, shuning uchun harorat ko‘tarilmaydi.",
+      "meltingPoint": "Erish harorati {{value}} °C",
+      "boilingPoint": "Qaynash harorati {{value}} °C",
+      "band": {
+        "melting": "Erish",
+        "boiling": "Qaynash",
+        "meltingPro": "Erish · {{energy}} kJ",
+        "boilingPro": "Qaynash · {{energy}} kJ"
+      }
+    },
+    "substances": {
+      "water": "Suv",
+      "iron": "Temir",
+      "nitrogen": "Azot",
+      "custom": "O‘zim"
+    },
+    "substanceHint": {
+      "preset": "Bu moddaning haqiqiy qiymatlari: erish va qaynash haroratlari hamda uni isitish uchun qancha issiqlik kerakligi. Moddaning massasi 1 kg.",
+      "custom": "Quyida o‘z moddangizni kiriting. Erish harorati qaynash haroratidan past bo‘lishi kerak."
+    },
+    "fields": {
+      "meltingPoint": "Erish harorati",
+      "boilingPoint": "Qaynash harorati",
+      "cSolid": "Solishtirma issiqlik sig‘imi — qattiq",
+      "cLiquid": "Solishtirma issiqlik sig‘imi — suyuq",
+      "cGas": "Solishtirma issiqlik sig‘imi — gaz",
+      "latentFusion": "Erishning yashirin issiqligi",
+      "latentVaporization": "Qaynashning yashirin issiqligi",
+      "specificHeatHint": "1 kg ni 1 °C ga isitish uchun qancha issiqlik kerak. Son qancha katta bo‘lsa, modda shuncha sekin isiydi.",
+      "latentHint": "1 kg moddani bir holatdan ikkinchisiga o‘tkazish uchun, haroratni o‘zgartirmasdan, qancha issiqlik kerak.",
+      "startTemperature": "Boshlang‘ich harorat",
+      "startTemperatureHint": "Qaysi haroratdan boshlanadi. Suv 0 °C da muzlaydi va 100 °C da qaynaydi.",
+      "heatRate": "Issiqlik tezligi",
+      "heatRateHint": "Qanchalik tez qizdirayotganingiz yoki sovitayotganingiz. Musbat son qizdiradi, manfiy son sovitadi.",
+      "speed": "Ijro tezligi",
+      "speedHint": "Haqiqatda qizdirish uzoq davom etadi, shuning uchun soat tezlashtirilgan. Fizika o‘zgarmaydi.",
+      "soundHint": "Qaynaganda bulqillash, muzlaganda chatirlash."
+    },
+    "thermometer": {
+      "melts": "eriydi",
+      "boils": "qaynaydi"
+    },
+    "buttons": {
+      "pause": "To‘xtatish",
+      "resume": "Davom etish",
+      "startHeating": "Qizdirishni boshlash",
+      "startCooling": "Sovitishni boshlash"
+    },
+    "formulaNote": "Solishtirma issiqlik sig‘imi har bir holatda o‘zgarmas deb olinadi, bosim esa standart atmosfera bosimi. Bosim ta’siri hisobga olinmagan.",
+    "credits": "Harorat siz bergan issiqlikdan hisoblanadi: Q = m·c·ΔT va Q = m·L formulalari va har bir modda uchun haqiqiy qiymatlar yordamida — tekis pog‘onalar oldindan chizilmagan.",
+    "blurbs": {
+      "beginner": "Issiqlik mayda zarrachalarni tezroq harakatlantiradi. Qattiq jismda ular o‘z joyida titraydi, suyuqlikda sirpanib yuradi, gazda esa tez uchadi. Issiqlik yetarli bo‘lsa, qattiq jism eriydi, keyin suyuqlik qaynaydi.",
+      "intermediate": "Issiqlik moddaning haroratini uning solishtirma issiqlik sig‘imiga bog‘liq ravishda oshiradi (Q = m·c·ΔT). Erish va qaynash haroratlarida holat o‘zgarishi uchun yashirin issiqlik yutilar ekan, harorat ko‘tarilishdan to‘xtaydi."
     }
   }
 }

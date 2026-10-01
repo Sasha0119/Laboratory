@@ -10,7 +10,8 @@
     "circuits": "简单电路",
     "magnets": "磁体与磁性",
     "settings": "设置",
-    "back": "返回"
+    "back": "返回",
+    "matter": "物质状态与热"
   },
   "common": {
     "reset": "重置",
@@ -133,7 +134,10 @@
       "resistance": "电阻",
       "magneticField": "磁场",
       "attraction": "吸引",
-      "repulsion": "排斥"
+      "repulsion": "排斥",
+      "phases": "物质状态",
+      "specificHeat": "比热容",
+      "latentHeat": "潜热"
     },
     "comingSoonMessage": "这个实验即将推出！"
   },
@@ -494,7 +498,10 @@
     "language": "语言",
     "languageDescription": "选择所有界面使用的语言。你的选择会保存在本机。",
     "translationNote": "英语以外的翻译由 AI 辅助生成，尚未经过母语者校对。物理术语尤其建议复核。",
-    "unitsNote": "单位符号（kg、m、m/s）是国际通用的，在所有语言中保持不变。"
+    "unitsNote": "单位符号（kg、m、m/s）是国际通用的，在所有语言中保持不变。",
+    "sound": "声音",
+    "soundLabel": "音效",
+    "soundDescription": "开启或关闭模拟中的声音。你的选择会保存在此设备上。"
   },
   "difficulty": {
     "title": "难度",
@@ -638,6 +645,139 @@
     },
     "magnets": {
       "poleForce": "磁极间的力"
+    },
+    "matter": {
+      "heating": "改变温度所需的热量",
+      "fusion": "熔化所需的热量（熔化潜热）",
+      "vaporization": "沸腾所需的热量（汽化潜热）"
+    }
+  },
+  "matter": {
+    "intro": {
+      "title": "什么是物质的状态？",
+      "body": "万物都由微小的粒子构成。在固体中，粒子排成整齐的格子，只在原地颤动；在液体中，粒子彼此滑动；在气体中，粒子自由飞舞。热会让粒子运动得更快——热量足够时，固体会熔化成液体，液体会沸腾变成气体。",
+      "tip": "试着给冰加热，留意它刚开始熔化时温度会发生什么变化。"
+    },
+    "cards": {
+      "facts": "物质资料",
+      "graph": "温度随时间变化",
+      "substance": "物质",
+      "custom": "自定义物质",
+      "heating": "加热"
+    },
+    "states": {
+      "solid": "固态",
+      "liquid": "液态",
+      "gas": "气态"
+    },
+    "transitions": {
+      "melting": "熔化中",
+      "freezing": "凝固中",
+      "boiling": "沸腾中",
+      "condensing": "凝结中"
+    },
+    "stats": {
+      "temperature": "温度",
+      "meltingProgress": "已熔化",
+      "freezingProgress": "已凝固",
+      "boilingProgress": "已沸腾",
+      "condensingProgress": "已凝结"
+    },
+    "details": {
+      "temperatureK": "温度  T",
+      "energy": "已加入热量  Q",
+      "heatRate": "加热功率  P",
+      "mass": "质量  m",
+      "specificHeat": "比热容  c",
+      "latentHeatNow": "当前使用的潜热  L",
+      "meltingPoint": "熔点",
+      "boilingPoint": "沸点",
+      "latentFusion": "熔化潜热  L_f",
+      "latentVaporization": "汽化潜热  L_v"
+    },
+    "facts": {
+      "duringChange": "无（正在改变状态）"
+    },
+    "messages": {
+      "limitCold": "不可能更冷了——这就是绝对零度（−273.15 °C）。",
+      "limitHot": "这个模拟最高只能到这个温度。",
+      "ready": "点击“开始加热”即可开始。",
+      "readyCooling": "点击“开始冷却”即可开始。",
+      "paused": "已暂停。点击“继续”接着进行。",
+      "noHeat": "加热功率为 0，没有任何东西在加热或冷却它，所以温度保持不变。",
+      "heating": "正在升温……",
+      "cooling": "正在降温……",
+      "melting": "正在熔化……",
+      "freezing": "正在凝固……",
+      "boiling": "正在沸腾……",
+      "condensing": "正在变回液体……",
+      "tech": {
+        "heating": "升温：温度与加入的热量成正比上升，Q = m·c·ΔT。",
+        "cooling": "降温：温度与带走的热量成正比下降，Q = m·c·ΔT。",
+        "melting": "熔化：温度保持在 {{temp}} °C。热量用来拆散固体结构，而不是使它升温。",
+        "freezing": "凝固：液体放出潜热时，温度保持在 {{temp}} °C。",
+        "boiling": "沸腾：温度保持在 {{temp}} °C。热量用来把液体变成气体。",
+        "condensing": "凝结：气体放出潜热时，温度保持在 {{temp}} °C。"
+      }
+    },
+    "graph": {
+      "empty": "点击“开始加热”，温度会随时间在这里画出来。",
+      "series": "温度",
+      "x": "时间（秒）",
+      "y": "温度（°C）",
+      "hint": "留意平坦的台阶：物质熔化或沸腾时，热量用来改变状态，所以温度不再上升。",
+      "meltingPoint": "熔点 {{value}} °C",
+      "boilingPoint": "沸点 {{value}} °C",
+      "band": {
+        "melting": "熔化",
+        "boiling": "沸腾",
+        "meltingPro": "熔化 · {{energy}} kJ",
+        "boilingPro": "沸腾 · {{energy}} kJ"
+      }
+    },
+    "substances": {
+      "water": "水",
+      "iron": "铁",
+      "nitrogen": "氮",
+      "custom": "自定义"
+    },
+    "substanceHint": {
+      "preset": "这种物质的真实数值：熔点、沸点，以及给它升温需要多少热量。这里有 1 千克。",
+      "custom": "在下面设置你自己的物质。熔点必须低于沸点。"
+    },
+    "fields": {
+      "meltingPoint": "熔点",
+      "boilingPoint": "沸点",
+      "cSolid": "比热容——固态",
+      "cLiquid": "比热容——液态",
+      "cGas": "比热容——气态",
+      "latentFusion": "熔化潜热",
+      "latentVaporization": "沸腾潜热",
+      "specificHeatHint": "让 1 千克升温 1 °C 需要多少热量。数值越大，升温越慢。",
+      "latentHint": "让 1 千克从一种状态变成下一种状态需要多少热量，期间温度不变。",
+      "startTemperature": "起始温度",
+      "startTemperatureHint": "从哪个温度开始。水在 0 °C 凝固，在 100 °C 沸腾。",
+      "heatRate": "加热功率",
+      "heatRateHint": "你加热或冷却的快慢。正数是加热，负数是冷却。",
+      "speed": "播放速度",
+      "speedHint": "现实中加热要很久，所以这里把时钟加快了。这不会改变物理规律。",
+      "soundHint": "沸腾时有咕嘟声，凝固时有噼啪声。"
+    },
+    "thermometer": {
+      "melts": "熔点",
+      "boils": "沸点"
+    },
+    "buttons": {
+      "pause": "暂停",
+      "resume": "继续",
+      "startHeating": "开始加热",
+      "startCooling": "开始冷却"
+    },
+    "formulaNote": "每种状态内比热容视为恒定，压强为标准大气压。不模拟压强的影响。",
+    "credits": "温度由你输入的热量计算得出，用的是 Q = m·c·ΔT 和 Q = m·L，以及每种物质的真实数值——平坦的台阶不是预先编好的。",
+    "blurbs": {
+      "beginner": "热会让微小的粒子运动得更快。在固体中它们只在原地颤动，在液体中滑来滑去，在气体中四处飞驰。加足够的热，固体会熔化，接着液体会沸腾。",
+      "intermediate": "热使物质升温，升多少取决于它的比热容（Q = m·c·ΔT）。在熔点和沸点，吸收的热量用来改变状态（潜热），温度会停止上升。"
     }
   }
 }

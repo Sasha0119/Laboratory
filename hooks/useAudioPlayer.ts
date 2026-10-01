@@ -1,5 +1,7 @@
 import { useRef } from 'react';
 
+import { isSoundEnabled } from '../lib/soundSettings';
+
 /**
  * A reusable sound, backed by one `HTMLAudioElement`.
  *
@@ -30,11 +32,17 @@ export class SoundPlayer {
   }
 
   get playing(): boolean {
+    // Muting silences a sound that is already running, such as a hum.
+    if (!isSoundEnabled()) {
+      this.el?.pause();
+      return false;
+    }
     const el = this.el;
     return !!el && !el.paused && !el.ended;
   }
 
   play(): void {
+    if (!isSoundEnabled()) return;
     const el = this.element();
     if (!el) return;
     el.volume = Math.min(1, Math.max(0, this.volume));

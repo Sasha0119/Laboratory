@@ -10,7 +10,8 @@
     "circuits": "Basit Devreler",
     "magnets": "Mıknatıslar ve Manyetizma",
     "settings": "Ayarlar",
-    "back": "Geri"
+    "back": "Geri",
+    "matter": "Maddenin Hâlleri ve Isı"
   },
   "common": {
     "reset": "Sıfırla",
@@ -133,7 +134,10 @@
       "resistance": "Direnç",
       "magneticField": "Manyetik alan",
       "attraction": "Çekme",
-      "repulsion": "İtme"
+      "repulsion": "İtme",
+      "phases": "Maddenin hâlleri",
+      "specificHeat": "Özgül ısı",
+      "latentHeat": "Gizli ısı"
     },
     "comingSoonMessage": "Bu deney yakında geliyor!"
   },
@@ -494,7 +498,10 @@
     "language": "Dil",
     "languageDescription": "Bütün ekranlar için dili seç. Seçimin bu cihazda saklanır.",
     "translationNote": "İngilizce dışındaki çeviriler yapay zekâ desteğiyle hazırlandı ve henüz ana dili konuşan biri tarafından kontrol edilmedi. Özellikle fizik terimleri gözden geçirilmeli.",
-    "unitsNote": "Birim sembolleri (kg, m, m/s) uluslararasıdır ve her dilde aynı kalır."
+    "unitsNote": "Birim sembolleri (kg, m, m/s) uluslararasıdır ve her dilde aynı kalır.",
+    "sound": "Ses",
+    "soundLabel": "Ses efektleri",
+    "soundDescription": "Simülasyonlardaki sesleri açar ya da kapatır. Seçimin bu cihazda saklanır."
   },
   "difficulty": {
     "title": "Seviye",
@@ -638,6 +645,139 @@
     },
     "magnets": {
       "poleForce": "Kutuplar arasındaki kuvvet"
+    },
+    "matter": {
+      "heating": "Sıcaklığı değiştirmek için gereken ısı",
+      "fusion": "Eritmek için gereken ısı (erime gizli ısısı)",
+      "vaporization": "Kaynatmak için gereken ısı (buharlaşma gizli ısısı)"
+    }
+  },
+  "matter": {
+    "intro": {
+      "title": "Maddenin hâli nedir?",
+      "body": "Her şey minik parçacıklardan oluşur. Katıda parçacıklar düzenli bir ızgarada durur ve olduğu yerde titrer. Sıvıda birbirlerinin yanından kayarak geçerler. Gazda ise serbestçe uçuşurlar. Isı parçacıkları daha hızlı hareket ettirir — yeterince ısı verilirse katı erir ve sıvı olur, sıvı kaynar ve gaza dönüşür.",
+      "tip": "Buzu ısıtmayı dene ve erimeye başladığı anda sıcaklığa ne olduğunu izle."
+    },
+    "cards": {
+      "facts": "Madde bilgileri",
+      "graph": "Zamana göre sıcaklık",
+      "substance": "Madde",
+      "custom": "Kendi maddeniz",
+      "heating": "Isıtma"
+    },
+    "states": {
+      "solid": "Katı",
+      "liquid": "Sıvı",
+      "gas": "Gaz"
+    },
+    "transitions": {
+      "melting": "Eriyor",
+      "freezing": "Donuyor",
+      "boiling": "Kaynıyor",
+      "condensing": "Yoğuşuyor"
+    },
+    "stats": {
+      "temperature": "Sıcaklık",
+      "meltingProgress": "Şimdiye dek eriyen",
+      "freezingProgress": "Şimdiye dek donan",
+      "boilingProgress": "Şimdiye dek kaynayan",
+      "condensingProgress": "Şimdiye dek yoğuşan"
+    },
+    "details": {
+      "temperatureK": "Sıcaklık  T",
+      "energy": "Verilen ısı  Q",
+      "heatRate": "Isıtma gücü  P",
+      "mass": "Kütle  m",
+      "specificHeat": "Özgül ısı  c",
+      "latentHeatNow": "Kullanılan gizli ısı  L",
+      "meltingPoint": "Erime noktası",
+      "boilingPoint": "Kaynama noktası",
+      "latentFusion": "Erime gizli ısısı  L_f",
+      "latentVaporization": "Buharlaşma gizli ısısı  L_v"
+    },
+    "facts": {
+      "duringChange": "yok (hâl değiştiriyor)"
+    },
+    "messages": {
+      "limitCold": "Bundan daha soğuk olamaz — burası mutlak sıfır (−273,15 °C).",
+      "limitHot": "Bu simülasyon en fazla bu kadar ısınıyor.",
+      "ready": "Başlamak için “Isıtmayı başlat”a bas.",
+      "readyCooling": "Başlamak için “Soğutmayı başlat”a bas.",
+      "paused": "Duraklatıldı. Devam etmek için “Devam”a bas.",
+      "noHeat": "Isıtma gücü 0, yani hiçbir şey ısıtmıyor ya da soğutmuyor; sıcaklık sabit kalır.",
+      "heating": "Isınıyor…",
+      "cooling": "Soğuyor…",
+      "melting": "Şimdi eriyor…",
+      "freezing": "Şimdi donuyor…",
+      "boiling": "Şimdi kaynıyor…",
+      "condensing": "Yeniden sıvıya dönüyor…",
+      "tech": {
+        "heating": "Isınma: sıcaklık, verilen ısıyla orantılı olarak yükselir, Q = m·c·ΔT.",
+        "cooling": "Soğuma: sıcaklık, alınan ısıyla orantılı olarak düşer, Q = m·c·ΔT.",
+        "melting": "Erime: sıcaklık {{temp}} °C’de sabit kalır. Isı katıyı gevşetmeye gider, ısıtmaya değil.",
+        "freezing": "Donma: sıvı gizli ısısını verirken sıcaklık {{temp}} °C’de sabit kalır.",
+        "boiling": "Kaynama: sıcaklık {{temp}} °C’de sabit kalır. Isı, sıvıyı gaza dönüştürmeye gider.",
+        "condensing": "Yoğuşma: gaz gizli ısısını verirken sıcaklık {{temp}} °C’de sabit kalır."
+      }
+    },
+    "graph": {
+      "empty": "“Isıtmayı başlat”a bas; zaman geçtikçe sıcaklık burada çizilecek.",
+      "series": "Sıcaklık",
+      "x": "Zaman (s)",
+      "y": "Sıcaklık (°C)",
+      "hint": "Düz basamaklara dikkat et: madde erirken ya da kaynarken ısı hâl değişimine harcanır, bu yüzden sıcaklık artmaz.",
+      "meltingPoint": "Erime noktası {{value}} °C",
+      "boilingPoint": "Kaynama noktası {{value}} °C",
+      "band": {
+        "melting": "Erime",
+        "boiling": "Kaynama",
+        "meltingPro": "Erime · {{energy}} kJ",
+        "boilingPro": "Kaynama · {{energy}} kJ"
+      }
+    },
+    "substances": {
+      "water": "Su",
+      "iron": "Demir",
+      "nitrogen": "Azot",
+      "custom": "Özel"
+    },
+    "substanceHint": {
+      "preset": "Bu maddenin gerçek değerleri: erime ve kaynama noktaları ve onu ısıtmak için gereken ısı. Burada 1 kg var.",
+      "custom": "Kendi maddeni aşağıda ayarla. Erime noktası kaynama noktasının altında kalmalı."
+    },
+    "fields": {
+      "meltingPoint": "Erime noktası",
+      "boilingPoint": "Kaynama noktası",
+      "cSolid": "Özgül ısı — katı",
+      "cLiquid": "Özgül ısı — sıvı",
+      "cGas": "Özgül ısı — gaz",
+      "latentFusion": "Erimenin gizli ısısı",
+      "latentVaporization": "Kaynamanın gizli ısısı",
+      "specificHeatHint": "1 kg’ı 1 °C ısıtmak için gereken ısı. Sayı büyüdükçe madde daha yavaş ısınır.",
+      "latentHint": "1 kg’ı bir hâlden diğerine geçirmek için, sıcaklığı değiştirmeden gereken ısı.",
+      "startTemperature": "Başlangıç sıcaklığı",
+      "startTemperatureHint": "Nereden başlıyor. Su 0 °C’de donar, 100 °C’de kaynar.",
+      "heatRate": "Isıtma gücü",
+      "heatRateHint": "Ne kadar hızlı ısıttığın ya da soğuttuğun. Pozitif sayı ısıtır, negatif sayı soğutur.",
+      "speed": "Oynatma hızı",
+      "speedHint": "Gerçekte ısıtma uzun sürer, o yüzden saat hızlandırıldı. Fiziği değiştirmez.",
+      "soundHint": "Kaynarken kabarcık sesi, donarken çıtırtı."
+    },
+    "thermometer": {
+      "melts": "erir",
+      "boils": "kaynar"
+    },
+    "buttons": {
+      "pause": "Duraklat",
+      "resume": "Devam",
+      "startHeating": "Isıtmayı başlat",
+      "startCooling": "Soğutmayı başlat"
+    },
+    "formulaNote": "Özgül ısı her hâlde sabit kabul edilir ve basınç standart atmosfer basıncıdır. Basıncın etkisi modellenmemiştir.",
+    "credits": "Sıcaklık, verdiğin ısıdan hesaplanır: Q = m·c·ΔT ve Q = m·L formülleri ile her madde için gerçek değerler kullanılır — düz basamaklar önceden çizilmiş değildir.",
+    "blurbs": {
+      "beginner": "Isı minik parçacıkları daha hızlı hareket ettirir. Katıda olduğu yerde titrerler, sıvıda kayarlar, gazda ise hızla uçuşurlar. Yeterince ısı ekleyince katı erir, sonra sıvı kaynar.",
+      "intermediate": "Isı, bir maddenin sıcaklığını özgül ısısına bağlı bir miktarda yükseltir (Q = m·c·ΔT). Erime ve kaynama noktalarında hâl değişimi için gizli ısı emilirken sıcaklık artmayı durdurur."
     }
   }
 }

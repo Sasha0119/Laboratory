@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { StyleSheet, Text, View } from '../dom/index';
-import Svg, { Defs, G, Line, LinearGradient, Path, Stop, SvgText } from '../dom/svg';
+import Svg, { Defs, G, Line, LinearGradient, Path, Rect, Stop, SvgText } from '../dom/svg';
 import { niceStep } from '../sim/viewport';
 import { colors, radius } from '../../theme';
 
@@ -20,6 +20,14 @@ interface Props {
   formatX?: (v: number) => string;
   /** Draw a dashed horizontal reference (e.g. terminal velocity). */
   reference?: { value: number; label: string; color?: string } | null;
+  /** More dashed horizontal references, e.g. a melting and a boiling point. */
+  references?: { value: number; label: string; color?: string }[];
+  /** Shaded vertical stretches of the x axis, e.g. while a substance is melting. */
+  bands?: { from: number; to: number; label?: string; color?: string }[];
+  /** Fix the y axis instead of fitting it to the data. */
+  yDomain?: [number, number];
+  /** Keep zero on the y axis (the default); turn off for e.g. a temperature that never nears it. */
+  includeZero?: boolean;
 }
 
 const PAD_LEFT = 44;
@@ -40,14 +48,18 @@ export function LineChart({
   formatY = (v) => v.toFixed(1),
   formatX = (v) => v.toFixed(1),
   reference,
+  references = [],
+  bands = [],
+  yDomain,
+  includeZero = true,
 }: Props) {
   const plotW = Math.max(width - PAD_LEFT - PAD_RIGHT, 10);
   const plotH = Math.max(height - PAD_TOP - PAD_BOTTOM, 10);
 
   const scales = useMemo(() => {
     let maxX = 0;
-    let minY = 0;
-    let maxY = 0;
+    let minY = includeZero ? 0 : Infinity;
+    let maxY = includeZero ? 0 : -Infinity;
     for (const s of series) {
       for (const p of s.points) {
         if (p.x > maxX) maxX = p.x;
@@ -58,13 +70,21 @@ export function LineChart({
     if (reference && Number.isFinite(reference.value)) {
       maxY = Math.max(maxY, reference.value);
     }
+    if (yDomain) {
+      minY = yDomain[0];
+      maxY = yDomain[1];
+    }
+    if (!Number.isFinite(minY) || !Number.isFinite(maxY)) {
+      minY = 0;
+      maxY = 1;
+    }
     // Never collapse to a zero-height axis.
     if (maxY - minY < 1e-9) maxY = minY + 1;
     if (maxX < 1e-9) maxX = 1;
     // Round the top of the axis up to a tick boundary so labels read cleanly.
     const yStep = niceStep(maxY - minY, 4);
-    const top = Math.ceil(maxY / yStep) * yStep;
-    const bottom = Math.floor(minY / yStep) * yStep;
+    const top = yDomain ? yDomain[1] : Math.ceil(maxY / yStep) * yStep;
+    const bottom = yDomain ? yDomain[0] : Math.floor(minY / yStep) * yStep;
     return {
       maxX,
       top,
@@ -74,7 +94,7 @@ export function LineChart({
       sx: (v: number) => PAD_LEFT + (v / maxX) * plotW,
       sy: (v: number) => PAD_TOP + (1 - (v - bottom) / (top - bottom)) * plotH,
     };
-  }, [series, plotW, plotH, reference]);
+  }, [series, plotW, plotH, reference, yDomain, includeZero]);
 
   const paths = useMemo(
     () =>
@@ -90,7 +110,7 @@ export function LineChart({
         const d = kept
           .map((p, i) => `${i === 0 ? 'M' : 'L'} ${scales.sx(p.x).toFixed(2)} ${scales.sy(p.y).toFixed(2)}`)
           .join(' ');
-        const baseY = scales.sy(Math.max(scales.bottom, 0));
+        const baseY = scales.sy(includeZero ? Math.max(scales.bottom, Math.min(0, scales.top)) : scales.bottom);
         const area = `${d} L ${scales.sx(last.x).toFixed(2)} ${baseY.toFixed(2)} L ${scales
           .sx(kept[0].x)
           .toFixed(2)} ${baseY.toFixed(2)} Z`;
@@ -100,7 +120,9 @@ export function LineChart({
   );
 
   const yTicks: number[] = [];
-  for (let v = scales.bottom; v <= scales.top + 1e-9; v += scales.yStep) yTicks.push(v);
+  for (let v = Math.ceil(scales.bottom / scales.yStep - 1e-9) * scales.yStep; v <= scales.top + 1e-9; v += scales.yStep) {
+    yTicks.push(v);
+  }
   const xTicks: number[] = [];
   for (let v = 0; v <= scales.maxX + 1e-9; v += scales.xStep) xTicks.push(v);
 
@@ -115,6 +137,37 @@ export function LineChart({
             </LinearGradient>
           ))}
         </Defs>
+
+        {/* Shaded stretches, e.g. a phase change under way */}
+        {bands.map((b, i) => {
+          const x0 = scales.sx(Math.max(0, b.from));
+          const x1 = scales.sx(Math.min(scales.maxX, b.to));
+          if (x1 - x0 < 0.5) return null;
+          return (
+            <G key={`band${i}`}>
+              <Rect
+                x={x0}
+                y={PAD_TOP}
+                width={x1 - x0}
+                height={plotH}
+                fill={b.color ?? colors.amber}
+                opacity={0.1}
+              />
+              {b.label ? (
+                <SvgText
+                  x={(x0 + x1) / 2}
+                  y={PAD_TOP + 11}
+                  fill={b.color ?? colors.amber}
+                  fontSize={9}
+                  fontWeight="700"
+                  textAnchor="middle"
+                >
+                  {b.label}
+                </SvgText>
+              ) : null}
+            </G>
+          );
+        })}
 
         {/* Grid */}
         {yTicks.map((v, i) => (
@@ -161,6 +214,32 @@ export function LineChart({
             </SvgText>
           </G>
         ))}
+
+        {references
+          .filter((ref) => Number.isFinite(ref.value) && ref.value >= scales.bottom && ref.value <= scales.top)
+          .map((ref, i) => (
+            <G key={`ref${i}`}>
+              <Line
+                x1={PAD_LEFT}
+                y1={scales.sy(ref.value)}
+                x2={PAD_LEFT + plotW}
+                y2={scales.sy(ref.value)}
+                stroke={ref.color ?? colors.amber}
+                strokeWidth={1.1}
+                strokeDasharray="4 4"
+                opacity={0.7}
+              />
+              <SvgText
+                x={PAD_LEFT + plotW - 3}
+                y={scales.sy(ref.value) - 4}
+                fill={ref.color ?? colors.amber}
+                fontSize={9}
+                textAnchor="end"
+              >
+                {ref.label}
+              </SvgText>
+            </G>
+          ))}
 
         {reference && Number.isFinite(reference.value) ? (
           <G>

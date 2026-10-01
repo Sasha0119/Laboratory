@@ -7,17 +7,20 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from '../../components/
 
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
+import { Toggle } from '../../components/ui/Toggle';
 import { useAuth } from '../../context/Auth';
 import { useDifficulty } from '../../context/Difficulty';
 import { useLanguage } from '../../context/Language';
 import { DIFFICULTY_ORDER, type DifficultyLevel } from '../../lib/difficulty';
 import { SUPPORTED_LANGUAGES } from '../../lib/i18n';
+import { useSoundEnabled } from '../../lib/soundSettings';
 import { colors, radius, spacing } from '../../theme';
 
 export default function Settings() {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguage();
   const { level, setLevel } = useDifficulty();
+  const [soundOn, setSoundOn] = useSoundEnabled();
   return (
     <ScrollView
       style={styles.screen}
@@ -55,6 +58,15 @@ export default function Settings() {
             />
           ))}
         </View>
+      </Card>
+
+      <Card title={t('settings.sound')}>
+        <Toggle
+          label={t('settings.soundLabel')}
+          description={t('settings.soundDescription')}
+          value={soundOn}
+          onChange={setSoundOn}
+        />
       </Card>
 
       <View style={styles.notes}>
