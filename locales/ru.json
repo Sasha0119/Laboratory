@@ -597,7 +597,7 @@
       "linkExpired": "Срок действия ссылки истёк или она уже использована. Запросите новую ниже."
     },
     "errors": {
-      "notConfigured": "Аккаунты ещё не подключены. Добавьте URL проекта Supabase и anon-ключ в файл .env (NEXT_PUBLIC_SUPABASE_URL и NEXT_PUBLIC_SUPABASE_ANON_KEY) и перезапустите сервер.",
+      "notConfigured": "Аккаунты ещё не подключены. Добавьте URL проекта Supabase и anon-ключ в файл .env (supabase_url и supabase_anon_key) и перезапустите сервер.",
       "invalidCredentials": "Эта почта и пароль не подходят ни к одному аккаунту.",
       "emailTaken": "Аккаунт с такой почтой уже есть. Попробуйте войти.",
       "emailNotConfirmed": "Откройте ссылку подтверждения из письма, затем войдите.",

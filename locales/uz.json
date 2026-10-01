@@ -597,7 +597,7 @@
       "linkExpired": "Havola muddati tugagan yoki allaqachon ishlatilgan. Quyidan yangisini so‘rang."
     },
     "errors": {
-      "notConfigured": "Hisoblar hali ulanmagan. Supabase loyiha URL va anon kalitini .env fayliga (NEXT_PUBLIC_SUPABASE_URL va NEXT_PUBLIC_SUPABASE_ANON_KEY) qo‘ying va serverni qayta ishga tushiring.",
+      "notConfigured": "Hisoblar hali ulanmagan. Supabase loyiha URL va anon kalitini .env fayliga (supabase_url va supabase_anon_key) qo‘ying va serverni qayta ishga tushiring.",
       "invalidCredentials": "Bu email va parol hech bir hisobga to‘g‘ri kelmadi.",
       "emailTaken": "Bu email bilan hisob allaqachon bor. Kirishga urinib ko‘ring.",
       "emailNotConfirmed": "Emaildagi tasdiqlash havolasini oching, so‘ng kiring.",

@@ -597,7 +597,7 @@
       "linkExpired": "That link has expired or has already been used. Ask for a new one below."
     },
     "errors": {
-      "notConfigured": "Accounts are not connected yet. Add your Supabase project URL and anon key to the .env file (NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY), then restart the dev server.",
+      "notConfigured": "Accounts are not connected yet. Add your Supabase project URL and anon key to the .env file (supabase_url and supabase_anon_key), then restart the dev server.",
       "invalidCredentials": "That email and password do not match an account.",
       "emailTaken": "There is already an account with that email. Try logging in instead.",
       "emailNotConfirmed": "Open the confirmation link we emailed you, then log in.",

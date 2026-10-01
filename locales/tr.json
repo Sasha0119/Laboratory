@@ -597,7 +597,7 @@
       "linkExpired": "Bu bağlantının süresi dolmuş ya da zaten kullanılmış. Aşağıdan yenisini iste."
     },
     "errors": {
-      "notConfigured": "Hesaplar henüz bağlı değil. Supabase proje URL'sini ve anon anahtarını .env dosyasına (NEXT_PUBLIC_SUPABASE_URL ve NEXT_PUBLIC_SUPABASE_ANON_KEY) ekle, sonra sunucuyu yeniden başlat.",
+      "notConfigured": "Hesaplar henüz bağlı değil. Supabase proje URL'sini ve anon anahtarını .env dosyasına (supabase_url ve supabase_anon_key) ekle, sonra sunucuyu yeniden başlat.",
       "invalidCredentials": "Bu e-posta ve parola hiçbir hesapla eşleşmiyor.",
       "emailTaken": "Bu e-postayla zaten bir hesap var. Giriş yapmayı dene.",
       "emailNotConfirmed": "Önce sana gönderdiğimiz onay bağlantısını aç, sonra giriş yap.",

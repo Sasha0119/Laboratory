@@ -597,7 +597,7 @@
       "linkExpired": "该链接已过期或已被使用。请在下面重新申请一个。"
     },
     "errors": {
-      "notConfigured": "账号功能尚未接通。请把 Supabase 项目 URL 和 anon 密钥填入 .env 文件（NEXT_PUBLIC_SUPABASE_URL 和 NEXT_PUBLIC_SUPABASE_ANON_KEY），然后重启服务器。",
+      "notConfigured": "账号功能尚未接通。请把 Supabase 项目 URL 和 anon 密钥填入 .env 文件（supabase_url 和 supabase_anon_key），然后重启服务器。",
       "invalidCredentials": "这个邮箱和密码对不上任何账号。",
       "emailTaken": "这个邮箱已经有账号了，试试直接登录。",
       "emailNotConfirmed": "请先打开我们发送的确认链接，然后再登录。",

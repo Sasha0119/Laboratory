@@ -8,11 +8,11 @@
  *  1. Copy `.env.example` to `.env` in the project root.
  *  2. In the Supabase dashboard open  Project Settings → API  and copy:
  *
- *       Project URL   →  NEXT_PUBLIC_SUPABASE_URL
- *       anon / public →  NEXT_PUBLIC_SUPABASE_ANON_KEY
+ *       Project URL   →  supabase_url
+ *       anon / public →  supabase_anon_key
  *
  *  3. Restart the dev server:  npm run dev
- *     (NEXT_PUBLIC_* values are inlined at build time, so a running server
+ *     (these values are inlined at build time, so a running server
  *      will not pick up a freshly edited .env. On Vercel, add the same two
  *      variables in Project Settings → Environment Variables, then redeploy.)
  *
@@ -29,9 +29,9 @@
 const PLACEHOLDER_URL = 'https://YOUR-PROJECT-REF.supabase.co';
 const PLACEHOLDER_ANON_KEY = 'YOUR-SUPABASE-ANON-KEY';
 
-export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? PLACEHOLDER_URL;
+export const SUPABASE_URL = process.env.supabase_url || PLACEHOLDER_URL;
 export const SUPABASE_ANON_KEY =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? PLACEHOLDER_ANON_KEY;
+  process.env.supabase_anon_key || PLACEHOLDER_ANON_KEY;
 
 /**
  * Whether real credentials have been supplied.
