@@ -1,7 +1,6 @@
-import * as Haptics from 'expo-haptics';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from '../dom/index';
 import { colors, radius, spacing } from '../../theme';
 
 interface Props {
@@ -101,11 +100,9 @@ export function NumberField({
     if (parsed < min) {
       next = min;
       flash(tidy(t('input.clampedMin', { min: format(min, decimals), unit: unit ?? '' })));
-      if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
     } else if (parsed > max) {
       next = max;
       flash(tidy(t('input.clampedMax', { max: format(max, decimals), unit: unit ?? '' })));
-      if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
     }
 
     setText(format(next, decimals));
@@ -124,9 +121,7 @@ export function NumberField({
             onBlur={commit}
             onSubmitEditing={commit}
             editable={!disabled}
-            keyboardType="numbers-and-punctuation"
-            inputMode="decimal"
-            returnKeyType="done"
+            keyboardType="decimal-pad"
             selectTextOnFocus
             accessibilityLabel={label}
             style={styles.input}
@@ -173,7 +168,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.stroke,
     paddingHorizontal: 10,
-    paddingVertical: Platform.OS === 'ios' ? 8 : 2,
+    paddingVertical: 2,
     minWidth: 118,
   },
   inputWrapFocused: { borderColor: colors.accent },
@@ -184,7 +179,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'right',
     padding: 0,
-    fontVariant: ['tabular-nums'],
+    fontVariantNumeric: 'tabular-nums',
   },
   unit: { color: colors.textFaint, fontSize: 11, fontWeight: '600' },
   metaRow: { marginTop: 5, paddingHorizontal: 2 },

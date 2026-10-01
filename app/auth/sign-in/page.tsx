@@ -1,23 +1,15 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+'use client';
 
-import { Button } from '../../components/ui/Button';
-import { TextField } from '../../components/ui/TextField';
-import { useAuth } from '../../context/Auth';
-import { isEmailShaped } from '../../lib/auth/password';
-import { colors, radius, spacing } from '../../theme';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from '../../../components/dom/index';
+
+import { Button } from '../../../components/ui/Button';
+import { TextField } from '../../../components/ui/TextField';
+import { useAuth } from '../../../context/Auth';
+import { isEmailShaped } from '../../../lib/auth/password';
+import { colors, radius, spacing } from '../../../theme';
 
 /**
  * Log in to an existing account.
@@ -26,12 +18,11 @@ import { colors, radius, spacing } from '../../theme';
  * predates them, and telling someone their working password is invalid would
  * be nonsense. Only the shape of the email is checked before the round trip.
  */
-export default function SignIn() {
+function SignInForm() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { signIn, continueAsGuest, configured } = useAuth();
-  const { flow } = useLocalSearchParams<{ flow?: string }>();
+  const flow = useSearchParams().get('flow');
 
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
@@ -69,15 +60,11 @@ export default function SignIn() {
   };
 
   return (
-    <KeyboardAvoidingView
+    <View
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={90}
     >
       <ScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[styles.content, { paddingBottom: spacing.xl }]}
       >
         <Text style={styles.intro}>{t('auth.signIn.intro')}</Text>
 
@@ -92,9 +79,7 @@ export default function SignIn() {
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="email"
-          textContentType="emailAddress"
           keyboardType="email-address"
-          returnKeyType="next"
           onSubmitEditing={() => passwordRef.current?.focus()}
           placeholder={t('auth.fields.emailPlaceholder')}
           error={touched.email && !emailOk ? t('auth.validation.email') : null}
@@ -112,8 +97,6 @@ export default function SignIn() {
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="current-password"
-          textContentType="password"
-          returnKeyType="go"
           onSubmitEditing={submit}
           placeholder={t('auth.fields.passwordPlaceholder')}
           error={
@@ -162,7 +145,7 @@ export default function SignIn() {
           ) : null}
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -193,3 +176,12 @@ const styles = StyleSheet.create({
   linkText: { color: colors.accent, fontSize: 13.5, fontWeight: '600' },
   linkMuted: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
 });
+
+// `useSearchParams` needs a Suspense boundary above it for static rendering.
+export default function SignIn() {
+  return (
+    <Suspense fallback={null}>
+      <SignInForm />
+    </Suspense>
+  );
+}

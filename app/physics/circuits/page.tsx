@@ -1,40 +1,30 @@
-import * as Haptics from 'expo-haptics';
+'use client';
+
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  LayoutChangeEvent,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pressable, ScrollView, StyleSheet, Text, View, type LayoutChangeEvent } from '../../../components/dom/index';
 
-import { CircuitScene } from '../../components/sim/CircuitScene';
-import { FormulaPanel } from '../../components/sim/FormulaPanel';
-import { LevelBlurb } from '../../components/sim/LevelBlurb';
-import { Readout, type DetailRow, type Stat } from '../../components/readout/Readout';
-import { Card } from '../../components/ui/Card';
-import { NumberField } from '../../components/ui/NumberField';
-import { Segmented } from '../../components/ui/Segmented';
-import { Toggle } from '../../components/ui/Toggle';
-import { useCircuitSim } from '../../hooks/useCircuitSim';
-import { useCircuitSound } from '../../hooks/useCircuitSound';
-import { useDetailMode } from '../../context/DetailMode';
-import { useDifficulty } from '../../context/Difficulty';
-import { usesPreciseTerms } from '../../lib/difficulty';
-import { LIMITS } from '../../lib/physics/constants';
-import type { BulbInput, WiringMode } from '../../lib/physics/circuit';
-import { friendly, precise } from '../../lib/format';
-import { colors, radius, spacing } from '../../theme';
+import { CircuitScene } from '../../../components/sim/CircuitScene';
+import { FormulaPanel } from '../../../components/sim/FormulaPanel';
+import { LevelBlurb } from '../../../components/sim/LevelBlurb';
+import { Readout, type DetailRow, type Stat } from '../../../components/readout/Readout';
+import { Card } from '../../../components/ui/Card';
+import { NumberField } from '../../../components/ui/NumberField';
+import { Segmented } from '../../../components/ui/Segmented';
+import { Toggle } from '../../../components/ui/Toggle';
+import { useCircuitSim } from '../../../hooks/useCircuitSim';
+import { useCircuitSound } from '../../../hooks/useCircuitSound';
+import { useDetailMode } from '../../../context/DetailMode';
+import { useDifficulty } from '../../../context/Difficulty';
+import { usesPreciseTerms } from '../../../lib/difficulty';
+import { LIMITS } from '../../../lib/physics/constants';
+import type { BulbInput, WiringMode } from '../../../lib/physics/circuit';
+import { precise } from '../../../lib/format';
+import { colors, radius, spacing } from '../../../theme';
 
-const BULB_COUNT_OPTIONS = ['1', '2'] as const;
 const WIRING_IDS: WiringMode[] = ['series', 'parallel'];
 
 export default function CircuitsSimulator() {
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { detailed } = useDetailMode();
   const { level } = useDifficulty();
@@ -67,9 +57,6 @@ export default function CircuitsSimulator() {
   const onBurnout = useCallback(
     (_bulbIndex: number) => {
       sound.playSpark();
-      if (Platform.OS !== 'web') {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
-      }
     },
     [sound]
   );
@@ -188,7 +175,6 @@ export default function CircuitsSimulator() {
       <ScrollView
         style={styles.controls}
         contentContainerStyle={styles.controlsContent}
-        showsVerticalScrollIndicator={false}
       >
         <LevelBlurb module="circuits" />
 

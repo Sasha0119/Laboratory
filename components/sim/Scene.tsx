@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import Svg, {
-  Circle,
+import Svg, { Circle,
   Defs,
   Ellipse,
   G,
@@ -10,8 +9,7 @@ import Svg, {
   RadialGradient,
   Rect,
   Stop,
-  Text as SvgText,
-} from 'react-native-svg';
+  SvgText, } from '../dom/svg';
 import { ENVIRONMENTS, type EnvironmentId } from '../../lib/physics/constants';
 import type { ObjectPreset } from '../../lib/physics/presets';
 import { ring } from '../../lib/effects/impact';

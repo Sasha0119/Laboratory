@@ -1,5 +1,4 @@
-import {
-  Circle,
+import { Circle,
   Defs,
   Ellipse,
   G,
@@ -8,8 +7,7 @@ import {
   Path,
   RadialGradient,
   Rect,
-  Stop,
-} from 'react-native-svg';
+  Stop, } from '../dom/svg';
 import type { MaterialId, ShapeId } from '../../lib/physics/presets';
 
 interface Props {

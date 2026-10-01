@@ -1,13 +1,11 @@
-import Svg, {
-  Circle,
+import Svg, { Circle,
   Defs,
   G,
   Line,
   Path,
   RadialGradient,
   Rect,
-  Stop,
-} from 'react-native-svg';
+  Stop, } from '../dom/svg';
 import type { BulbOutput, CircuitOutput, WiringMode } from '../../lib/physics/circuit';
 import { blend } from '../../lib/color';
 import { colors } from '../../theme';

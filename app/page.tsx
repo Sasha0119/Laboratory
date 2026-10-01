@@ -1,9 +1,10 @@
-import { Redirect, useRouter } from 'expo-router';
-import { useRef } from 'react';
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle, Defs, Ellipse, G, Line, Path, RadialGradient, Stop } from 'react-native-svg';
+import { Pressable, ScrollView, StyleSheet, Text, View } from '../components/dom/index';
+import Svg, { Circle, Defs, Ellipse, G, Line, Path, RadialGradient, Stop } from '../components/dom/svg';
 import { useAuth } from '../context/Auth';
 import { colors, radius, spacing } from '../theme';
 
@@ -24,23 +25,25 @@ const CATEGORIES: Category[] = [
 
 export default function Home() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { mode } = useAuth();
 
+  useEffect(() => {
+    if (mode === 'undecided') router.replace('/auth/welcome');
+  }, [mode, router]);
+
   // First launch only: nobody has said whether they want an account. Asked
-  // once, remembered, and never brought up again unasked — a `Redirect`
-  // rather than an effect so the home screen is not painted first.
-  if (mode === 'undecided') return <Redirect href="/auth/welcome" />;
+  // once, remembered, and never brought up again unasked — sent on
+  // before the home screen is painted.
+  if (mode === 'undecided') return null;
 
   return (
     <ScrollView
       style={styles.screen}
       contentContainerStyle={[
         styles.content,
-        { paddingTop: insets.top + spacing.lg, paddingBottom: insets.bottom + spacing.xl },
+        { paddingTop: spacing.lg, paddingBottom: spacing.xl },
       ]}
-      showsVerticalScrollIndicator={false}
     >
       <View style={styles.masthead}>
         <View style={styles.brandRow}>
@@ -93,21 +96,21 @@ export default function Home() {
   );
 }
 
+const PRESS_SCALE = 0.975;
+
 function CategoryCard({ category, onPress }: { category: Category; onPress?: () => void }) {
   const { t } = useTranslation();
-  const scale = useRef(new Animated.Value(1)).current;
+  const [pressed, setPressed] = useState(false);
   const disabled = !onPress;
   const base = `home.categories.${category.id}`;
 
-  const spring = (to: number) =>
-    Animated.spring(scale, { toValue: to, useNativeDriver: true, speed: 40, bounciness: 5 }).start();
 
   return (
-    <Animated.View style={{ transform: [{ scale }] }}>
+    <View style={{ transform: `scale(${pressed ? PRESS_SCALE : 1})`, transition: 'transform 120ms ease-out' }}>
       <Pressable
         disabled={disabled}
-        onPressIn={() => spring(0.975)}
-        onPressOut={() => spring(1)}
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
         onPress={onPress}
         accessibilityRole="button"
         accessibilityLabel={t(`${base}.title`)}
@@ -136,7 +139,7 @@ function CategoryCard({ category, onPress }: { category: Category; onPress?: () 
           </Text>
         </View>
       </Pressable>
-    </Animated.View>
+    </View>
   );
 }
 

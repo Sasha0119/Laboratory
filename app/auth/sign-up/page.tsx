@@ -1,29 +1,21 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+'use client';
 
-import { PasswordRules } from '../../components/auth/PasswordRules';
-import { Button } from '../../components/ui/Button';
-import { TextField } from '../../components/ui/TextField';
-import { useAuth } from '../../context/Auth';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from '../../../components/dom/index';
+
+import { PasswordRules } from '../../../components/auth/PasswordRules';
+import { Button } from '../../../components/ui/Button';
+import { TextField } from '../../../components/ui/TextField';
+import { useAuth } from '../../../context/Auth';
 import {
   isDisplayNameValid,
   isEmailShaped,
   isPasswordValid,
   MAX_DISPLAY_NAME_LENGTH,
-} from '../../lib/auth/password';
-import { colors, radius, spacing } from '../../theme';
+} from '../../../lib/auth/password';
+import { colors, radius, spacing } from '../../../theme';
 
 /**
  * Create an account.
@@ -33,12 +25,11 @@ import { colors, radius, spacing } from '../../theme';
  * they have been left or submitted. Nothing is saved for a single generic
  * "invalid input" after the fact.
  */
-export default function SignUp() {
+function SignUpForm() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { signUp, configured } = useAuth();
-  const { flow } = useLocalSearchParams<{ flow?: string }>();
+  const flow = useSearchParams().get('flow');
 
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
@@ -92,7 +83,7 @@ export default function SignUp() {
     return (
       <ScrollView
         style={styles.screen}
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
+        contentContainerStyle={[styles.content, { paddingBottom: spacing.xl }]}
       >
         <View style={styles.notice}>
           <Text style={styles.noticeTitle}>{t('auth.signUp.checkEmailTitle')}</Text>
@@ -109,15 +100,11 @@ export default function SignUp() {
   }
 
   return (
-    <KeyboardAvoidingView
+    <View
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={90}
     >
       <ScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[styles.content, { paddingBottom: spacing.xl }]}
       >
         <Text style={styles.intro}>{t('auth.signUp.intro')}</Text>
 
@@ -132,8 +119,6 @@ export default function SignUp() {
           maxLength={MAX_DISPLAY_NAME_LENGTH}
           autoCapitalize="words"
           autoComplete="name"
-          textContentType="name"
-          returnKeyType="next"
           onSubmitEditing={() => emailRef.current?.focus()}
           placeholder={t('auth.fields.displayNamePlaceholder')}
           hint={t('auth.fields.displayNameHint')}
@@ -149,9 +134,7 @@ export default function SignUp() {
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="email"
-          textContentType="emailAddress"
           keyboardType="email-address"
-          returnKeyType="next"
           onSubmitEditing={() => passwordRef.current?.focus()}
           placeholder={t('auth.fields.emailPlaceholder')}
           error={touched.email && !emailOk ? t('auth.validation.email') : null}
@@ -169,8 +152,6 @@ export default function SignUp() {
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="new-password"
-          textContentType="newPassword"
-          returnKeyType="go"
           onSubmitEditing={submit}
           placeholder={t('auth.fields.passwordPlaceholder')}
         />
@@ -196,7 +177,7 @@ export default function SignUp() {
 
         <Text style={styles.privacy}>{t('auth.signUp.privacyNote')}</Text>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -243,3 +224,12 @@ const styles = StyleSheet.create({
   noticeTitle: { color: colors.text, fontSize: 18, fontWeight: '800' },
   noticeBody: { color: colors.textMuted, fontSize: 13.5, lineHeight: 20 },
 });
+
+// `useSearchParams` needs a Suspense boundary above it for static rendering.
+export default function SignUp() {
+  return (
+    <Suspense fallback={null}>
+      <SignUpForm />
+    </Suspense>
+  );
+}

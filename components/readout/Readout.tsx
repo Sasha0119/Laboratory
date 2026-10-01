@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from '../dom/index';
 import { useDetailMode } from '../../context/DetailMode';
 import { friendly } from '../../lib/format';
 import { colors, radius, spacing } from '../../theme';
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     fontSize: 27,
     fontWeight: '800',
     letterSpacing: -0.8,
-    fontVariant: ['tabular-nums'],
+    fontVariantNumeric: 'tabular-nums',
   },
   tileUnit: { color: colors.textFaint, fontSize: 11, fontWeight: '600' },
   trend: { fontSize: 11, marginLeft: 1 },
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 11.5,
     fontWeight: '700',
-    fontVariant: ['tabular-nums'],
+    fontVariantNumeric: 'tabular-nums',
   },
   detailUnit: { color: colors.textFaint, fontWeight: '400' },
 });

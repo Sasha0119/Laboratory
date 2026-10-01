@@ -9,7 +9,8 @@
     "collisions": "Collisions",
     "circuits": "Simple Circuits",
     "magnets": "Magnets & Magnetism",
-    "settings": "Settings"
+    "settings": "Settings",
+    "back": "Back"
   },
   "common": {
     "reset": "Reset",
@@ -31,7 +32,7 @@
   "home": {
     "tagline": "Real simulations, real equations. Pick a bench and start an experiment.",
     "openBench": "Open bench  →",
-    "footnote": "Every simulation runs on your phone. An account is only needed for the Intermediate and Pro benches.",
+    "footnote": "Every simulation runs right in your browser. No account is needed.",
     "settingsLabel": "Settings",
     "categories": {
       "physics": {
@@ -596,7 +597,7 @@
       "linkExpired": "That link has expired or has already been used. Ask for a new one below."
     },
     "errors": {
-      "notConfigured": "Accounts are not connected yet. Paste your Supabase project URL and anon key into the .env file, then restart the app.",
+      "notConfigured": "Accounts are not connected yet. Add your Supabase project URL and anon key to the .env file (NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY), then restart the dev server.",
       "invalidCredentials": "That email and password do not match an account.",
       "emailTaken": "There is already an account with that email. Try logging in instead.",
       "emailNotConfirmed": "Open the confirmation link we emailed you, then log in.",

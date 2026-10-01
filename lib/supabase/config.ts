@@ -8,14 +8,15 @@
  *  1. Copy `.env.example` to `.env` in the project root.
  *  2. In the Supabase dashboard open  Project Settings → API  and copy:
  *
- *       Project URL   →  EXPO_PUBLIC_SUPABASE_URL
- *       anon / public →  EXPO_PUBLIC_SUPABASE_ANON_KEY
+ *       Project URL   →  NEXT_PUBLIC_SUPABASE_URL
+ *       anon / public →  NEXT_PUBLIC_SUPABASE_ANON_KEY
  *
- *  3. Restart the bundler with a cleared cache:  npx expo start -c
- *     (EXPO_PUBLIC_* values are inlined at build time, so a running bundler
- *      will not pick up a freshly edited .env.)
+ *  3. Restart the dev server:  npm run dev
+ *     (NEXT_PUBLIC_* values are inlined at build time, so a running server
+ *      will not pick up a freshly edited .env. On Vercel, add the same two
+ *      variables in Project Settings → Environment Variables, then redeploy.)
  *
- *  The anon key is designed to be shipped inside the app — it is not a secret.
+ *  The anon key is designed to be shipped inside the site — it is not a secret.
  *  What protects the data is Row Level Security, which `supabase/schema.sql`
  *  turns on. NEVER put the `service_role` key in this file or in .env.
  *
@@ -24,14 +25,13 @@
  *  keeps credentials out of git.
  */
 
-import { Platform } from 'react-native';
 
 const PLACEHOLDER_URL = 'https://YOUR-PROJECT-REF.supabase.co';
 const PLACEHOLDER_ANON_KEY = 'YOUR-SUPABASE-ANON-KEY';
 
-export const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? PLACEHOLDER_URL;
+export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? PLACEHOLDER_URL;
 export const SUPABASE_ANON_KEY =
-  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? PLACEHOLDER_ANON_KEY;
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? PLACEHOLDER_ANON_KEY;
 
 /**
  * Whether real credentials have been supplied.
@@ -48,18 +48,13 @@ export const isSupabaseConfigured =
   SUPABASE_ANON_KEY.length > 20;
 
 /**
- * Where the password-reset email sends the user back to.
+ * Where the password-reset email sends the user back to: this site's own
+ * /auth/reset-password page.
  *
- * On a phone that is the app's deep link (the `scheme` in app.json); on the web
- * build it is the site's own /auth/reset-password page, since a browser cannot
- * open a custom scheme. Add BOTH to Authentication → URL Configuration →
- * Redirect URLs in the Supabase dashboard (the site one as
- * `https://your-domain/auth/reset-password`, plus `http://localhost:8081/**`
- * for local web), otherwise Supabase refuses the redirect.
+ * Add `https://your-domain/auth/reset-password` (and `http://localhost:3000/**`
+ * for local development) under Authentication → URL Configuration → Redirect
+ * URLs in the Supabase dashboard, otherwise Supabase refuses the redirect.
  */
 export function passwordResetRedirect(): string {
-  if (Platform.OS === 'web' && typeof window !== 'undefined') {
-    return `${window.location.origin}/auth/reset-password`;
-  }
-  return 'laboratory://auth/reset-password';
+  return `${window.location.origin}/auth/reset-password`;
 }

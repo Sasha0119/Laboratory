@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import { StyleSheet, Text, View } from '../dom/index';
+import Svg, { Path } from '../dom/svg';
 
 import { checkPassword } from '../../lib/auth/password';
 import { colors, spacing } from '../../theme';

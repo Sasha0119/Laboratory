@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from '../dom/index';
 import { colors, radius, spacing } from '../../theme';
 
 interface Props {

@@ -8,7 +8,7 @@
 > users on the Settings screen.
 >
 > JSON does not permit `//` comments — a `.json` file with one fails
-> `JSON.parse`, and Metro would refuse to bundle it — so the notice is carried
+> `JSON.parse`, and the build would refuse to bundle it — so the notice is carried
 > as the first key of each file instead.
 
 ## Files

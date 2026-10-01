@@ -1,9 +1,10 @@
-import { useRouter } from 'expo-router';
-import { useMemo, useRef, useState } from 'react';
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle, Ellipse, Line, Path, Rect } from 'react-native-svg';
+import { Pressable, ScrollView, StyleSheet, Text, View } from '../../components/dom/index';
+import Svg, { Circle, Ellipse, Line, Path, Rect } from '../../components/dom/svg';
 
 import { Segmented } from '../../components/ui/Segmented';
 import { useDifficulty } from '../../context/Difficulty';
@@ -19,7 +20,6 @@ const LEVEL_TINT: Record<DifficultyLevel, string> = {
 };
 
 export default function PhysicsIndex() {
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { level, setLevel } = useDifficulty();
   const router = useRouter();
@@ -43,8 +43,7 @@ export default function PhysicsIndex() {
   return (
     <ScrollView
       style={styles.screen}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
-      showsVerticalScrollIndicator={false}
+      contentContainerStyle={[styles.content, { paddingBottom: spacing.xl }]}
     >
       <View style={styles.levelPicker}>
         <Text style={styles.levelLabel}>{t('difficulty.title')}</Text>
@@ -91,6 +90,8 @@ export default function PhysicsIndex() {
   );
 }
 
+const PRESS_SCALE = 0.98;
+
 function TopicCard({
   topic,
   onPress,
@@ -99,19 +100,17 @@ function TopicCard({
   onPress?: () => void;
 }) {
   const { t } = useTranslation();
-  const scale = useRef(new Animated.Value(1)).current;
+  const [pressed, setPressed] = useState(false);
   const [showNotice, setShowNotice] = useState(false);
   const disabled = !onPress;
   const tint = LEVEL_TINT[topic.level];
 
-  const spring = (to: number) =>
-    Animated.spring(scale, { toValue: to, useNativeDriver: true, speed: 40, bounciness: 5 }).start();
 
   return (
-    <Animated.View style={{ transform: [{ scale }] }}>
+    <View style={{ transform: `scale(${pressed ? PRESS_SCALE : 1})`, transition: 'transform 120ms ease-out' }}>
       <Pressable
-        onPressIn={() => spring(0.98)}
-        onPressOut={() => spring(1)}
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
         // A placeholder is still tappable — it just explains itself rather
         // than navigating anywhere.
         onPress={onPress ?? (() => setShowNotice((v) => !v))}
@@ -165,7 +164,7 @@ function TopicCard({
           </View>
         ) : null}
       </Pressable>
-    </Animated.View>
+    </View>
   );
 }
 

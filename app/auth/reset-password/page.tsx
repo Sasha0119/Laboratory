@@ -1,28 +1,20 @@
-import * as Linking from 'expo-linking';
-import { useRouter } from 'expo-router';
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, Text, TextInput, View } from '../../../components/dom/index';
 
-import { PasswordRules } from '../../components/auth/PasswordRules';
-import { Button } from '../../components/ui/Button';
-import { TextField } from '../../components/ui/TextField';
-import { useAuth } from '../../context/Auth';
-import { authErrorKey } from '../../lib/auth/errors';
-import { isEmailShaped, isPasswordValid } from '../../lib/auth/password';
-import { parseRecoveryLink } from '../../lib/auth/recoveryLink';
-import { supabase } from '../../lib/supabase/client';
-import { isSupabaseConfigured } from '../../lib/supabase/config';
-import { colors, radius, spacing } from '../../theme';
+import { PasswordRules } from '../../../components/auth/PasswordRules';
+import { Button } from '../../../components/ui/Button';
+import { TextField } from '../../../components/ui/TextField';
+import { useAuth } from '../../../context/Auth';
+import { authErrorKey } from '../../../lib/auth/errors';
+import { isEmailShaped, isPasswordValid } from '../../../lib/auth/password';
+import { parseRecoveryLink } from '../../../lib/auth/recoveryLink';
+import { supabase } from '../../../lib/supabase/client';
+import { isSupabaseConfigured } from '../../../lib/supabase/config';
+import { colors, radius, spacing } from '../../../theme';
 
 /**
  * Password reset, both halves of it.
@@ -40,11 +32,16 @@ import { colors, radius, spacing } from '../../theme';
  */
 export default function ResetPassword() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { sendPasswordReset, configured } = useAuth();
 
-  const url = Linking.useURL();
+  const [url, setUrl] = useState<string | null>(null);
+
+  // The emailed link lands on this page with the tokens in the query or the
+  // fragment; read them once the page is in the browser.
+  useEffect(() => {
+    setUrl(window.location.href);
+  }, []);
   const [stage, setStage] = useState<'request' | 'sent' | 'set' | 'done'>('request');
 
   const [email, setEmail] = useState('');
@@ -85,12 +82,14 @@ export default function ResetPassword() {
 
       if (error) {
         // Recovery links expire, and are single-use. Say that plainly and
-        // leave the request form in place so a new one is one tap away.
+        // leave the request form in place so a new one is one click away.
         setFormError(t('auth.reset.linkExpired'));
         setStage('request');
         return;
       }
       setFormError(null);
+      // The tokens are single-use; take them out of the address bar and history.
+      window.history.replaceState(null, '', window.location.pathname);
       setStage('set');
     };
 
@@ -179,8 +178,6 @@ export default function ResetPassword() {
             autoCapitalize="none"
             autoCorrect={false}
             autoComplete="new-password"
-            textContentType="newPassword"
-            returnKeyType="go"
             onSubmitEditing={setNewPassword}
             placeholder={t('auth.fields.passwordPlaceholder')}
           />
@@ -209,9 +206,7 @@ export default function ResetPassword() {
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="email"
-          textContentType="emailAddress"
           keyboardType="email-address"
-          returnKeyType="go"
           onSubmitEditing={sendLink}
           placeholder={t('auth.fields.emailPlaceholder')}
           error={emailTouched && !emailOk ? t('auth.validation.email') : null}
@@ -227,19 +222,15 @@ export default function ResetPassword() {
   };
 
   return (
-    <KeyboardAvoidingView
+    <View
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={90}
     >
       <ScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[styles.content, { paddingBottom: spacing.xl }]}
       >
         {body()}
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

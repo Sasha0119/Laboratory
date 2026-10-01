@@ -1,36 +1,35 @@
-import * as Haptics from 'expo-haptics';
+'use client';
+
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LayoutChangeEvent, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, Text, View, type LayoutChangeEvent } from '../../../components/dom/index';
 
-import { MagnetScene } from '../../components/sim/MagnetScene';
-import { FormulaPanel } from '../../components/sim/FormulaPanel';
-import { IntroPanel } from '../../components/sim/IntroPanel';
-import { LevelBlurb } from '../../components/sim/LevelBlurb';
-import { Readout, type DetailRow, type Stat } from '../../components/readout/Readout';
-import { Card } from '../../components/ui/Card';
-import { NumberField } from '../../components/ui/NumberField';
-import { Segmented } from '../../components/ui/Segmented';
-import { useDismissiblePanel } from '../../hooks/useDismissiblePanel';
-import { useMagnetSim } from '../../hooks/useMagnetSim';
-import { useMagnetSound } from '../../hooks/useMagnetSound';
-import { useDetailMode } from '../../context/DetailMode';
-import { useDifficulty } from '../../context/Difficulty';
-import { formulaDisplayFor, usesPreciseTerms } from '../../lib/difficulty';
-import { LIMITS } from '../../lib/physics/constants';
+import { MagnetScene } from '../../../components/sim/MagnetScene';
+import { FormulaPanel } from '../../../components/sim/FormulaPanel';
+import { IntroPanel } from '../../../components/sim/IntroPanel';
+import { LevelBlurb } from '../../../components/sim/LevelBlurb';
+import { Readout, type DetailRow, type Stat } from '../../../components/readout/Readout';
+import { Card } from '../../../components/ui/Card';
+import { NumberField } from '../../../components/ui/NumberField';
+import { Segmented } from '../../../components/ui/Segmented';
+import { useDismissiblePanel } from '../../../hooks/useDismissiblePanel';
+import { useMagnetSim } from '../../../hooks/useMagnetSim';
+import { useMagnetSound } from '../../../hooks/useMagnetSound';
+import { useDetailMode } from '../../../context/DetailMode';
+import { useDifficulty } from '../../../context/Difficulty';
+import { formulaDisplayFor, usesPreciseTerms } from '../../../lib/difficulty';
+import { LIMITS } from '../../../lib/physics/constants';
 import {
   SNAP_DISTANCE,
   forceFraction,
   type Orientation,
-} from '../../lib/physics/magnetism';
-import { precise } from '../../lib/format';
-import { colors, radius, spacing } from '../../theme';
+} from '../../../lib/physics/magnetism';
+import { precise } from '../../../lib/format';
+import { colors, radius, spacing } from '../../../theme';
 
 const ORIENTATION_IDS: Orientation[] = ['attract', 'repel'];
 
 export default function MagnetsSimulator() {
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { detailed } = useDetailMode();
   const { level } = useDifficulty();
@@ -54,9 +53,6 @@ export default function MagnetsSimulator() {
   const sound = useMagnetSound();
   const onSnap = useCallback(() => {
     sound.playClick();
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {});
-    }
   }, [sound]);
 
   const { force, display, snapPulse } = useMagnetSim({ input: simInput, onSnap });
@@ -160,7 +156,6 @@ export default function MagnetsSimulator() {
       <ScrollView
         style={styles.controls}
         contentContainerStyle={styles.controlsContent}
-        showsVerticalScrollIndicator={false}
       >
         {intro.visible ? (
           <IntroPanel

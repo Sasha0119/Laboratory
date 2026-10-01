@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, type ViewProps } from 'react-native';
+import { StyleSheet, Text, View, ViewProps } from '../dom/index';
 import { colors, radius, spacing } from '../../theme';
 
 interface Props extends ViewProps {
@@ -46,6 +46,6 @@ const styles = StyleSheet.create({
   accessory: {
     color: colors.textFaint,
     fontSize: 11,
-    fontVariant: ['tabular-nums'],
+    fontVariantNumeric: 'tabular-nums',
   },
 });

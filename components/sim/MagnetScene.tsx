@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-import Svg, {
-  Circle,
+import Svg, { Circle,
   Defs,
   G,
   Line,
@@ -9,8 +8,7 @@ import Svg, {
   RadialGradient,
   Rect,
   Stop,
-  Text as SvgText,
-} from 'react-native-svg';
+  SvgText, } from '../dom/svg';
 import {
   MAGNET_HALF_LENGTH,
   computeForce,

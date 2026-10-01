@@ -1,41 +1,33 @@
-import * as Haptics from 'expo-haptics';
+'use client';
+
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  LayoutChangeEvent,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, Text, View, type LayoutChangeEvent } from '../../../components/dom/index';
 
-import { Readout, type DetailRow, type Stat } from '../../components/readout/Readout';
-import { FormulaPanel } from '../../components/sim/FormulaPanel';
-import { LevelBlurb } from '../../components/sim/LevelBlurb';
-import { PresetPicker } from '../../components/sim/PresetPicker';
-import { TrackScene, trackScale } from '../../components/sim/TrackScene';
-import { Button } from '../../components/ui/Button';
-import { Card } from '../../components/ui/Card';
-import { Segmented } from '../../components/ui/Segmented';
-import { NumberField } from '../../components/ui/NumberField';
-import { useDetailMode } from '../../context/DetailMode';
-import { useDifficulty } from '../../context/Difficulty';
-import { LIMITS } from '../../lib/physics/constants';
-import { usesPreciseTerms } from '../../lib/difficulty';
-import { useCollisionSim } from '../../hooks/useCollisionSim';
-import { useImpactSound } from '../../hooks/useImpactSound';
+import { Readout, type DetailRow, type Stat } from '../../../components/readout/Readout';
+import { FormulaPanel } from '../../../components/sim/FormulaPanel';
+import { LevelBlurb } from '../../../components/sim/LevelBlurb';
+import { PresetPicker } from '../../../components/sim/PresetPicker';
+import { TrackScene, trackScale } from '../../../components/sim/TrackScene';
+import { Button } from '../../../components/ui/Button';
+import { Card } from '../../../components/ui/Card';
+import { Segmented } from '../../../components/ui/Segmented';
+import { NumberField } from '../../../components/ui/NumberField';
+import { useDetailMode } from '../../../context/DetailMode';
+import { useDifficulty } from '../../../context/Difficulty';
+import { LIMITS } from '../../../lib/physics/constants';
+import { usesPreciseTerms } from '../../../lib/difficulty';
+import { useCollisionSim } from '../../../hooks/useCollisionSim';
+import { useImpactSound } from '../../../hooks/useImpactSound';
 import {
   DEFAULT_RESTITUTION,
   restitutionFor,
   type CollisionKind,
   type CollisionParams,
-} from '../../lib/physics/collision';
-import { PRESETS_BY_ID, type MaterialId, type ObjectPreset } from '../../lib/physics/presets';
-import { directionKey, friendly, precise, speedComparisonKey } from '../../lib/format';
-import { colors, radius, spacing } from '../../theme';
+} from '../../../lib/physics/collision';
+import { PRESETS_BY_ID, type MaterialId, type ObjectPreset } from '../../../lib/physics/presets';
+import { directionKey, friendly, precise, speedComparisonKey } from '../../../lib/format';
+import { colors, radius, spacing } from '../../../theme';
 
 /** Track runs from -HALF_TRACK to +HALF_TRACK metres, with end stops. */
 const HALF_TRACK = 4;
@@ -71,7 +63,6 @@ export default function CollisionsRoute() {
 }
 
 function CollisionsSimulator() {
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { detailed } = useDetailMode();
   const { level } = useDifficulty();
@@ -157,15 +148,6 @@ function CollisionsSimulator() {
   const onImpact = useCallback(
     (_event: unknown, profile: Parameters<typeof playImpact>[1]) => {
       playImpact(KIND_SOUND[kind], profile);
-      if (Platform.OS !== 'web') {
-        const style =
-          profile.shake > 6
-            ? Haptics.ImpactFeedbackStyle.Heavy
-            : profile.shake > 2
-              ? Haptics.ImpactFeedbackStyle.Medium
-              : Haptics.ImpactFeedbackStyle.Light;
-        Haptics.impactAsync(style).catch(() => {});
-      }
     },
     [playImpact, kind]
   );
@@ -345,7 +327,6 @@ function CollisionsSimulator() {
       <ScrollView
         style={styles.controls}
         contentContainerStyle={styles.controlsContent}
-        showsVerticalScrollIndicator={false}
       >
         <LevelBlurb module="collisions" />
 
@@ -421,7 +402,7 @@ function CollisionsSimulator() {
         <Text style={styles.credits}>{t('collisions.credits')}</Text>
       </ScrollView>
 
-      <View style={[styles.actions, { paddingBottom: insets.bottom + spacing.sm }]}>
+      <View style={[styles.actions, { paddingBottom: spacing.sm }]}>
         <Button
           label={running ? t('common.running') : t('common.run')}
           icon={running ? undefined : '▶'}

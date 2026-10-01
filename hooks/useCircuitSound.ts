@@ -1,14 +1,14 @@
 /**
  * Circuit audio: a soft continuous hum while current is flowing, and a sharp
- * spark on burnout. Same expo-audio pattern as `useImpactSound` — one player
+ * spark on burnout. Same audio pattern as `useImpactSound` — one player
  * per sound, created once and reused rather than instantiated on the fly.
  */
 
-import { setAudioModeAsync, useAudioPlayer } from 'expo-audio';
 import { useCallback, useEffect } from 'react';
+import { useAudioPlayer } from './useAudioPlayer';
 
-const HUM_SOURCE = require('../assets/sounds/circuit-hum.wav');
-const SPARK_SOURCE = require('../assets/sounds/circuit-spark.wav');
+const HUM_SOURCE = '/sounds/circuit-hum.wav';
+const SPARK_SOURCE = '/sounds/circuit-spark.wav';
 
 /** Current, in amps, above which the hum is already at full volume. */
 const HUM_REFERENCE_CURRENT = 1.5;
@@ -17,11 +17,6 @@ export function useCircuitSound() {
   const hum = useAudioPlayer(HUM_SOURCE);
   const spark = useAudioPlayer(SPARK_SOURCE);
 
-  useEffect(() => {
-    setAudioModeAsync({ playsInSilentMode: true, interruptionMode: 'mixWithOthers' }).catch(
-      () => {}
-    );
-  }, []);
 
   useEffect(() => {
     hum.loop = true;
@@ -30,12 +25,11 @@ export function useCircuitSound() {
   /**
    * Call every render with the live current; starts, stops and fades the hum.
    *
-   * Reads `hum.playing` rather than tracking a local flag, because on the web
-   * `play()` can silently fail to start — the browser's autoplay policy
+   * Reads `hum.playing` rather than tracking a local flag, because `play()` can silently fail to start — the browser's autoplay policy
    * blocking it before any user gesture, most likely, since the switch
    * defaults to closed. Checking the player's own state rather than assuming
    * our call succeeded means the next tick with current flowing simply tries
-   * again, and it starts working the moment the reader taps anything.
+   * again, and it starts working the moment the reader clicks anything.
    */
   const setFlow = useCallback(
     (currentAmps: number) => {

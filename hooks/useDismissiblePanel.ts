@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { storage } from '../lib/storage';
 import { useCallback, useEffect, useState } from 'react';
 
 /**
@@ -16,7 +16,7 @@ export function useDismissiblePanel(key: string) {
 
   useEffect(() => {
     let cancelled = false;
-    AsyncStorage.getItem(storageKey)
+    storage.getItem(storageKey)
       .then((saved) => {
         if (!cancelled) setDismissedState(saved === '1');
       })
@@ -30,7 +30,7 @@ export function useDismissiblePanel(key: string) {
 
   const dismiss = useCallback(() => {
     setDismissedState(true);
-    AsyncStorage.setItem(storageKey, '1').catch(() => {
+    storage.setItem(storageKey, '1').catch(() => {
       // Already applied in memory; it just will not survive a restart.
     });
   }, [storageKey]);

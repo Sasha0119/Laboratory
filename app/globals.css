@@ -1,0 +1,57 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #080b12;
+  color: #e9f0fa;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* The page is a fixed-height column; each screen scrolls inside it. */
+#app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+input {
+  font-family: inherit;
+}
+
+input::placeholder {
+  color: var(--placeholder-color, #5c6b82);
+  opacity: 1;
+}
+
+[role='button']:focus-visible,
+[role='radio']:focus-visible,
+[role='switch']:focus-visible,
+input:focus-visible {
+  outline: 2px solid #2de1c2;
+  outline-offset: 2px;
+}
+
+/* Number inputs are typed text here; hide any native spinners just in case. */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

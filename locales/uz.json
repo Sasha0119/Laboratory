@@ -9,7 +9,8 @@
     "collisions": "To'qnashuvlar",
     "circuits": "Oddiy elektr zanjirlari",
     "magnets": "Magnitlar va magnetizm",
-    "settings": "Sozlamalar"
+    "settings": "Sozlamalar",
+    "back": "Orqaga"
   },
   "common": {
     "reset": "Tozalash",
@@ -31,7 +32,7 @@
   "home": {
     "tagline": "Haqiqiy simulyatsiyalar, haqiqiy tenglamalar. Stolni tanlang va tajribani boshlang.",
     "openBench": "Ochish  →",
-    "footnote": "Har bir simulyatsiya telefoningizda ishlaydi. Hisob faqat o‘rta va yuqori stollar uchun kerak.",
+    "footnote": "Barcha simulyatsiyalar to'g'ridan-to'g'ri brauzeringizda ishlaydi. Hisob kerak emas.",
     "settingsLabel": "Sozlamalar",
     "categories": {
       "physics": {
@@ -596,7 +597,7 @@
       "linkExpired": "Havola muddati tugagan yoki allaqachon ishlatilgan. Quyidan yangisini so‘rang."
     },
     "errors": {
-      "notConfigured": "Hisoblar hali ulanmagan. Supabase loyiha URL va anon kalitini .env fayliga qo‘ying va ilovani qayta ishga tushiring.",
+      "notConfigured": "Hisoblar hali ulanmagan. Supabase loyiha URL va anon kalitini .env fayliga (NEXT_PUBLIC_SUPABASE_URL va NEXT_PUBLIC_SUPABASE_ANON_KEY) qo‘ying va serverni qayta ishga tushiring.",
       "invalidCredentials": "Bu email va parol hech bir hisobga to‘g‘ri kelmadi.",
       "emailTaken": "Bu email bilan hisob allaqachon bor. Kirishga urinib ko‘ring.",
       "emailNotConfirmed": "Emaildagi tasdiqlash havolasini oching, so‘ng kiring.",

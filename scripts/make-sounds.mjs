@@ -1,5 +1,5 @@
 /**
- * Generates the four impact sounds in assets/sounds/ as 16-bit mono WAV.
+ * Generates the four impact sounds in public/sounds/ as 16-bit mono WAV.
  *
  * The app has no external asset dependencies, so the impact samples are
  * synthesised here rather than shipped as opaque binaries. Each material is
@@ -19,7 +19,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const SAMPLE_RATE = 44100;
-const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'sounds');
+const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'sounds');
 
 /** Deterministic noise, so re-running the script produces identical files. */
 function makeRandom(seed) {

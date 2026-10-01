@@ -1,3 +1,3 @@
-# Expo HAS CHANGED
+# This is NOT the Next.js you know
 
-Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before writing any code.
+This project uses Next.js 16 (App Router). APIs and conventions may differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing framework code, and heed deprecation notices.

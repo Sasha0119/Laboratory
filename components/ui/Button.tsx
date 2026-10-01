@@ -1,6 +1,5 @@
-import * as Haptics from 'expo-haptics';
-import { useRef } from 'react';
-import { Animated, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from '../dom/index';
 import { colors, radius } from '../../theme';
 
 interface Props {
@@ -13,7 +12,7 @@ interface Props {
   icon?: string;
 }
 
-/** Primary/ghost action button with a press-scale that makes taps feel physical. */
+/** Primary/ghost action button with a press-scale that makes clicks feel physical. */
 export function Button({
   label,
   onPress,
@@ -23,32 +22,24 @@ export function Button({
   flex,
   icon,
 }: Props) {
-  const scale = useRef(new Animated.Value(1)).current;
-
-  const spring = (to: number) =>
-    Animated.spring(scale, {
-      toValue: to,
-      useNativeDriver: true,
-      speed: 40,
-      bounciness: 4,
-    }).start();
+  const [pressed, setPressed] = useState(false);
 
   const primary = variant === 'primary';
 
   return (
-    <Animated.View style={[{ transform: [{ scale }] }, flex != null && { flex }]}>
+    <View
+      style={[
+        { transform: `scale(${pressed ? 0.96 : 1})`, transition: 'transform 120ms ease-out' },
+        flex != null && { flex },
+      ]}
+    >
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ disabled }}
         disabled={disabled}
-        onPressIn={() => spring(0.96)}
-        onPressOut={() => spring(1)}
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
         onPress={() => {
-          if (Platform.OS !== 'web') {
-            Haptics.impactAsync(
-              primary ? Haptics.ImpactFeedbackStyle.Medium : Haptics.ImpactFeedbackStyle.Light
-            ).catch(() => {});
-          }
           onPress();
         }}
         style={[
@@ -76,7 +67,7 @@ export function Button({
           </Text>
         </View>
       </Pressable>
-    </Animated.View>
+    </View>
   );
 }
 

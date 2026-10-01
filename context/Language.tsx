@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { storage } from '../lib/storage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import i18n, { DEFAULT_LANGUAGE, isSupportedLanguage } from '../lib/i18n';
 
@@ -30,7 +30,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    AsyncStorage.getItem(STORAGE_KEY)
+    storage.getItem(STORAGE_KEY)
       .then((saved) => {
         if (cancelled) return;
         // Ignore anything unrecognised — a language removed in a later version
@@ -55,7 +55,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (!isSupportedLanguage(code)) return;
     i18n.changeLanguage(code);
     setLanguageState(code);
-    AsyncStorage.setItem(STORAGE_KEY, code).catch(() => {
+    storage.setItem(STORAGE_KEY, code).catch(() => {
       // The switch already happened in memory; it just will not survive a restart.
     });
   }, []);

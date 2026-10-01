@@ -1,52 +1,44 @@
+'use client';
+
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import {
-  LayoutChangeEvent,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import * as Haptics from 'expo-haptics';
+import { Pressable, ScrollView, StyleSheet, Text, View, type LayoutChangeEvent } from '../../../components/dom/index';
 
-import { Readout, type DetailRow, type Stat } from '../../components/readout/Readout';
-import { FormulaPanel } from '../../components/sim/FormulaPanel';
-import { LevelBlurb } from '../../components/sim/LevelBlurb';
-import { PresetPicker } from '../../components/sim/PresetPicker';
-import { ResultPanel } from '../../components/sim/ResultPanel';
-import { Scene } from '../../components/sim/Scene';
-import { Button } from '../../components/ui/Button';
-import { Card } from '../../components/ui/Card';
-import { Segmented } from '../../components/ui/Segmented';
-import { Toggle } from '../../components/ui/Toggle';
-import { NumberField } from '../../components/ui/NumberField';
-import { useImpactSound } from '../../hooks/useImpactSound';
-import { useSimulation } from '../../hooks/useSimulation';
+import { Readout, type DetailRow, type Stat } from '../../../components/readout/Readout';
+import { FormulaPanel } from '../../../components/sim/FormulaPanel';
+import { LevelBlurb } from '../../../components/sim/LevelBlurb';
+import { PresetPicker } from '../../../components/sim/PresetPicker';
+import { ResultPanel } from '../../../components/sim/ResultPanel';
+import { Scene } from '../../../components/sim/Scene';
+import { Button } from '../../../components/ui/Button';
+import { Card } from '../../../components/ui/Card';
+import { Segmented } from '../../../components/ui/Segmented';
+import { Toggle } from '../../../components/ui/Toggle';
+import { NumberField } from '../../../components/ui/NumberField';
+import { useImpactSound } from '../../../hooks/useImpactSound';
+import { useSimulation } from '../../../hooks/useSimulation';
 import {
   ENVIRONMENTS,
   ENVIRONMENT_ORDER,
   LIMITS,
   type EnvironmentId,
-} from '../../lib/physics/constants';
-import { buildDragModel, terminalVelocity } from '../../lib/physics/drag';
-import { resolveLaunch } from '../../lib/physics/kinematics';
+} from '../../../lib/physics/constants';
+import { buildDragModel, terminalVelocity } from '../../../lib/physics/drag';
+import { resolveLaunch } from '../../../lib/physics/kinematics';
 import {
   PRESETS_BY_ID,
   SHAPE_DRAG,
   SHAPE_IDS,
   type ObjectPreset,
   type ShapeId,
-} from '../../lib/physics/presets';
-import { analyticBounds, type SimParams, type SimResult } from '../../lib/physics/simulation';
-import { colors, radius, scenes, spacing } from '../../theme';
-import { useDetailMode } from '../../context/DetailMode';
-import { useDifficulty } from '../../context/Difficulty';
-import { showsExtraQuantities, usesPreciseTerms } from '../../lib/difficulty';
-import { friendly, friendlyTime, precise, speedComparisonKey } from '../../lib/format';
+} from '../../../lib/physics/presets';
+import { analyticBounds, type SimParams, type SimResult } from '../../../lib/physics/simulation';
+import { colors, radius, scenes, spacing } from '../../../theme';
+import { useDetailMode } from '../../../context/DetailMode';
+import { useDifficulty } from '../../../context/Difficulty';
+import { showsExtraQuantities, usesPreciseTerms } from '../../../lib/difficulty';
+import { friendly, friendlyTime, precise, speedComparisonKey } from '../../../lib/format';
 
 /** Playback speed choices. A feather on a long fall genuinely needs the 4x. */
 const SPEEDS = [
@@ -56,7 +48,6 @@ const SPEEDS = [
 ];
 
 export default function DropSimulator() {
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
   // ------------------------------------------------------------ parameters
@@ -126,16 +117,6 @@ export default function DropSimulator() {
   const onImpact = useCallback(
     (result: SimResult, profile: Parameters<typeof playImpact>[1]) => {
       playImpact(preset.material, profile);
-      if (Platform.OS !== 'web') {
-        // Match the haptic to the hit: a feather should barely register.
-        const style =
-          profile.shake > 6
-            ? Haptics.ImpactFeedbackStyle.Heavy
-            : profile.shake > 2
-              ? Haptics.ImpactFeedbackStyle.Medium
-              : Haptics.ImpactFeedbackStyle.Light;
-        Haptics.impactAsync(style).catch(() => {});
-      }
     },
     [playImpact, preset.material]
   );
@@ -379,7 +360,6 @@ export default function DropSimulator() {
       <ScrollView
         style={styles.controls}
         contentContainerStyle={styles.controlsContent}
-        showsVerticalScrollIndicator={false}
         // Chart width = screen, less the scroll padding, the card padding and
         // the card's 1px borders.
         onLayout={(e) => setPanelWidth(e.nativeEvent.layout.width - spacing.md * 4 - 2)}
@@ -556,7 +536,7 @@ export default function DropSimulator() {
       </ScrollView>
 
       {/* ------------------------------------------------------- actions -- */}
-      <View style={[styles.actions, { paddingBottom: insets.bottom + spacing.sm }]}>
+      <View style={[styles.actions, { paddingBottom: spacing.sm }]}>
         <Button
           label={running ? t('common.running') : runLabel}
           icon={running ? undefined : speed > 0 ? '▲' : '▼'}

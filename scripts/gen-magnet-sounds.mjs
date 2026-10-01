@@ -9,7 +9,7 @@ import { writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'sounds');
+const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'sounds');
 const SAMPLE_RATE = 22050;
 
 function writeWav(path, samples) {

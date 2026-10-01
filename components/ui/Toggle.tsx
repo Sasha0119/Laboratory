@@ -1,6 +1,4 @@
-import * as Haptics from 'expo-haptics';
-import { useEffect, useRef } from 'react';
-import { Animated, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from '../dom/index';
 import { colors, radius, spacing } from '../../theme';
 
 interface Props {
@@ -17,17 +15,6 @@ const KNOB = 24;
 
 /** Labelled switch row. Custom-drawn so the knob can pick up the accent glow. */
 export function Toggle({ label, description, value, disabled = false, onChange }: Props) {
-  const anim = useRef(new Animated.Value(value ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.spring(anim, {
-      toValue: value ? 1 : 0,
-      useNativeDriver: true,
-      speed: 18,
-      bounciness: 8,
-    }).start();
-  }, [value, anim]);
-
   return (
     <Pressable
       style={[styles.row, disabled && styles.disabled]}
@@ -35,9 +22,6 @@ export function Toggle({ label, description, value, disabled = false, onChange }
       accessibilityState={{ checked: value, disabled }}
       onPress={() => {
         if (disabled) return;
-        if (Platform.OS !== 'web') {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-        }
         onChange(!value);
       }}
     >
@@ -45,41 +29,27 @@ export function Toggle({ label, description, value, disabled = false, onChange }
         <Text style={styles.label}>{label}</Text>
         {description ? <Text style={styles.description}>{description}</Text> : null}
       </View>
-      <Animated.View
+      <View
         style={[
           styles.track,
           {
-            backgroundColor: anim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [colors.surfaceAlt, colors.accentDim],
-            }),
-            borderColor: anim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [colors.stroke, colors.accent],
-            }),
+            backgroundColor: value ? colors.accentDim : colors.surfaceAlt,
+            borderColor: value ? colors.accent : colors.stroke,
+            transition: 'background-color 180ms ease, border-color 180ms ease',
           },
         ]}
       >
-        <Animated.View
+        <View
           style={[
             styles.knob,
             {
-              backgroundColor: anim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [colors.textFaint, colors.accent],
-              }),
-              transform: [
-                {
-                  translateX: anim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, TRACK_W - KNOB - 5],
-                  }),
-                },
-              ],
+              backgroundColor: value ? colors.accent : colors.textFaint,
+              transform: `translateX(${value ? TRACK_W - KNOB - 5 : 0}px)`,
+              transition: 'transform 180ms cubic-bezier(0.3, 1.4, 0.5, 1), background-color 180ms ease',
             },
           ]}
         />
-      </Animated.View>
+      </View>
     </Pressable>
   );
 }

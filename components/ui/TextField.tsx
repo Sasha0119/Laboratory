@@ -1,5 +1,5 @@
 import { forwardRef, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, TextInputProps } from '../dom/index';
 
 import { colors, radius, spacing } from '../../theme';
 
@@ -45,13 +45,13 @@ export const TextField = forwardRef<TextInput, Props>(function TextField(
           ref={ref}
           {...rest}
           secureTextEntry={secure && !revealed}
-          onFocus={(e) => {
+          onFocus={() => {
             setFocused(true);
-            rest.onFocus?.(e);
+            rest.onFocus?.();
           }}
-          onBlur={(e) => {
+          onBlur={() => {
             setFocused(false);
-            rest.onBlur?.(e);
+            rest.onBlur?.();
           }}
           accessibilityLabel={label}
           placeholderTextColor={colors.textFaint}
@@ -63,7 +63,6 @@ export const TextField = forwardRef<TextInput, Props>(function TextField(
             onPress={() => setRevealed((v) => !v)}
             accessibilityRole="button"
             accessibilityLabel={revealed ? hideLabel : showLabel}
-            hitSlop={8}
           >
             <Text style={styles.reveal}>{revealed ? hideLabel : showLabel}</Text>
           </Pressable>
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.stroke,
     paddingHorizontal: 14,
-    paddingVertical: Platform.OS === 'ios' ? 14 : 4,
+    paddingVertical: 4,
   },
   inputWrapFocused: { borderColor: colors.accent },
   inputWrapError: { borderColor: colors.amber },

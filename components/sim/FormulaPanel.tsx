@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from '../dom/index';
 import { useDifficulty } from '../../context/Difficulty';
 import { formulaDisplayFor, formulasFor, type SimulationModule } from '../../lib/difficulty';
 import { colors, radius, spacing } from '../../theme';

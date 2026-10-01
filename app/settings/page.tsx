@@ -1,61 +1,27 @@
-import { useRouter } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  Animated,
-  Pressable,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+'use client';
 
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
-import { useAuth } from '../context/Auth';
-import { useDifficulty } from '../context/Difficulty';
-import { useLanguage } from '../context/Language';
-import { DIFFICULTY_ORDER, type DifficultyLevel } from '../lib/difficulty';
-import { SUPPORTED_LANGUAGES } from '../lib/i18n';
-import { colors, radius, spacing } from '../theme';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Pressable, ScrollView, StyleSheet, Text, View } from '../../components/dom/index';
+
+import { Button } from '../../components/ui/Button';
+import { Card } from '../../components/ui/Card';
+import { useAuth } from '../../context/Auth';
+import { useDifficulty } from '../../context/Difficulty';
+import { useLanguage } from '../../context/Language';
+import { DIFFICULTY_ORDER, type DifficultyLevel } from '../../lib/difficulty';
+import { SUPPORTED_LANGUAGES } from '../../lib/i18n';
+import { colors, radius, spacing } from '../../theme';
 
 export default function Settings() {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const { language, setLanguage } = useLanguage();
   const { level, setLevel } = useDifficulty();
-  const { mode, refreshProfile } = useAuth();
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  // Pull down to re-read the profile. The app already refreshes on every
-  // return to the foreground, so this is for the one case that misses: the
-  // plan being changed in the database while the app sits open on this screen.
-  const refresh = useCallback(async () => {
-    setRefreshing(true);
-    await refreshProfile();
-    setRefreshing(false);
-  }, [refreshProfile]);
-
   return (
     <ScrollView
       style={styles.screen}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        // Nothing to re-read without an account, so no spinner is offered.
-        mode === 'account' ? (
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refresh}
-            tintColor={colors.textMuted}
-            colors={[colors.accent]}
-            progressBackgroundColor={colors.surface}
-          />
-        ) : undefined
-      }
+      contentContainerStyle={[styles.content, { paddingBottom: spacing.xl }]}
     >
       <AccountCard />
 
@@ -143,6 +109,8 @@ function AccountCard() {
 }
 
 /** One selectable option, shared by the difficulty and language pickers. */
+const PRESS_SCALE = 0.98;
+
 function ChoiceRow({
   title,
   subtitle,
@@ -154,15 +122,13 @@ function ChoiceRow({
   selected: boolean;
   onPress: () => void;
 }) {
-  const scale = useRef(new Animated.Value(1)).current;
-  const spring = (to: number) =>
-    Animated.spring(scale, { toValue: to, useNativeDriver: true, speed: 45, bounciness: 4 }).start();
+  const [pressed, setPressed] = useState(false);
 
   return (
-    <Animated.View style={{ transform: [{ scale }] }}>
+    <View style={{ transform: `scale(${pressed ? PRESS_SCALE : 1})`, transition: 'transform 120ms ease-out' }}>
       <Pressable
-        onPressIn={() => spring(0.98)}
-        onPressOut={() => spring(1)}
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
         onPress={onPress}
         accessibilityRole="radio"
         accessibilityState={{ selected }}
@@ -177,7 +143,7 @@ function ChoiceRow({
           {selected ? <View style={styles.radioDot} /> : null}
         </View>
       </Pressable>
-    </Animated.View>
+    </View>
   );
 }
 

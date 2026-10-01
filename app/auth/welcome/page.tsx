@@ -1,12 +1,13 @@
-import { useRouter } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle, Line, Path } from 'react-native-svg';
+'use client';
 
-import { Button } from '../../components/ui/Button';
-import { useAuth } from '../../context/Auth';
-import { colors, radius, spacing } from '../../theme';
+import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+import { Pressable, ScrollView, StyleSheet, Text, View } from '../../../components/dom/index';
+import Svg, { Circle, Line, Path } from '../../../components/dom/svg';
+
+import { Button } from '../../../components/ui/Button';
+import { useAuth } from '../../../context/Auth';
+import { colors, radius, spacing } from '../../../theme';
 
 /**
  * The first thing a new reader sees, and the only time they are asked to
@@ -19,7 +20,6 @@ import { colors, radius, spacing } from '../../theme';
  */
 export default function Welcome() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { continueAsGuest } = useAuth();
 
@@ -28,9 +28,8 @@ export default function Welcome() {
       style={styles.screen}
       contentContainerStyle={[
         styles.content,
-        { paddingTop: insets.top + spacing.xl, paddingBottom: insets.bottom + spacing.xl },
+        { paddingTop: spacing.xl, paddingBottom: spacing.xl },
       ]}
-      showsVerticalScrollIndicator={false}
     >
       <View style={styles.mark}>
         <Svg width={34} height={34} viewBox="0 0 24 24">

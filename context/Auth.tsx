@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { storage } from '../lib/storage';
 import type { Session, User } from '@supabase/supabase-js';
 import {
   createContext,
@@ -10,7 +10,6 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { AppState, type AppStateStatus } from 'react-native';
 
 import { authErrorKey } from '../lib/auth/errors';
 import { isSupabaseConfigured, passwordResetRedirect } from '../lib/supabase/config';
@@ -22,8 +21,8 @@ import type { Profile } from '../lib/supabase/types';
  *
  * Same shape as `LanguageProvider` and `DifficultyProvider` — a `ready` flag
  * the navigator waits on, state restored from storage at startup — with one
- * addition: the session itself is restored by supabase-js from AsyncStorage,
- * so a returning user is signed in before the first screen paints.
+ * addition: the session itself is restored by supabase-js from localStorage,
+ * so a returning visitor is signed in before the first screen paints.
  */
 
 /** Remembers that the reader chose to look around without an account. */
@@ -120,7 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // The guest flag is read regardless of whether a backend is configured —
     // without credentials, every reader is effectively a guest.
-    const restoreGuest = AsyncStorage.getItem(GUEST_KEY)
+    const restoreGuest = storage.getItem(GUEST_KEY)
       .then((saved) => {
         if (!cancelled && saved === 'true') setGuest(true);
       })
@@ -187,13 +186,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => data.subscription.unsubscribe();
   }, [loadProfile]);
 
-  // Refresh tokens only while the app is on screen, and take the chance to
+  // Refresh tokens only while the tab is visible, and take the chance to
   // re-read the profile.
   useEffect(() => {
     if (!isSupabaseConfigured) return;
 
-    const handle = (state: AppStateStatus) => {
-      if (state === 'active') {
+    const handle = () => {
+      if (document.visibilityState === 'visible') {
         startAutoRefresh();
         const userId = currentUserId.current;
         if (userId) void loadProfile(userId);
@@ -202,11 +201,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    if (AppState.currentState === 'active') startAutoRefresh();
-    const sub = AppState.addEventListener('change', handle);
+    handle();
+    document.addEventListener('visibilitychange', handle);
 
     return () => {
-      sub.remove();
+      document.removeEventListener('visibilitychange', handle);
       stopAutoRefresh();
     };
   }, [loadProfile]);
@@ -263,7 +262,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Signing out returns the reader to the guest state they were in before,
     // rather than bouncing them to the welcome screen.
     setGuest(true);
-    AsyncStorage.setItem(GUEST_KEY, 'true').catch(() => {});
+    storage.setItem(GUEST_KEY, 'true').catch(() => {});
 
     if (!isSupabaseConfigured) return;
     await supabase.auth.signOut().catch(() => {
@@ -284,7 +283,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const continueAsGuest = useCallback(() => {
     setGuest(true);
-    AsyncStorage.setItem(GUEST_KEY, 'true').catch(() => {
+    storage.setItem(GUEST_KEY, 'true').catch(() => {
       // In memory is enough for this session; the choice is offered again next
       // launch, which is harmless.
     });

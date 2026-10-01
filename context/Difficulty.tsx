@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { storage } from '../lib/storage';
 import {
   createContext,
   useCallback,
@@ -44,7 +44,7 @@ export function DifficultyProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    AsyncStorage.getItem(STORAGE_KEY)
+    storage.getItem(STORAGE_KEY)
       .then((saved) => {
         if (cancelled) return;
         // Ignore anything unrecognised, so a level renamed in a later version
@@ -65,7 +65,7 @@ export function DifficultyProvider({ children }: { children: ReactNode }) {
   const setLevel = useCallback((next: DifficultyLevel) => {
     if (!isDifficultyLevel(next)) return;
     setLevelState(next);
-    AsyncStorage.setItem(STORAGE_KEY, next).catch(() => {
+    storage.setItem(STORAGE_KEY, next).catch(() => {
       // Already applied in memory; it just will not survive a restart.
     });
   }, []);

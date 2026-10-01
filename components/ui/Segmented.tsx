@@ -1,6 +1,5 @@
-import * as Haptics from 'expo-haptics';
-import { useEffect, useRef, useState } from 'react';
-import { Animated, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from '../dom/index';
 import { colors, radius } from '../../theme';
 
 export interface SegmentOption<T extends string> {
@@ -24,7 +23,7 @@ const PAD_COMPACT = 3;
 
 /**
  * Segmented control with a sliding highlight. Only a translation is animated,
- * and on the native driver, so it stays smooth alongside the simulation loop.
+ * so it stays smooth alongside the simulation loop.
  */
 export function Segmented<T extends string>({
   options,
@@ -38,17 +37,7 @@ export function Segmented<T extends string>({
     0,
     options.findIndex((o) => o.value === value)
   );
-  const slide = useRef(new Animated.Value(index)).current;
   const [trackWidth, setTrackWidth] = useState(0);
-
-  useEffect(() => {
-    Animated.spring(slide, {
-      toValue: index,
-      useNativeDriver: true,
-      speed: 20,
-      bounciness: 6,
-    }).start();
-  }, [index, slide]);
 
   const pad = compact ? PAD_COMPACT : PAD;
   const segmentWidth = trackWidth > 0 ? (trackWidth - pad * 2) / options.length : 0;
@@ -59,7 +48,7 @@ export function Segmented<T extends string>({
       onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}
     >
       {segmentWidth > 0 ? (
-        <Animated.View
+        <View
           style={[
             styles.indicator,
             compact && styles.indicatorCompact,
@@ -67,17 +56,8 @@ export function Segmented<T extends string>({
               width: segmentWidth,
               backgroundColor: tint + '22',
               borderColor: tint + '66',
-              transform: [
-                {
-                  translateX: slide.interpolate({
-                    inputRange: options.length > 1 ? options.map((_, i) => i) : [0, 1],
-                    outputRange:
-                      options.length > 1
-                        ? options.map((_, i) => i * segmentWidth)
-                        : [0, 0],
-                  }),
-                },
-              ],
+              transform: `translateX(${index * segmentWidth}px)`,
+              transition: 'transform 200ms cubic-bezier(0.3, 1.2, 0.5, 1)',
             },
           ]}
         />
@@ -93,9 +73,6 @@ export function Segmented<T extends string>({
             disabled={disabled}
             onPress={() => {
               if (active || disabled) return;
-              if (Platform.OS !== 'web') {
-                Haptics.selectionAsync().catch(() => {});
-              }
               onChange(opt.value);
             }}
           >

@@ -1,25 +1,20 @@
 /**
  * Magnetism audio: an ambient hum that rises in pitch and volume with force,
  * and a sharp click when two attracting magnets snap together. Same
- * expo-audio pattern as `useCircuitSound` — one player per sound, created
+ * audio pattern as `useCircuitSound` — one player per sound, created
  * once and reused.
  */
 
-import { setAudioModeAsync, useAudioPlayer } from 'expo-audio';
 import { useCallback, useEffect } from 'react';
+import { useAudioPlayer } from './useAudioPlayer';
 
-const HUM_SOURCE = require('../assets/sounds/magnet-hum.wav');
-const CLICK_SOURCE = require('../assets/sounds/magnet-click.wav');
+const HUM_SOURCE = '/sounds/magnet-hum.wav';
+const CLICK_SOURCE = '/sounds/magnet-click.wav';
 
 export function useMagnetSound() {
   const hum = useAudioPlayer(HUM_SOURCE);
   const click = useAudioPlayer(CLICK_SOURCE);
 
-  useEffect(() => {
-    setAudioModeAsync({ playsInSilentMode: true, interruptionMode: 'mixWithOthers' }).catch(
-      () => {}
-    );
-  }, []);
 
   useEffect(() => {
     hum.loop = true;
@@ -37,8 +32,6 @@ export function useMagnetSound() {
       try {
         if (level > 0.01) {
           hum.volume = 0.04 + 0.18 * level;
-          // Pitch correction off: the rate change IS the pitch rise.
-          hum.shouldCorrectPitch = false;
           hum.playbackRate = 0.85 + 0.5 * level;
           if (!hum.playing) hum.play();
         } else if (hum.playing) {

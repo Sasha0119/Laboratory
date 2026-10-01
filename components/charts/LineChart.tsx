@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Defs, G, Line, LinearGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
+import { StyleSheet, Text, View } from '../dom/index';
+import Svg, { Defs, G, Line, LinearGradient, Path, Stop, SvgText } from '../dom/svg';
 import { niceStep } from '../sim/viewport';
 import { colors, radius } from '../../theme';
 
@@ -28,7 +28,7 @@ const PAD_TOP = 14;
 const PAD_BOTTOM = 26;
 
 /**
- * Minimal line chart over react-native-svg. Deliberately small: the app only
+ * Minimal SVG line chart. Deliberately small: the app only
  * needs to plot a couple of monotonic-in-x series against time after a run.
  */
 export function LineChart({

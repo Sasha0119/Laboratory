@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from '../dom/index';
 import { useDifficulty } from '../../context/Difficulty';
 import { showsBlurb, type SimulationModule } from '../../lib/difficulty';
 import { colors, radius, spacing } from '../../theme';

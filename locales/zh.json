@@ -9,7 +9,8 @@
     "collisions": "碰撞",
     "circuits": "简单电路",
     "magnets": "磁体与磁性",
-    "settings": "设置"
+    "settings": "设置",
+    "back": "返回"
   },
   "common": {
     "reset": "重置",
@@ -31,7 +32,7 @@
   "home": {
     "tagline": "真实的模拟，真实的方程。选一张实验台，开始做实验。",
     "openBench": "进入实验台  →",
-    "footnote": "每个模拟都在你的手机上运行。只有进阶和专业实验台才需要账号。",
+    "footnote": "所有模拟都直接在浏览器中运行，无需账户。",
     "settingsLabel": "设置",
     "categories": {
       "physics": {
@@ -596,7 +597,7 @@
       "linkExpired": "该链接已过期或已被使用。请在下面重新申请一个。"
     },
     "errors": {
-      "notConfigured": "账号功能尚未接通。请把 Supabase 项目 URL 和 anon 密钥填入 .env 文件，然后重启应用。",
+      "notConfigured": "账号功能尚未接通。请把 Supabase 项目 URL 和 anon 密钥填入 .env 文件（NEXT_PUBLIC_SUPABASE_URL 和 NEXT_PUBLIC_SUPABASE_ANON_KEY），然后重启服务器。",
       "invalidCredentials": "这个邮箱和密码对不上任何账号。",
       "emailTaken": "这个邮箱已经有账号了，试试直接登录。",
       "emailNotConfirmed": "请先打开我们发送的确认链接，然后再登录。",

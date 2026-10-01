@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from '../dom/index';
 import type { SimResult } from '../../lib/physics/simulation';
 import { colors, radius, spacing } from '../../theme';
 import { useDetailMode } from '../../context/DetailMode';
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 17,
     fontWeight: '700',
-    fontVariant: ['tabular-nums'],
+    fontVariantNumeric: 'tabular-nums',
   },
   statValueBig: { fontSize: 22 },
   statUnit: { color: colors.textFaint, fontSize: 11 },

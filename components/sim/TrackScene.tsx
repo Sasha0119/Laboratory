@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import Svg, {
-  Circle,
+import Svg, { Circle,
   Defs,
   Ellipse,
   G,
@@ -8,8 +7,7 @@ import Svg, {
   LinearGradient,
   Rect,
   Stop,
-  Text as SvgText,
-} from 'react-native-svg';
+  SvgText, } from '../dom/svg';
 import { ring } from '../../lib/effects/impact';
 import type { ObjectPreset } from '../../lib/physics/presets';
 import type { CollisionFrame } from '../../hooks/useCollisionSim';
