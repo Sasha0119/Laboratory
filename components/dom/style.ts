@@ -10,7 +10,8 @@ import type { CSSProperties } from 'react';
  *
  *   lineHeight   a number is pixels here, a multiplier in CSS
  *   flex         `flex: 1` means "grow and shrink from zero basis"
- *   borders      a width with no `borderStyle` still draws a solid line
+ *   borders      a width with no `borderStyle` still draws a solid line, and
+ *                a side with no width gets none
  */
 export interface Style extends CSSProperties {
   paddingHorizontal?: number | string;
@@ -72,8 +73,17 @@ export function toCss(style: StyleProp): CSSProperties {
     }
   }
 
-  if (BORDER_WIDTHS.some((k) => s[k] !== undefined) && css.borderStyle === undefined) {
-    css.borderStyle = 'solid';
+  // A width on any side means "draw a border" — but only on the sides that
+  // were given one. CSS would give the others its default 3px, so they are
+  // set to zero explicitly.
+  if (BORDER_WIDTHS.some((k) => s[k] !== undefined)) {
+    if (css.borderStyle === undefined) css.borderStyle = 'solid';
+    const all = s.borderWidth;
+    for (const side of ['Top', 'Right', 'Bottom', 'Left']) {
+      const key = `border${side}Width`;
+      css[key] = s[key] ?? all ?? 0;
+    }
+    delete css.borderWidth;
   }
 
   return css as CSSProperties;
