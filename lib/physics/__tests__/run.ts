@@ -53,6 +53,39 @@ import {
   type Substance,
 } from '../thermo';
 import { MatterEngine, PARTICLE_COUNT, type EngineInput } from '../../matter/engine';
+import {
+  HAND_PACE,
+  MAX_FALL_SPEED,
+  MAX_LIFT_TIME,
+  MIN_LIFT_TIME,
+  START,
+  liftDuration,
+  loadSpeed,
+  motionStatus,
+  stepMotion,
+  type Lane,
+  type Motion,
+} from '../../machines/motion';
+import {
+  MACHINE_LIMITS,
+  PULLEY_TRAVEL,
+  effortRatio,
+  inclineAnalysis,
+  inclineWork,
+  isEnough,
+  leverAngle,
+  leverAnalysis,
+  leverGeometry,
+  leverWork,
+  maxRampHeight,
+  pulleyAnalysis,
+  pulleyLayout,
+  pulleyWork,
+  roundUpEffort,
+  supportingSegments,
+  weightOf,
+  work,
+} from '../machines';
 
 // ---------------------------------------------------------------- harness --
 
@@ -1272,6 +1305,228 @@ section('Particle engine — the picture follows the state');
   eg.resize(300, 220);
   run(eg, gasInput, 1);
   check('resizing keeps particles inside the new box', eg.particles.every((p) => Number.isFinite(p.x + p.y) && p.x >= eg.bounds.left - 0.01 && p.x <= eg.bounds.right + 0.01 && p.y >= eg.bounds.top - 0.01 && p.y <= eg.bounds.bottom + 0.01));
+}
+
+// ----------------------------------------------------------- simple machines --
+
+section('Simple machines: the lever');
+
+{
+  const g = EARTH_G;
+  // 20 kg load, pivot 1 m from it on a 4 m plank: the effort arm is 3 m.
+  const r = leverAnalysis({ loadMass: 20, loadArm: 1, effort: 100 });
+  near('lever: load force is m·g', r.loadForce, 20 * g, 1e-12);
+  near('lever: effort arm is length − load arm', r.effortArm, 3, 1e-12);
+  near('lever: MA = effort arm / load arm', r.mechanicalAdvantage, 3, 1e-12);
+  near('lever: required effort = load × load arm / effort arm', r.effortRequired, (20 * g) / 3, 1e-12);
+  near('lever: effort × effort arm = load × load arm at the required effort', r.effortRequired * r.effortArm, r.loadForce * r.loadArm, 1e-9);
+  near('lever: effort required = load / MA', r.effortRequired, r.loadForce / r.mechanicalAdvantage, 1e-12);
+  check('lever: 100 N is enough to lift 20 kg at 3:1', r.enough);
+  check('lever: 60 N is not enough to lift 20 kg at 3:1', !leverAnalysis({ loadMass: 20, loadArm: 1, effort: 60 }).enough);
+  check('lever: exactly the required effort counts as enough', leverAnalysis({ loadMass: 20, loadArm: 1, effort: (20 * g) / 3 }).enough);
+  near('lever: load torque is load × load arm', r.loadTorque, 20 * g * 1, 1e-12);
+  near('lever: effort torque is effort × effort arm', r.effortTorque, 100 * 3, 1e-12);
+
+  // A centred pivot is a seesaw: no advantage at all.
+  const level = leverAnalysis({ loadMass: 10, loadArm: 2, effort: 0 });
+  near('lever: a centred pivot has MA 1', level.mechanicalAdvantage, 1, 1e-12);
+  near('lever: ...and needs the full weight', level.effortRequired, 10 * g, 1e-12);
+
+  // Pivot nearer the effort end makes it harder than lifting by hand.
+  const hard = leverAnalysis({ loadMass: 10, loadArm: 3, effort: 0 });
+  check('lever: pivot nearer the effort end gives MA < 1', hard.mechanicalAdvantage < 1);
+  check('lever: ...and needs more than the weight', hard.effortRequired > hard.loadForce);
+
+  // Moving the pivot toward the load always reduces the effort.
+  const far = leverAnalysis({ loadMass: 20, loadArm: 2, effort: 0 }).effortRequired;
+  const close = leverAnalysis({ loadMass: 20, loadArm: 0.5, effort: 0 }).effortRequired;
+  check('lever: pivot closer to the load needs less effort', close < far);
+}
+
+{
+  const geo = leverGeometry(1, 3);
+  near('lever geometry: pivot height puts the load end on the ground at rest', geo.pivotHeight - 1 * Math.sin(geo.restAngle), 0, 1e-12);
+  near('lever geometry: effort travels MA × as far as the load (vertical)', geo.effortDrop / geo.loadRise, 3, 1e-9);
+  check('lever geometry: the swing stops at or before 30°', geo.maxAngle <= (30 * Math.PI) / 180 + 1e-12);
+  near('lever angle: progress 0 is the rest angle, load end low', leverAngle(geo, 0), -geo.restAngle, 1e-9);
+  near('lever angle: progress 1 is the top of the swing', leverAngle(geo, 1), geo.maxAngle, 1e-9);
+  near('lever angle: the load rises evenly with progress', 1 * (Math.sin(leverAngle(geo, 0.5)) + Math.sin(geo.restAngle)), geo.loadRise / 2, 1e-9);
+  check('lever angle: clamps beyond the ends', leverAngle(geo, -1) === leverAngle(geo, 0) && leverAngle(geo, 2) === leverAngle(geo, 1));
+
+  // Pivot far from the load: the effort end would pass the stop, so the swing is capped.
+  const steep = leverGeometry(3.6, 0.4);
+  near('lever geometry: the swing is capped at 30°', steep.maxAngle, (30 * Math.PI) / 180, 1e-12);
+
+  const w = leverWork({ loadMass: 20, loadArm: 1, effort: 0 });
+  near('lever work: input = output at the required effort', w.input, w.output, 1e-9);
+  near('lever work: input distance = MA × load distance', w.effortDistance, 3 * w.loadDistance, 1e-9);
+  const odd = leverWork({ loadMass: 7.3, loadArm: 2.6, effort: 0 });
+  near('lever work: input = output for another pivot', odd.input, odd.output, 1e-9);
+}
+
+section('Simple machines: the inclined plane');
+
+{
+  const g = EARTH_G;
+  const r = inclineAnalysis({ loadMass: 20, length: 5, height: 1, effort: 60 });
+  near('ramp: load force is m·g', r.loadForce, 20 * g, 1e-12);
+  near('ramp: effort = weight × height / length', r.effortRequired, (20 * g * 1) / 5, 1e-12);
+  near('ramp: MA = length / height', r.mechanicalAdvantage, 5, 1e-12);
+  near('ramp: straight lift needs the full weight', r.liftForce, 20 * g, 1e-12);
+  near('ramp: effort = weight × sin(angle)', r.effortRequired, r.loadForce * Math.sin(r.angle), 1e-9);
+  near('ramp: sin(angle) = height / length', Math.sin(r.angle), 0.2, 1e-12);
+  check('ramp: 60 N pushes a 20 kg box up a 1:5 ramp', r.enough);
+  check('ramp: ...but cannot lift it straight up', !r.canLiftStraight);
+  check('ramp: 30 N is not enough on that ramp', !inclineAnalysis({ loadMass: 20, length: 5, height: 1, effort: 30 }).enough);
+  check('ramp: a push of its full weight can lift it straight up', inclineAnalysis({ loadMass: 20, length: 5, height: 1, effort: 20 * g }).canLiftStraight);
+  check('ramp: a longer ramp needs less effort', inclineAnalysis({ loadMass: 20, length: 8, height: 1, effort: 0 }).effortRequired < r.effortRequired);
+  check('ramp: a taller ramp needs more effort', inclineAnalysis({ loadMass: 20, length: 5, height: 2, effort: 0 }).effortRequired > r.effortRequired);
+  near('ramp: effort × length = weight × height', r.effortRequired * 5, r.loadForce * 1, 1e-9);
+
+  const w = inclineWork({ loadMass: 20, length: 5, height: 1, effort: 0 });
+  near('ramp work: input = output', w.input, w.output, 1e-9);
+  near('ramp work: input distance is the ramp length', w.effortDistance, 5, 1e-12);
+  near('ramp work: output distance is the height', w.loadDistance, 1, 1e-12);
+
+  near('ramp: steepest allowed at length 1 is 0.9', maxRampHeight(1), 0.9, 1e-12);
+  near('ramp: height is capped at 3 on long ramps', maxRampHeight(10), 3, 1e-12);
+  check('ramp: the steepest allowed ramp is still below vertical', Math.asin(maxRampHeight(1) / 1) < Math.PI / 2);
+}
+
+section('Simple machines: the pulley');
+
+{
+  const g = EARTH_G;
+  const one = pulleyAnalysis({ loadMass: 20, pulleys: 1, effort: 0 });
+  near('pulley: one pulley has MA 1', one.mechanicalAdvantage, 1, 1e-12);
+  near('pulley: one pulley needs the full weight', one.effortRequired, 20 * g, 1e-12);
+  const four = pulleyAnalysis({ loadMass: 20, pulleys: 4, effort: 0 });
+  near('pulley: MA = supporting segments', four.mechanicalAdvantage, four.segments, 1e-12);
+  near('pulley: effort = weight / MA', four.effortRequired, (20 * g) / 4, 1e-12);
+  check('pulley: 100 N lifts 20 kg with two pulleys', pulleyAnalysis({ loadMass: 20, pulleys: 2, effort: 100 }).enough);
+  check('pulley: 100 N does not lift 20 kg with one pulley', !pulleyAnalysis({ loadMass: 20, pulleys: 1, effort: 100 }).enough);
+  check('pulley: counts are whole numbers', pulleyAnalysis({ loadMass: 20, pulleys: 2.6, effort: 0 }).segments === 3);
+  check('pulley: never fewer than one segment', pulleyAnalysis({ loadMass: 20, pulleys: 0, effort: 0 }).segments === 1);
+
+  let monotone = true;
+  for (let n = 1; n < 6; n++) {
+    const a = pulleyAnalysis({ loadMass: 20, pulleys: n, effort: 0 }).effortRequired;
+    const b = pulleyAnalysis({ loadMass: 20, pulleys: n + 1, effort: 0 }).effortRequired;
+    if (!(b < a)) monotone = false;
+  }
+  check('pulley: every added pulley lowers the effort', monotone);
+
+  for (const n of [1, 2, 3, 4, 5, 6]) {
+    const w = pulleyWork({ loadMass: 20, pulleys: n, effort: 0 });
+    near(`pulley work: input = output with ${n} pulley${n > 1 ? 's' : ''}`, w.input, w.output, 1e-9);
+    near(`pulley work: rope pulled = ${n} × the rise`, w.effortDistance, n * w.loadDistance, 1e-12);
+  }
+  near('pulley work: the default rise is the full travel', pulleyWork({ loadMass: 1, pulleys: 1, effort: 0 }).loadDistance, PULLEY_TRAVEL, 1e-12);
+  near('pulley work: a custom rise', pulleyWork({ loadMass: 10, pulleys: 2, effort: 0 }, 0.5).loadDistance, 0.5, 1e-12);
+
+  // The drawing's rope layout must agree with the physics.
+  for (let n = 1; n <= MACHINE_LIMITS.pulleysMax; n++) {
+    const layout = pulleyLayout(n);
+    check(`pulley layout: ${n} pulleys hold the load with ${n} segments`, supportingSegments(layout) === n);
+    check(`pulley layout: ${n} pulleys split into fixed + moving`, layout.fixedCount + layout.movingCount === n);
+    check(`pulley layout: ${n} pulleys end on a fixed pulley (pull down)`, layout.fixed[n - 1] === true);
+  }
+  check('pulley layout: one pulley is a single fixed pulley', pulleyLayout(1).fixedCount === 1 && pulleyLayout(1).movingCount === 0);
+  check('pulley layout: two pulleys are one fixed, one moving', pulleyLayout(2).fixedCount === 1 && pulleyLayout(2).movingCount === 1);
+}
+
+section('Simple machines: helpers');
+
+{
+  near('work = force × distance', work(50, 2), 100, 1e-12);
+  near('weight of 10 kg', weightOf(10), 10 * EARTH_G, 1e-12);
+  near('effort ratio of exactly enough is 1', effortRatio(40, 40), 1, 1e-12);
+  check('effort ratio with nothing required is infinite', effortRatio(10, 0) === Infinity);
+  check('round-up effort is never below the requirement', roundUpEffort(65.4306) >= 65.4306 && roundUpEffort(65.4306) - 65.4306 < 0.1);
+  near('round-up effort leaves an exact tenth alone', roundUpEffort(65.4), 65.4, 1e-12);
+  check('round-up effort is always enough', isEnough(roundUpEffort(195.84), 195.84));
+}
+
+section('Simple machines: the load in motion');
+
+{
+  const lane = (over: Partial<Lane> = {}): Lane => ({
+    running: true,
+    enough: true,
+    ratio: 1.5,
+    handTravel: 5,
+    pathLength: 5,
+    fallAccel: EARTH_G,
+    ...over,
+  });
+  const DT = 1 / 60;
+  const run = (m: Motion, l: Lane, seconds: number) => {
+    let motion = m;
+    const events: string[] = [];
+    for (let i = 0; i < Math.round(seconds / DT); i++) {
+      const r = stepMotion(motion, l, DT);
+      motion = r.motion;
+      if (r.event) events.push(r.event.type);
+    }
+    return { motion, events };
+  };
+
+  near('lift time: a long ramp takes hand-travel / pace', liftDuration(8), 8 / HAND_PACE, 1e-12);
+  near('lift time: a tiny machine still takes a watchable moment', liftDuration(0.1), MIN_LIFT_TIME, 1e-12);
+  near('lift time: a huge machine is capped', liftDuration(1000), MAX_LIFT_TIME, 1e-12);
+  check('lift time: more hand travel takes longer', liftDuration(6) > liftDuration(2));
+
+  const lifted = run(START, lane(), 20);
+  check('motion: with enough effort the load reaches the top', lifted.motion.progress === 1);
+  check('motion: ...and reports it exactly once', lifted.events.filter((e) => e === 'top').length === 1);
+  near('motion: it comes to rest at the top', lifted.motion.velocity, 0, 1e-12);
+
+  const early = run(START, lane({ handTravel: 4.8 }), 1);
+  check('motion: it has not arrived after one second of a 3 s lift', early.motion.progress > 0 && early.motion.progress < 0.5);
+
+  const quick = run(START, lane({ handTravel: 1.6 }), 4);
+  const slow = run(START, lane({ handTravel: 9.6 }), 4);
+  check('motion: less hand travel arrives sooner', quick.motion.progress === 1 && slow.motion.progress < 1);
+
+  const blocked = run(START, lane({ enough: false, ratio: 0.5 }), 3);
+  check('motion: too little effort leaves the load where it is', blocked.motion.progress === 0 && blocked.events.length === 0);
+
+  const held = run({ progress: 0.4, velocity: 0.2 }, lane({ running: false }), 2);
+  check('motion: paused, the load is held in place', held.motion.progress === 0.4 && held.motion.velocity === 0);
+
+  // Let go halfway up: it should fall back and land with a thud.
+  const falling = run({ progress: 0.6, velocity: 0 }, lane({ enough: false, ratio: 0.2 }), 6);
+  check('motion: too little effort lets a raised load fall back', falling.motion.progress === 0);
+  check('motion: ...and it lands with a thud', falling.events.includes('thud'));
+
+  // Pushing nearly hard enough barely lets it fall.
+  const barely = run({ progress: 0.5, velocity: 0 }, lane({ enough: false, ratio: 0.99 }), 1);
+  check('motion: nearly enough effort lets it fall only slowly', barely.motion.progress > 0.45);
+  const heavy = run({ progress: 0.5, velocity: 0 }, lane({ enough: false, ratio: 0.05 }), 1);
+  check('motion: far too little effort lets it fall faster', heavy.motion.progress < barely.motion.progress);
+
+  let stayedInRange = true;
+  let m: Motion = START;
+  for (let i = 0; i < 2000; i++) {
+    const enough = Math.floor(i / 150) % 2 === 0;
+    const r = stepMotion(m, lane({ enough, ratio: enough ? 1.4 : 0.1 }), DT);
+    m = r.motion;
+    if (!(m.progress >= 0 && m.progress <= 1 && Number.isFinite(m.velocity))) stayedInRange = false;
+  }
+  check('motion: progress stays within 0..1 however the effort changes', stayedInRange);
+  check(
+    'motion: the fall is never faster than the speed limit',
+    Math.abs(run({ progress: 1, velocity: 0 }, lane({ enough: false, ratio: 0 }), 0.5).motion.velocity) * 5 <= MAX_FALL_SPEED + 1e-9
+  );
+
+  near('load speed is progress rate × path length', loadSpeed({ progress: 0.3, velocity: 0.2 }, 5), 1, 1e-12);
+
+  check('status: not started is idle', motionStatus(START, { running: false, enough: true }, false) === 'idle');
+  check('status: pushing hard enough is lifting', motionStatus({ progress: 0.3, velocity: 0.2 }, { running: true, enough: true }, true) === 'lifting');
+  check('status: pushing too weakly at the bottom is blocked', motionStatus(START, { running: true, enough: false }, true) === 'blocked');
+  check('status: a raised load with too little effort is falling', motionStatus({ progress: 0.3, velocity: 0 }, { running: true, enough: false }, true) === 'falling');
+  check('status: at the top it is done', motionStatus({ progress: 1, velocity: 0 }, { running: false, enough: true }, true) === 'done');
+  check('status: stopped part way is paused', motionStatus({ progress: 0.3, velocity: 0 }, { running: false, enough: true }, true) === 'paused');
 }
 
 // ------------------------------------------------------------------ report --

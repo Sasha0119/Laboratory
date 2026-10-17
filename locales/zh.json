@@ -11,7 +11,8 @@
     "magnets": "磁体与磁性",
     "settings": "设置",
     "back": "返回",
-    "matter": "物质状态与热"
+    "matter": "物质状态与热",
+    "machines": "简单机械"
   },
   "common": {
     "reset": "重置",
@@ -137,7 +138,9 @@
       "repulsion": "排斥",
       "phases": "物质状态",
       "specificHeat": "比热容",
-      "latentHeat": "潜热"
+      "latentHeat": "潜热",
+      "mechanicalAdvantage": "机械利益",
+      "work": "功"
     },
     "comingSoonMessage": "这个实验即将推出！"
   },
@@ -650,6 +653,21 @@
       "heating": "改变温度所需的热量",
       "fusion": "熔化所需的热量（熔化潜热）",
       "vaporization": "沸腾所需的热量（汽化潜热）"
+    },
+    "lever": {
+      "balance": "力矩平衡（杠杆定律）",
+      "advantage": "杠杆的机械利益",
+      "work": "输入功等于输出功"
+    },
+    "incline": {
+      "effort": "无摩擦斜面所需的推力",
+      "advantage": "斜面的机械利益",
+      "work": "输入功等于输出功"
+    },
+    "pulley": {
+      "advantage": "滑轮组的机械利益",
+      "effort": "所需的拉力",
+      "work": "输入功等于输出功"
     }
   },
   "matter": {
@@ -778,6 +796,175 @@
     "blurbs": {
       "beginner": "热会让微小的粒子运动得更快。在固体中它们只在原地颤动，在液体中滑来滑去，在气体中四处飞驰。加足够的热，固体会熔化，接着液体会沸腾。",
       "intermediate": "热使物质升温，升多少取决于它的比热容（Q = m·c·ΔT）。在熔点和沸点，吸收的热量用来改变状态（潜热），温度会停止上升。"
+    }
+  },
+  "machines": {
+    "modes": {
+      "lever": "杠杆",
+      "incline": "斜面",
+      "pulley": "滑轮"
+    },
+    "intro": {
+      "title": "简单机械有什么用？",
+      "body": "机械不能创造能量，它只能用力来换距离：你用更小的力、推更长的距离，活照样能干完。力乘以距离，也就是你做的功，基本保持不变。杠杆、斜面和滑轮都是这样工作的。",
+      "tip": "先在上方选一种机械，再按按钮试一试。注意：力越小，距离总是越长。"
+    },
+    "banner": {
+      "beginner": {
+        "easier": "这样提起重物要轻松 {{n}} 倍。",
+        "same": "完全不省力——你用的力和用手直接提一样大。",
+        "harder": "这样提起重物反而费力 {{n}} 倍，但重物移动的距离比你的手更远。"
+      },
+      "intermediate": "机械利益 = {{n}}。负载力是动力的 {{n}} 倍。"
+    },
+    "verdict": {
+      "enough": "你的力（{{effort}} N）足够——可以提起重物。",
+      "notEnough": "你的力（{{effort}} N）不够。至少需要 {{needed}} N。"
+    },
+    "tradeoff": {
+      "easier": "交换：力小 {{n}} 倍，距离长 {{n}} 倍。",
+      "same": "交换：这里没有——同样的力，同样的距离。",
+      "harder": "交换：力大 {{n}} 倍，距离短 {{n}} 倍。"
+    },
+    "badge": {
+      "easier": "更省力",
+      "same": "不省力",
+      "harder": "更费力",
+      "advantage": "机械利益"
+    },
+    "stats": {
+      "easierBy": "省力倍数",
+      "effortNeeded": "所需的力",
+      "ma": "机械利益",
+      "effortForce": "动力",
+      "loadForce": "负载力"
+    },
+    "details": {
+      "loadArm": "阻力臂  L_l",
+      "effortArm": "动力臂  L_e",
+      "loadTorque": "阻力矩",
+      "effortTorque": "动力矩",
+      "length": "斜面长度  L",
+      "height": "斜面高度  h",
+      "angle": "斜面倾角  θ",
+      "liftForce": "竖直提起所需的力",
+      "segments": "承重绳段数  n",
+      "effortDistance": "动力移动距离  d_e",
+      "loadDistance": "负载移动距离  d_l",
+      "yourEffort": "你的力  F_e"
+    },
+    "status": {
+      "idle": "准备就绪。按下按钮开始。",
+      "lifting": "重物正在上升。",
+      "blocked": "力不够：重物纹丝不动。",
+      "falling": "力已经不够：重物正在滑回去。",
+      "done": "已升到顶！按按钮再来一次。",
+      "paused": "已暂停。"
+    },
+    "bars": {
+      "byHand": "用手直接提",
+      "byHandTech": "负载力（直接提起）",
+      "lever": "用杠杆",
+      "leverTech": "使用杠杆时的动力",
+      "incline": "沿斜面推",
+      "inclineTech": "使用斜面时的动力",
+      "pulley": "用滑轮拉",
+      "pulleyTech": "使用滑轮时的动力",
+      "yours": "你的力：{{n}} N"
+    },
+    "buttons": {
+      "pause": "暂停",
+      "again": "再来一次",
+      "resume": "继续",
+      "useLeast": "用刚好够用的最小力",
+      "start": {
+        "lever": "向下压杠杆",
+        "incline": "把箱子推上去",
+        "pulley": "拉绳子"
+      }
+    },
+    "cards": {
+      "lever": "杠杆",
+      "incline": "斜面",
+      "pulley": "滑轮",
+      "bars": "需要多大的力？",
+      "work": "功（理想机械）"
+    },
+    "fields": {
+      "loadHint": "负载的重量用质量表示。越重的负载需要越大的力。",
+      "effortHint": "你推或拉的力，单位是牛顿（N）。试着达到所需的力。",
+      "soundHint": "机械运动时的吱嘎声、摩擦声和绳子声。"
+    },
+    "tryThis": {
+      "title": "试一试",
+      "lever": "把支点移近那只重箱子，看看所需的力小了多少。",
+      "incline": "不改变斜面高度，把斜面加长。所需的推力会变小，但箱子要走更远。",
+      "pulley": "你的拉力不够用一个滑轮。一个一个地加滑轮，直到重物开始上升。"
+    },
+    "work": {
+      "in": "输入功（动力 × 动力移动距离）",
+      "out": "输出功（负载力 × 负载移动距离）",
+      "equal": "输入功 = 输出功",
+      "note": "理想机械：支点、斜面和滑轮都没有摩擦，木板、绳子和滑轮也没有重量。所以这里两者完全相等。真实的机械总会因为摩擦损失一点。"
+    },
+    "credits": "所需的力是根据你设定的数值，按各机械的理想（无摩擦）规律实时算出的。这里没有任何预先编好的动画。"
+  },
+  "lever": {
+    "banner": {
+      "pro": "MA = L_e / L_l = {{effortArm}} m / {{loadArm}} m = {{n}}"
+    },
+    "distance": "你的手移动 {{effort}} m，重物移动 {{load}} m。",
+    "fields": {
+      "load": "负载的重量",
+      "pivot": "支点位置（到负载的距离）",
+      "pivotHint": "支点离负载越近，提起越省力。整根杠杆长 {{total}} m。",
+      "effort": "你的压力"
+    },
+    "scene": {
+      "pivot": "支点"
+    },
+    "formulaNote": "理想杠杆：木板没有重量，支点没有摩擦。",
+    "blurbs": {
+      "beginner": "杠杆是绕支点转动的木板。支点离重物越近，你按的那一段就越长，需要的力就越小。代价是：你要把那一端压下去更远。",
+      "intermediate": "当 动力 × 动力臂 = 负载力 × 阻力臂 时，杠杆平衡。两臂之比就是机械利益：动力臂越长，所需动力越小，但要在更长的距离上施力。"
+    }
+  },
+  "incline": {
+    "banner": {
+      "pro": "MA = L / h = {{length}} m / {{height}} m = {{n}}"
+    },
+    "distance": "你沿斜面推箱子 {{effort}} m，才把它升高 {{load}} m。",
+    "fields": {
+      "load": "箱子的重量",
+      "length": "斜面长度",
+      "lengthHint": "沿斜面的距离。越长越平缓。",
+      "height": "斜面高度",
+      "heightHint": "斜面升高多少。越低越好推。",
+      "effort": "你的推力"
+    },
+    "formulaNote": "无摩擦斜面：不考虑摩擦。真实的箱子还需要额外的力来克服摩擦。",
+    "blurbs": {
+      "beginner": "沿着又长又缓的斜面推箱子，比直接提起它省力得多。斜面相对高度越长，推起来越轻松，但箱子要走的路也越远。",
+      "intermediate": "在无摩擦斜面上，所需推力 = 负载力 × 高度 ÷ 长度。机械利益 = 长度 ÷ 高度：斜面越长，动力越小，但你要推的距离越长。"
+    }
+  },
+  "pulley": {
+    "banner": {
+      "single": "单个滑轮只改变拉力的方向，并不省力。",
+      "pro": "MA = n = {{n}} 段承重绳"
+    },
+    "distance": "你拉 {{effort}} m 的绳子，才把重物升高 {{load}} m。",
+    "fields": {
+      "load": "负载的重量",
+      "pulleys": "滑轮数量",
+      "pulleysHint": "每多一个滑轮，就多一段承担重物的绳子，所需拉力就更小。不过要拉的绳子也更长。",
+      "pulleysSingle": "一个滑轮只改变拉力方向。加更多滑轮才能省力。",
+      "effort": "你的拉力"
+    },
+    "formulaNote": "理想滑轮：没有摩擦，绳子和滑轮没有重量。真实的滑轮还需要额外的拉力。",
+    "blurbs": {
+      "beginner": "滑轮让你向下拉来把东西向上提。有多个滑轮时，重量由几段绳子分担，所以每次拉的力更小，但要拉的绳子更长。",
+      "intermediate": "在滑轮组中，负载由几段绳子平均分担。机械利益等于承重绳的段数，所需动力等于负载力除以段数。"
     }
   }
 }

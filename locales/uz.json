@@ -11,7 +11,8 @@
     "magnets": "Magnitlar va magnetizm",
     "settings": "Sozlamalar",
     "back": "Orqaga",
-    "matter": "Modda holatlari va issiqlik"
+    "matter": "Modda holatlari va issiqlik",
+    "machines": "Oddiy mexanizmlar"
   },
   "common": {
     "reset": "Tozalash",
@@ -137,7 +138,9 @@
       "repulsion": "Itarilish",
       "phases": "Modda holatlari",
       "specificHeat": "Solishtirma issiqlik sig‘imi",
-      "latentHeat": "Yashirin issiqlik"
+      "latentHeat": "Yashirin issiqlik",
+      "mechanicalAdvantage": "Mexanik yutuq",
+      "work": "Ish"
     },
     "comingSoonMessage": "Bu tajriba tez orada qo‘shiladi!"
   },
@@ -650,6 +653,21 @@
       "heating": "Haroratni o‘zgartirish uchun issiqlik",
       "fusion": "Eritish uchun issiqlik (erishning yashirin issiqligi)",
       "vaporization": "Qaynatish uchun issiqlik (bug‘lanishning yashirin issiqligi)"
+    },
+    "lever": {
+      "balance": "Momentlar muvozanati (richag qoidasi)",
+      "advantage": "Richagning mexanik yutug‘i",
+      "work": "Sarflangan ish foydali ishga teng"
+    },
+    "incline": {
+      "effort": "Ishqalanishsiz qiya tekislikda kerakli kuch",
+      "advantage": "Qiya tekislikning mexanik yutug‘i",
+      "work": "Sarflangan ish foydali ishga teng"
+    },
+    "pulley": {
+      "advantage": "Blok tizimining mexanik yutug‘i",
+      "effort": "Kerakli tortish kuchi",
+      "work": "Sarflangan ish foydali ishga teng"
     }
   },
   "matter": {
@@ -778,6 +796,175 @@
     "blurbs": {
       "beginner": "Issiqlik mayda zarrachalarni tezroq harakatlantiradi. Qattiq jismda ular o‘z joyida titraydi, suyuqlikda sirpanib yuradi, gazda esa tez uchadi. Issiqlik yetarli bo‘lsa, qattiq jism eriydi, keyin suyuqlik qaynaydi.",
       "intermediate": "Issiqlik moddaning haroratini uning solishtirma issiqlik sig‘imiga bog‘liq ravishda oshiradi (Q = m·c·ΔT). Erish va qaynash haroratlarida holat o‘zgarishi uchun yashirin issiqlik yutilar ekan, harorat ko‘tarilishdan to‘xtaydi."
+    }
+  },
+  "machines": {
+    "modes": {
+      "lever": "Richag",
+      "incline": "Qiya tekislik",
+      "pulley": "Blok"
+    },
+    "intro": {
+      "title": "Oddiy mexanizmlar qanday yordam beradi?",
+      "body": "Mexanizm energiya yarata olmaydi. U kuchni masofaga almashtiradi: siz kamroq kuch bilan, lekin uzoqroq masofaga itarasiz va ish baribir bajariladi. Kuch ko‘paytirilgan masofa, ya'ni siz bajargan ish, deyarli o‘zgarmaydi. Richag, qiya tekislik va blok shunday ishlaydi.",
+      "tip": "Yuqoridan mexanizmni tanlang va sinab ko‘rish uchun tugmani bosing. Kichikroq itarish har doim uzoqroq masofa bilan birga kelishini kuzating."
+    },
+    "banner": {
+      "beginner": {
+        "easier": "Bu ko‘tarishni {{n}} marta yengillashtiradi.",
+        "same": "Ko‘tarishni yengillashtirmaydi — qo‘l bilan ko‘targandek kuch sarflaysiz.",
+        "harder": "Bu ko‘tarishni {{n}} marta qiyinlashtiradi, lekin yuk qo‘lingizdan ko‘ra uzoqroq yuradi."
+      },
+      "intermediate": "Mexanik yutuq = {{n}}. Yukning kuchi sarflangan kuchdan {{n}} marta katta."
+    },
+    "verdict": {
+      "enough": "Kuchingiz ({{effort}} N) yetarli — yukni ko‘tarish mumkin.",
+      "notEnough": "Kuchingiz ({{effort}} N) yetarli emas. Kamida {{needed}} N kerak."
+    },
+    "tradeoff": {
+      "easier": "Almashuv: kuch {{n}}× kam, lekin masofa {{n}}× ko‘p.",
+      "same": "Almashuv: bu yerda yo‘q — bir xil masofada bir xil kuch.",
+      "harder": "Almashuv: kuch {{n}}× ko‘p, lekin masofa {{n}}× kam."
+    },
+    "badge": {
+      "easier": "yengil",
+      "same": "yutuq yo‘q",
+      "harder": "og‘ir",
+      "advantage": "mexanik yutuq"
+    },
+    "stats": {
+      "easierBy": "Yengillik",
+      "effortNeeded": "Kerakli kuch",
+      "ma": "Mex. yutuq",
+      "effortForce": "Sarflangan kuch",
+      "loadForce": "Yuk kuchi"
+    },
+    "details": {
+      "loadArm": "Yuk yelkasi  L_l",
+      "effortArm": "Kuch yelkasi  L_e",
+      "loadTorque": "Yuk momenti",
+      "effortTorque": "Kuch momenti",
+      "length": "Qiya tekislik uzunligi  L",
+      "height": "Qiya tekislik balandligi  h",
+      "angle": "Qiyalik burchagi  θ",
+      "liftForce": "Tik ko‘tarish uchun kuch",
+      "segments": "Yukni ushlab turgan arqon bo‘laklari  n",
+      "effortDistance": "Kuch yo‘li  d_e",
+      "loadDistance": "Yuk yo‘li  d_l",
+      "yourEffort": "Sizning kuchingiz  F_e"
+    },
+    "status": {
+      "idle": "Tayyor. Boshlash uchun tugmani bosing.",
+      "lifting": "Yuk ko‘tarilmoqda.",
+      "blocked": "Kuch yetmaydi: yuk joyida turibdi.",
+      "falling": "Kuch endi yetmaydi: yuk pastga sirpanmoqda.",
+      "done": "Yuk eng tepada! Qayta urinish uchun tugmani bosing.",
+      "paused": "To‘xtatildi."
+    },
+    "bars": {
+      "byHand": "Qo‘l bilan ko‘tarish",
+      "byHandTech": "Yuk kuchi (to‘g‘ridan-to‘g‘ri ko‘tarish)",
+      "lever": "Richag bilan",
+      "leverTech": "Richag bilan sarflangan kuch",
+      "incline": "Qiya tekislik bo‘ylab itarish",
+      "inclineTech": "Qiya tekislikda sarflangan kuch",
+      "pulley": "Bloklar orqali tortish",
+      "pulleyTech": "Bloklar bilan sarflangan kuch",
+      "yours": "Sizning kuchingiz: {{n}} N"
+    },
+    "buttons": {
+      "pause": "To‘xtatish",
+      "again": "Yana",
+      "resume": "Davom etish",
+      "useLeast": "Yetarli eng kichik kuchni qo‘yish",
+      "start": {
+        "lever": "Richagni pastga bosish",
+        "incline": "Qutini tepaga itarish",
+        "pulley": "Arqonni tortish"
+      }
+    },
+    "cards": {
+      "lever": "Richag",
+      "incline": "Qiya tekislik",
+      "pulley": "Bloklar",
+      "bars": "Qancha kuch kerak?",
+      "work": "Ish (ideal mexanizm)"
+    },
+    "fields": {
+      "loadHint": "Yukning og‘irligi uning massasi bilan beriladi. Og‘irroq yuk ko‘proq kuch talab qiladi.",
+      "effortHint": "Qanchalik kuch bilan itarasiz yoki tortasiz, nyutonda (N). Kerakli kuchga yetishga harakat qiling.",
+      "soundHint": "Mexanizm harakatlanganda g‘ijirlash, ishqalanish va arqon tovushlari."
+    },
+    "tryThis": {
+      "title": "Buni sinab ko‘ring",
+      "lever": "Tayanch nuqtani og‘ir qutiga yaqinlashtiring va qanchalik kam kuch kerakligini ko‘ring.",
+      "incline": "Qiya tekislik balandligini o‘zgartirmay uni uzunroq qiling. Kerakli kuch kamayadi, lekin quti uzoqroq yo‘l yuradi.",
+      "pulley": "Kuchingiz bitta blok uchun yetmaydi. Yuk ko‘tarila boshlaguncha bloklarni birma-bir qo‘shing."
+    },
+    "work": {
+      "in": "Sarflangan ish (kuch × kuch yo‘li)",
+      "out": "Foydali ish (yuk kuchi × yuk yo‘li)",
+      "equal": "Sarflangan ish = foydali ish",
+      "note": "Ideal mexanizm: tayanchda, qiya tekislikda va bloklarda ishqalanish yo‘q, taxta, arqon va bloklarning og‘irligi yo‘q. Shuning uchun bu yerda ikkalasi aynan teng. Haqiqiy mexanizm ishqalanishga doim ozgina yo‘qotadi."
+    },
+    "credits": "Kerakli kuch siz belgilagan sonlardan har bir mexanizm uchun ideal (ishqalanishsiz) qonun bo‘yicha shu zahoti hisoblanadi. Bu yerda oldindan yozib qo‘yilgan animatsiya yo‘q."
+  },
+  "lever": {
+    "banner": {
+      "pro": "MA = L_e / L_l = {{effortArm}} m / {{loadArm}} m = {{n}}"
+    },
+    "distance": "Qo‘lingiz {{effort}} m yurganda yuk {{load}} m ko‘tariladi.",
+    "fields": {
+      "load": "Yukning og‘irligi",
+      "pivot": "Tayanch nuqta o‘rni (yukdan masofa)",
+      "pivotHint": "Yukka qanchalik yaqin bo‘lsa, ko‘tarish shunchalik oson. Richagning to‘liq uzunligi {{total}} m.",
+      "effort": "Itarish kuchingiz"
+    },
+    "scene": {
+      "pivot": "tayanch"
+    },
+    "formulaNote": "Ideal richag: taxtaning og‘irligi yo‘q, tayanchda ishqalanish yo‘q.",
+    "blurbs": {
+      "beginner": "Richag — tayanch nuqta atrofida aylanadigan taxta. Tayanch og‘ir yukka qanchalik yaqin bo‘lsa, siz bosadigan qism shunchalik uzun bo‘ladi va shunchalik kam kuch kerak. Evaziga u uchni ancha pastga bosishga to‘g‘ri keladi.",
+      "intermediate": "Richag kuch × kuch yelkasi = yuk kuchi × yuk yelkasi bo‘lganda muvozanatda bo‘ladi. Yelkalar nisbati mexanik yutuqdir: uzun kuch yelkasi — katta masofaga sarflangan kichik kuch."
+    }
+  },
+  "incline": {
+    "banner": {
+      "pro": "MA = L / h = {{length}} m / {{height}} m = {{n}}"
+    },
+    "distance": "Qutini {{load}} m ko‘tarish uchun uni qiya tekislik bo‘ylab {{effort}} m itarasiz.",
+    "fields": {
+      "load": "Qutining og‘irligi",
+      "length": "Qiya tekislik uzunligi",
+      "lengthHint": "Qiyalik bo‘ylab masofa. Uzunroq qiya tekislik yotiqroq bo‘ladi.",
+      "height": "Qiya tekislik balandligi",
+      "heightHint": "Qiya tekislik qancha balandlikka ko‘tarilishi. Pastroq bo‘lsa itarish osonroq.",
+      "effort": "Itarish kuchingiz"
+    },
+    "formulaNote": "Ishqalanishsiz qiya tekislik: ishqalanish modellashtirilmagan. Haqiqiy qutini ishqalanishni yengish uchun qo‘shimcha kuch kerak.",
+    "blurbs": {
+      "beginner": "Qutini uzun va yotiq qiya tekislik bo‘ylab itarish uni tik ko‘tarishdan ancha kam kuch talab qiladi. Qiya tekislik balandligiga nisbatan qanchalik uzun bo‘lsa, itarish shunchalik oson, lekin quti shunchalik uzoq yo‘l yuradi.",
+      "intermediate": "Ishqalanishsiz qiya tekislikda kerakli kuch yuk kuchi × balandlik ÷ uzunlikka teng. Mexanik yutuq uzunlik ÷ balandlik: uzun qiya tekislik kuchni kamaytiradi, lekin itaradigan masofangizni oshiradi."
+    }
+  },
+  "pulley": {
+    "banner": {
+      "single": "Bitta blok faqat tortish yo‘nalishini o‘zgartiradi. U ko‘tarishni yengillashtirmaydi.",
+      "pro": "MA = n = {{n}} ta yukni ushlab turgan arqon bo‘lagi"
+    },
+    "distance": "Yukni {{load}} m ko‘tarish uchun {{effort}} m arqon tortasiz.",
+    "fields": {
+      "load": "Yukning og‘irligi",
+      "pulleys": "Bloklar soni",
+      "pulleysHint": "Har bir blok yukni ushlab turuvchi arqon bo‘lagini qo‘shadi, shuning uchun kerakli kuch kamayadi. Lekin ko‘proq arqon tortasiz.",
+      "pulleysSingle": "Bitta blok faqat tortish yo‘nalishini o‘zgartiradi. Yutuq olish uchun blok qo‘shing.",
+      "effort": "Tortish kuchingiz"
+    },
+    "formulaNote": "Ideal bloklar: ishqalanish yo‘q, arqon va bloklarning og‘irligi yo‘q. Haqiqiylariga qo‘shimcha kuch kerak.",
+    "blurbs": {
+      "beginner": "Blok yukni yuqoriga ko‘tarish uchun pastga tortish imkonini beradi. Bir nechta blok bilan yuk og‘irligi arqonning bir necha bo‘lagi o‘rtasida bo‘linadi, shuning uchun har bir tortish kichikroq, lekin arqon ko‘proq tortiladi.",
+      "intermediate": "Polispastda yukni uni teng bo‘lishadigan bir necha arqon bo‘lagi ushlab turadi. Mexanik yutuq ushlab turuvchi bo‘laklar soniga teng, sarflangan kuch esa yuk kuchini unga bo‘lganga teng."
     }
   }
 }

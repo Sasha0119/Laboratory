@@ -11,7 +11,8 @@
     "magnets": "Magnets & Magnetism",
     "settings": "Settings",
     "back": "Back",
-    "matter": "States of Matter & Heat"
+    "matter": "States of Matter & Heat",
+    "machines": "Simple Machines"
   },
   "common": {
     "reset": "Reset",
@@ -137,7 +138,9 @@
       "repulsion": "Repulsion",
       "phases": "States of matter",
       "specificHeat": "Specific heat",
-      "latentHeat": "Latent heat"
+      "latentHeat": "Latent heat",
+      "mechanicalAdvantage": "Mechanical advantage",
+      "work": "Work"
     },
     "comingSoonMessage": "This experiment is coming soon!"
   },
@@ -650,6 +653,21 @@
       "heating": "Heat to change the temperature",
       "fusion": "Heat to melt (latent heat of fusion)",
       "vaporization": "Heat to boil (latent heat of vaporization)"
+    },
+    "lever": {
+      "balance": "Torque balance (law of the lever)",
+      "advantage": "Mechanical advantage of a lever",
+      "work": "Work in equals work out"
+    },
+    "incline": {
+      "effort": "Push needed on a frictionless ramp",
+      "advantage": "Mechanical advantage of a ramp",
+      "work": "Work in equals work out"
+    },
+    "pulley": {
+      "advantage": "Mechanical advantage of a pulley system",
+      "effort": "Pull needed",
+      "work": "Work in equals work out"
     }
   },
   "matter": {
@@ -778,6 +796,175 @@
     "blurbs": {
       "beginner": "Heat makes the tiny particles move faster. In a solid they just wiggle on the spot; in a liquid they slide around; in a gas they zoom about. Add enough heat and a solid melts, then a liquid boils.",
       "intermediate": "Heat raises the temperature of a substance by an amount that depends on its specific heat (Q = m·c·ΔT). At the melting and boiling points the temperature stops rising while latent heat is absorbed to change the state."
+    }
+  },
+  "machines": {
+    "modes": {
+      "lever": "Lever",
+      "incline": "Inclined plane",
+      "pulley": "Pulley"
+    },
+    "intro": {
+      "title": "How do simple machines help?",
+      "body": "A machine can't create energy. What it can do is trade force for distance: you push with less force, but over a longer distance, and the job still gets done. Force times distance — the work you do — stays about the same. A lever, a ramp and a pulley all work this way.",
+      "tip": "Choose a machine at the top, then press the button to try it. Watch how a smaller push always goes with a longer distance."
+    },
+    "banner": {
+      "beginner": {
+        "easier": "This makes it {{n}} times easier to lift.",
+        "same": "This doesn't make lifting any easier — you push as hard as you would by hand.",
+        "harder": "This makes lifting {{n}} times harder, but the load moves farther than your hand does."
+      },
+      "intermediate": "Mechanical advantage = {{n}}. The load force is {{n}} times the effort force."
+    },
+    "verdict": {
+      "enough": "Your effort ({{effort}} N) is enough — the load can be lifted.",
+      "notEnough": "Your effort ({{effort}} N) is not enough. You need at least {{needed}} N."
+    },
+    "tradeoff": {
+      "easier": "The trade: {{n}}× less force, but {{n}}× more distance.",
+      "same": "The trade: none here — the same force over the same distance.",
+      "harder": "The trade: {{n}}× more force, but {{n}}× less distance."
+    },
+    "badge": {
+      "easier": "easier",
+      "same": "no help",
+      "harder": "harder",
+      "advantage": "mech. advantage"
+    },
+    "stats": {
+      "easierBy": "Easier by",
+      "effortNeeded": "Effort needed",
+      "ma": "Mech. advantage",
+      "effortForce": "Effort force",
+      "loadForce": "Load force"
+    },
+    "details": {
+      "loadArm": "Load arm  L_l",
+      "effortArm": "Effort arm  L_e",
+      "loadTorque": "Load torque",
+      "effortTorque": "Effort torque",
+      "length": "Ramp length  L",
+      "height": "Ramp height  h",
+      "angle": "Ramp angle  θ",
+      "liftForce": "Force to lift straight up",
+      "segments": "Supporting rope segments  n",
+      "effortDistance": "Effort distance  d_e",
+      "loadDistance": "Load distance  d_l",
+      "yourEffort": "Your effort  F_e"
+    },
+    "status": {
+      "idle": "Ready. Press the button to start.",
+      "lifting": "The load is rising.",
+      "blocked": "Not enough effort: the load stays where it is.",
+      "falling": "Not enough effort any more: the load is sliding back down.",
+      "done": "All the way up! Press the button to go again.",
+      "paused": "Paused."
+    },
+    "bars": {
+      "byHand": "Lifting it by hand",
+      "byHandTech": "Load force (lifting it directly)",
+      "lever": "Using the lever",
+      "leverTech": "Effort force with the lever",
+      "incline": "Pushing it up the ramp",
+      "inclineTech": "Effort force on the ramp",
+      "pulley": "Pulling with the pulleys",
+      "pulleyTech": "Effort force with the pulleys",
+      "yours": "Your effort: {{n}} N"
+    },
+    "buttons": {
+      "pause": "Pause",
+      "again": "Go again",
+      "resume": "Resume",
+      "useLeast": "Use the least effort that works",
+      "start": {
+        "lever": "Push the lever down",
+        "incline": "Push the box up",
+        "pulley": "Pull the rope"
+      }
+    },
+    "cards": {
+      "lever": "The lever",
+      "incline": "The inclined plane",
+      "pulley": "The pulleys",
+      "bars": "How much effort?",
+      "work": "Work (ideal machine)"
+    },
+    "fields": {
+      "loadHint": "The weight of the load, given as its mass. A heavier load needs more effort.",
+      "effortHint": "How hard you push or pull, in newtons (N). Try to match the effort needed.",
+      "soundHint": "Creaks, scrapes and rope sounds while the machine moves."
+    },
+    "tryThis": {
+      "title": "Try this",
+      "lever": "Try sliding the pivot closer to the heavy box and see how much less effort it takes.",
+      "incline": "Make the ramp longer without changing its height. The push you need gets smaller, but the box travels farther.",
+      "pulley": "Your pull is too small for one pulley. Add pulleys one at a time until the load starts to rise."
+    },
+    "work": {
+      "in": "Work in (effort × effort distance)",
+      "out": "Work out (load × load distance)",
+      "equal": "Work in = work out",
+      "note": "Ideal machine: no friction at the pivot, on the ramp or in the pulleys, and the plank, rope and pulleys weigh nothing. That is why the two are exactly equal here. A real machine always loses a little to friction."
+    },
+    "credits": "The effort needed is computed live from the numbers you set, using the ideal (frictionless) law for each machine. Nothing here is a scripted animation."
+  },
+  "lever": {
+    "banner": {
+      "pro": "MA = L_e / L_l = {{effortArm}} m / {{loadArm}} m = {{n}}"
+    },
+    "distance": "Your hand moves {{effort}} m while the load moves {{load}} m.",
+    "fields": {
+      "load": "Weight of the load",
+      "pivot": "Pivot position (distance from the load)",
+      "pivotHint": "Closer to the load makes the lift easier. The whole lever is {{total}} m long.",
+      "effort": "Your push force"
+    },
+    "scene": {
+      "pivot": "pivot"
+    },
+    "formulaNote": "Ideal lever: the plank weighs nothing and there is no friction at the pivot.",
+    "blurbs": {
+      "beginner": "A lever is a plank that turns on a pivot. The closer the pivot is to the heavy load, the longer the part you push on, and the less effort you need. The price: you have to push that end down much farther.",
+      "intermediate": "A lever balances when effort × effort arm = load × load arm. The ratio of the arms is the mechanical advantage: a long effort arm means a small effort force, moved over a large distance."
+    }
+  },
+  "incline": {
+    "banner": {
+      "pro": "MA = L / h = {{length}} m / {{height}} m = {{n}}"
+    },
+    "distance": "You push the box {{effort}} m along the ramp to raise it {{load}} m.",
+    "fields": {
+      "load": "Weight of the box",
+      "length": "Ramp length",
+      "lengthHint": "The distance along the slope. A longer ramp is gentler.",
+      "height": "Ramp height",
+      "heightHint": "How high the ramp climbs. A lower ramp is easier to push up.",
+      "effort": "Your push force"
+    },
+    "formulaNote": "Frictionless ramp: friction is not modelled. A real box needs extra push to overcome it.",
+    "blurbs": {
+      "beginner": "Pushing a box up a long, gentle ramp takes much less effort than lifting it straight up. The longer the ramp compared with its height, the easier the push, but the farther the box has to travel.",
+      "intermediate": "On a frictionless ramp the push needed is the load force × height ÷ length. The mechanical advantage is length ÷ height: a longer ramp lowers the effort force but increases the distance you push."
+    }
+  },
+  "pulley": {
+    "banner": {
+      "single": "A single pulley only changes the direction you pull. It doesn't make lifting easier.",
+      "pro": "MA = n = {{n}} supporting rope segments"
+    },
+    "distance": "You pull {{effort}} m of rope to raise the load {{load}} m.",
+    "fields": {
+      "load": "Weight of the load",
+      "pulleys": "Number of pulleys",
+      "pulleysHint": "Each pulley adds a rope segment holding the load, so the pull needed drops. You pull more rope, though.",
+      "pulleysSingle": "One pulley just changes the direction of the pull. Add more to get an advantage.",
+      "effort": "Your pull force"
+    },
+    "formulaNote": "Ideal pulleys: no friction, and the rope and pulleys weigh nothing. Real ones need extra pull.",
+    "blurbs": {
+      "beginner": "A pulley lets you pull down to lift something up. With several pulleys, the weight is shared between several pieces of rope, so each pull is smaller, but you pull more rope.",
+      "intermediate": "In a block and tackle the load is held by several rope segments that share it equally. The mechanical advantage equals the number of supporting segments, and the effort force is the load force divided by it."
     }
   }
 }

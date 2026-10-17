@@ -91,7 +91,15 @@ export interface Formula {
   minLevel: DifficultyLevel;
 }
 
-export type SimulationModule = 'drop' | 'collisions' | 'circuits' | 'magnets' | 'matter';
+export type SimulationModule =
+  | 'drop'
+  | 'collisions'
+  | 'circuits'
+  | 'magnets'
+  | 'matter'
+  | 'lever'
+  | 'incline'
+  | 'pulley';
 
 export const FORMULAS: Record<SimulationModule, Formula[]> = {
   drop: [
@@ -123,6 +131,21 @@ export const FORMULAS: Record<SimulationModule, Formula[]> = {
     { id: 'heating', expression: 'Q = m·c·ΔT', minLevel: 'intermediate' },
     { id: 'fusion', expression: 'Q = m·L_f', minLevel: 'pro' },
     { id: 'vaporization', expression: 'Q = m·L_v', minLevel: 'pro' },
+  ],
+  lever: [
+    { id: 'balance', expression: 'F_e · L_e = F_l · L_l', minLevel: 'intermediate' },
+    { id: 'advantage', expression: 'MA = L_e / L_l = F_l / F_e', minLevel: 'intermediate' },
+    { id: 'work', expression: 'W_in = F_e · d_e = F_l · d_l = W_out', minLevel: 'pro' },
+  ],
+  incline: [
+    { id: 'effort', expression: 'F_e = F_l · h / L = m·g·sin θ', minLevel: 'intermediate' },
+    { id: 'advantage', expression: 'MA = L / h = F_l / F_e', minLevel: 'intermediate' },
+    { id: 'work', expression: 'W_in = F_e · L = F_l · h = W_out', minLevel: 'pro' },
+  ],
+  pulley: [
+    { id: 'advantage', expression: 'MA = n  (supporting rope segments)', minLevel: 'intermediate' },
+    { id: 'effort', expression: 'F_e = F_l / n', minLevel: 'intermediate' },
+    { id: 'work', expression: 'W_in = F_e · (n·d) = F_l · d = W_out', minLevel: 'pro' },
   ],
 };
 

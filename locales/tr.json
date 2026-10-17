@@ -11,7 +11,8 @@
     "magnets": "Mıknatıslar ve Manyetizma",
     "settings": "Ayarlar",
     "back": "Geri",
-    "matter": "Maddenin Hâlleri ve Isı"
+    "matter": "Maddenin Hâlleri ve Isı",
+    "machines": "Basit Makineler"
   },
   "common": {
     "reset": "Sıfırla",
@@ -137,7 +138,9 @@
       "repulsion": "İtme",
       "phases": "Maddenin hâlleri",
       "specificHeat": "Özgül ısı",
-      "latentHeat": "Gizli ısı"
+      "latentHeat": "Gizli ısı",
+      "mechanicalAdvantage": "Mekanik avantaj",
+      "work": "İş"
     },
     "comingSoonMessage": "Bu deney yakında geliyor!"
   },
@@ -650,6 +653,21 @@
       "heating": "Sıcaklığı değiştirmek için gereken ısı",
       "fusion": "Eritmek için gereken ısı (erime gizli ısısı)",
       "vaporization": "Kaynatmak için gereken ısı (buharlaşma gizli ısısı)"
+    },
+    "lever": {
+      "balance": "Tork dengesi (kaldıraç yasası)",
+      "advantage": "Kaldıracın mekanik avantajı",
+      "work": "Girdi işi çıktı işine eşittir"
+    },
+    "incline": {
+      "effort": "Sürtünmesiz rampada gereken itme",
+      "advantage": "Rampanın mekanik avantajı",
+      "work": "Girdi işi çıktı işine eşittir"
+    },
+    "pulley": {
+      "advantage": "Makara sisteminin mekanik avantajı",
+      "effort": "Gereken çekme kuvveti",
+      "work": "Girdi işi çıktı işine eşittir"
     }
   },
   "matter": {
@@ -778,6 +796,175 @@
     "blurbs": {
       "beginner": "Isı minik parçacıkları daha hızlı hareket ettirir. Katıda olduğu yerde titrerler, sıvıda kayarlar, gazda ise hızla uçuşurlar. Yeterince ısı ekleyince katı erir, sonra sıvı kaynar.",
       "intermediate": "Isı, bir maddenin sıcaklığını özgül ısısına bağlı bir miktarda yükseltir (Q = m·c·ΔT). Erime ve kaynama noktalarında hâl değişimi için gizli ısı emilirken sıcaklık artmayı durdurur."
+    }
+  },
+  "machines": {
+    "modes": {
+      "lever": "Kaldıraç",
+      "incline": "Eğik düzlem",
+      "pulley": "Makara"
+    },
+    "intro": {
+      "title": "Basit makineler nasıl yardımcı olur?",
+      "body": "Bir makine enerji yaratamaz. Yapabildiği şey kuvveti mesafeyle değiş tokuş etmektir: daha az kuvvetle ama daha uzun bir mesafe boyunca itersiniz ve iş yine de görülür. Kuvvet çarpı mesafe — yani yaptığınız iş — hemen hemen aynı kalır. Kaldıraç, rampa ve makara bu şekilde çalışır.",
+      "tip": "Üstten bir makine seçin, sonra denemek için düğmeye basın. Daha küçük bir itmenin her zaman daha uzun bir mesafeyle birlikte geldiğine dikkat edin."
+    },
+    "banner": {
+      "beginner": {
+        "easier": "Bu, kaldırmayı {{n}} kat kolaylaştırır.",
+        "same": "Kaldırmayı hiç kolaylaştırmaz — elle kaldırırken uyguladığınız kadar kuvvet uygularsınız.",
+        "harder": "Bu, kaldırmayı {{n}} kat zorlaştırır, ama yük elinizden daha uzağa gider."
+      },
+      "intermediate": "Mekanik avantaj = {{n}}. Yük kuvveti, uygulanan kuvvetin {{n}} katıdır."
+    },
+    "verdict": {
+      "enough": "Uyguladığınız kuvvet ({{effort}} N) yeterli — yük kaldırılabilir.",
+      "notEnough": "Uyguladığınız kuvvet ({{effort}} N) yeterli değil. En az {{needed}} N gerekir."
+    },
+    "tradeoff": {
+      "easier": "Takas: {{n}}× daha az kuvvet, ama {{n}}× daha fazla mesafe.",
+      "same": "Takas: burada yok — aynı mesafede aynı kuvvet.",
+      "harder": "Takas: {{n}}× daha fazla kuvvet, ama {{n}}× daha az mesafe."
+    },
+    "badge": {
+      "easier": "daha kolay",
+      "same": "fayda yok",
+      "harder": "daha zor",
+      "advantage": "mek. avantaj"
+    },
+    "stats": {
+      "easierBy": "Kolaylık",
+      "effortNeeded": "Gereken kuvvet",
+      "ma": "Mek. avantaj",
+      "effortForce": "Uygulanan kuvvet",
+      "loadForce": "Yük kuvveti"
+    },
+    "details": {
+      "loadArm": "Yük kolu  L_l",
+      "effortArm": "Kuvvet kolu  L_e",
+      "loadTorque": "Yük torku",
+      "effortTorque": "Kuvvet torku",
+      "length": "Rampa uzunluğu  L",
+      "height": "Rampa yüksekliği  h",
+      "angle": "Rampa açısı  θ",
+      "liftForce": "Dik kaldırmak için kuvvet",
+      "segments": "Taşıyan ip parçaları  n",
+      "effortDistance": "Kuvvetin yolu  d_e",
+      "loadDistance": "Yükün yolu  d_l",
+      "yourEffort": "Uyguladığınız kuvvet  F_e"
+    },
+    "status": {
+      "idle": "Hazır. Başlamak için düğmeye basın.",
+      "lifting": "Yük yükseliyor.",
+      "blocked": "Kuvvet yetersiz: yük olduğu yerde kalıyor.",
+      "falling": "Kuvvet artık yetersiz: yük geri kayıyor.",
+      "done": "Yük en üstte! Tekrar denemek için düğmeye basın.",
+      "paused": "Duraklatıldı."
+    },
+    "bars": {
+      "byHand": "Elle kaldırmak",
+      "byHandTech": "Yük kuvveti (doğrudan kaldırma)",
+      "lever": "Kaldıraçla",
+      "leverTech": "Kaldıraçla uygulanan kuvvet",
+      "incline": "Rampadan itmek",
+      "inclineTech": "Rampada uygulanan kuvvet",
+      "pulley": "Makaralarla çekmek",
+      "pulleyTech": "Makaralarla uygulanan kuvvet",
+      "yours": "Uyguladığınız kuvvet: {{n}} N"
+    },
+    "buttons": {
+      "pause": "Duraklat",
+      "again": "Tekrar",
+      "resume": "Devam",
+      "useLeast": "Yeterli en küçük kuvveti kullan",
+      "start": {
+        "lever": "Kaldıracı aşağı it",
+        "incline": "Kutuyu yukarı it",
+        "pulley": "İpi çek"
+      }
+    },
+    "cards": {
+      "lever": "Kaldıraç",
+      "incline": "Eğik düzlem",
+      "pulley": "Makaralar",
+      "bars": "Ne kadar kuvvet gerekir?",
+      "work": "İş (ideal makine)"
+    },
+    "fields": {
+      "loadHint": "Yükün ağırlığı kütlesiyle verilir. Ağır yük daha fazla kuvvet ister.",
+      "effortHint": "Ne kadar güçle ittiğiniz ya da çektiğiniz, newton (N) cinsinden. Gereken kuvvete ulaşmayı deneyin.",
+      "soundHint": "Makine hareket ederken gıcırtı, sürtünme ve ip sesleri."
+    },
+    "tryThis": {
+      "title": "Şunu deneyin",
+      "lever": "Dayanak noktasını ağır kutuya yaklaştırın ve ne kadar daha az kuvvet gerektiğine bakın.",
+      "incline": "Rampanın yüksekliğini değiştirmeden uzunluğunu artırın. Gereken itme küçülür ama kutu daha uzun yol alır.",
+      "pulley": "Kuvvetiniz tek makara için yetersiz. Yük yükselmeye başlayana kadar makaraları birer birer ekleyin."
+    },
+    "work": {
+      "in": "Girdi işi (kuvvet × kuvvetin yolu)",
+      "out": "Çıktı işi (yük kuvveti × yükün yolu)",
+      "equal": "Girdi işi = çıktı işi",
+      "note": "İdeal makine: dayanak noktasında, rampada ve makaralarda sürtünme yok; tahta, ip ve makaraların ağırlığı yok. Bu yüzden ikisi burada tam olarak eşit. Gerçek bir makine sürtünme yüzünden her zaman biraz kaybeder."
+    },
+    "credits": "Gereken kuvvet, her makine için ideal (sürtünmesiz) yasayla, ayarladığınız sayılardan anlık hesaplanır. Buradaki hiçbir şey önceden hazırlanmış bir animasyon değildir."
+  },
+  "lever": {
+    "banner": {
+      "pro": "MA = L_e / L_l = {{effortArm}} m / {{loadArm}} m = {{n}}"
+    },
+    "distance": "Eliniz {{effort}} m giderken yük {{load}} m yükselir.",
+    "fields": {
+      "load": "Yükün ağırlığı",
+      "pivot": "Dayanak noktasının konumu (yüke uzaklık)",
+      "pivotHint": "Yüke ne kadar yakınsa kaldırmak o kadar kolay. Kaldıracın tamamı {{total}} m uzunluğunda.",
+      "effort": "İtme kuvvetiniz"
+    },
+    "scene": {
+      "pivot": "dayanak"
+    },
+    "formulaNote": "İdeal kaldıraç: tahtanın ağırlığı yok, dayanak noktasında sürtünme yok.",
+    "blurbs": {
+      "beginner": "Kaldıraç, bir dayanak noktası üzerinde dönen bir tahtadır. Dayanak noktası ağır yüke ne kadar yakınsa, ittiğiniz kısım o kadar uzun olur ve o kadar az kuvvet gerekir. Bedeli: o ucu çok daha fazla aşağı itmeniz gerekir.",
+      "intermediate": "Kaldıraç, kuvvet × kuvvet kolu = yük kuvveti × yük kolu olduğunda dengededir. Kolların oranı mekanik avantajdır: uzun bir kuvvet kolu, büyük bir mesafeye yayılmış küçük bir kuvvet demektir."
+    }
+  },
+  "incline": {
+    "banner": {
+      "pro": "MA = L / h = {{length}} m / {{height}} m = {{n}}"
+    },
+    "distance": "Kutuyu {{load}} m yükseltmek için rampa boyunca {{effort}} m itiyorsunuz.",
+    "fields": {
+      "load": "Kutunun ağırlığı",
+      "length": "Rampa uzunluğu",
+      "lengthHint": "Eğim boyunca mesafe. Uzun rampa daha yatıktır.",
+      "height": "Rampa yüksekliği",
+      "heightHint": "Rampanın ne kadar yükseldiği. Alçak rampayı itmek daha kolaydır.",
+      "effort": "İtme kuvvetiniz"
+    },
+    "formulaNote": "Sürtünmesiz rampa: sürtünme modellenmiyor. Gerçek bir kutu, onu yenmek için ek kuvvet ister.",
+    "blurbs": {
+      "beginner": "Bir kutuyu uzun, yumuşak bir rampadan itmek, onu dik kaldırmaktan çok daha az kuvvet ister. Rampa yüksekliğine göre ne kadar uzunsa itmek o kadar kolaydır, ama kutu o kadar uzun yol alır.",
+      "intermediate": "Sürtünmesiz rampada gereken itme, yük kuvveti × yükseklik ÷ uzunluktur. Mekanik avantaj uzunluk ÷ yüksekliktir: uzun rampa kuvveti azaltır ama ittiğiniz mesafeyi artırır."
+    }
+  },
+  "pulley": {
+    "banner": {
+      "single": "Tek makara yalnızca çekme yönünü değiştirir. Kaldırmayı kolaylaştırmaz.",
+      "pro": "MA = n = {{n}} taşıyan ip parçası"
+    },
+    "distance": "Yükü {{load}} m kaldırmak için {{effort}} m ip çekiyorsunuz.",
+    "fields": {
+      "load": "Yükün ağırlığı",
+      "pulleys": "Makara sayısı",
+      "pulleysHint": "Her makara yükü taşıyan bir ip parçası ekler, bu yüzden gereken kuvvet azalır. Ama daha çok ip çekersiniz.",
+      "pulleysSingle": "Tek makara yalnızca çekme yönünü değiştirir. Avantaj için makara ekleyin.",
+      "effort": "Çekme kuvvetiniz"
+    },
+    "formulaNote": "İdeal makaralar: sürtünme yok, ip ve makaraların ağırlığı yok. Gerçekleri ek kuvvet ister.",
+    "blurbs": {
+      "beginner": "Makara, bir şeyi yukarı kaldırmak için aşağı çekmenizi sağlar. Birden fazla makarayla ağırlık birkaç ip parçasına paylaşılır; her çekiş daha küçük olur ama daha çok ip çekersiniz.",
+      "intermediate": "Palangada yük, onu eşit paylaşan birkaç ip parçasıyla taşınır. Mekanik avantaj taşıyan parça sayısına eşittir ve uygulanan kuvvet, yük kuvvetinin buna bölünmesidir."
     }
   }
 }

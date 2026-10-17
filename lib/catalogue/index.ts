@@ -45,7 +45,12 @@ export const TOPICS: Topic[] = [
     topics: ['phases', 'specificHeat', 'latentHeat'],
     href: '/physics/matter',
   },
-  { id: 'simpleMachines', level: 'beginner' },
+  {
+    id: 'simpleMachines',
+    level: 'beginner',
+    topics: ['mechanicalAdvantage', 'torque', 'work'],
+    href: '/physics/machines',
+  },
 
   // --- Intermediate -------------------------------------------------------
   {
