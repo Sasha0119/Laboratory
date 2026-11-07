@@ -12,7 +12,8 @@
     "settings": "Sozlamalar",
     "back": "Orqaga",
     "matter": "Modda holatlari va issiqlik",
-    "machines": "Oddiy mexanizmlar"
+    "machines": "Oddiy mexanizmlar",
+    "waves": "To‘lqinlar va tovush"
   },
   "common": {
     "reset": "Tozalash",
@@ -140,7 +141,10 @@
       "specificHeat": "Solishtirma issiqlik sig‘imi",
       "latentHeat": "Yashirin issiqlik",
       "mechanicalAdvantage": "Mexanik yutuq",
-      "work": "Ish"
+      "work": "Ish",
+      "frequency": "Chastota",
+      "wavelength": "To‘lqin uzunligi",
+      "amplitude": "Amplituda"
     },
     "comingSoonMessage": "Bu tajriba tez orada qo‘shiladi!"
   },
@@ -668,6 +672,14 @@
       "advantage": "Blok tizimining mexanik yutug‘i",
       "effort": "Kerakli tortish kuchi",
       "work": "Sarflangan ish foydali ishga teng"
+    },
+    "waves": {
+      "waveEquation": "To‘lqin munosabati",
+      "wavelength": "To‘lqin uzunligi",
+      "period": "Davr",
+      "displacement": "Yuguruvchi to‘lqinning siljishi",
+      "superposition": "Ikki to‘lqinning qo‘shilishi (superpozitsiya)",
+      "beat": "Tepish chastotasi"
     }
   },
   "matter": {
@@ -965,6 +977,106 @@
     "blurbs": {
       "beginner": "Blok yukni yuqoriga ko‘tarish uchun pastga tortish imkonini beradi. Bir nechta blok bilan yuk og‘irligi arqonning bir necha bo‘lagi o‘rtasida bo‘linadi, shuning uchun har bir tortish kichikroq, lekin arqon ko‘proq tortiladi.",
       "intermediate": "Polispastda yukni uni teng bo‘lishadigan bir necha arqon bo‘lagi ushlab turadi. Mexanik yutuq ushlab turuvchi bo‘laklar soniga teng, sarflangan kuch esa yuk kuchini unga bo‘lganga teng."
+    }
+  },
+  "waves": {
+    "intro": {
+      "title": "To‘lqin nima?",
+      "body": "To‘lqin — energiyani bir joydan boshqa joyga olib o‘tuvchi tebranish, tovush esa eshitish mumkin bo‘lgan to‘lqindir. Bu yerda uchta g‘oyani sinab ko‘rish mumkin: chastota — to‘lqin qanchalik tez tebranishi, u tovush balandligi sifatida eshitiladi; amplituda — to‘lqin qanchalik katta ekani, u tovush kuchi sifatida eshitiladi; tovush esa turli materiallarda turli tezlikda tarqaladi."
+    },
+    "tryThis": {
+      "title": "Sinab ko‘ring",
+      "starter": "Tovushni yoqing, keyin chastotani oshiring: tovush balandlashadi, to‘lqin esa siqiladi.",
+      "beat": "Chastotasi sal farq qiladigan ikkinchi to‘lqinni qo‘shing va tebranib turuvchi tepishlarni tinglang."
+    },
+    "slowed": "Ko‘rish oson bo‘lishi uchun animatsiya taxminan {{times}} marta sekinlashtirilgan. Tovush haqiqiy chastotada yangraydi.",
+    "cards": {
+      "wave": "Sizning to‘lqiningiz",
+      "material": "Material",
+      "second": "Ikkinchi to‘lqin"
+    },
+    "play": {
+      "label": "Tovushni yoqish",
+      "hint": "Ekrandagi to‘lqinning bir tekis ohangi. Bu varaqdan chiqsangiz, to‘xtaydi.",
+      "muted": "Tovush Sozlamalarda o‘chirilgan.",
+      "lowTone": "Bunday past tovushlar telefon va noutbuk karnaylaridan eshitilmasligi mumkin. Quloqchin bilan sinab ko‘ring."
+    },
+    "materials": {
+      "air": "Havo",
+      "water": "Suv",
+      "steel": "Po‘lat"
+    },
+    "fields": {
+      "frequency": "Chastota",
+      "frequencyHint": "Sekundiga nechta tebranish. Tebranish tezlashgani sari tovush balandlashadi.",
+      "amplitude": "Amplituda",
+      "amplitudeHint": "To‘lqin qanchalik katta. To‘lqin kattalashgani sari tovush kuchayadi.",
+      "materialHint": "Tovush o‘tadigan muhit. Har bir materialda tovush tezligi o‘ziga xos.",
+      "secondToggle": "Ikkinchi to‘lqin qo‘shish",
+      "secondToggleHint": "Ikki to‘lqinni birga yangratadi va ularning yig‘indisini ko‘rsatadi.",
+      "secondFrequency": "Chastota 2",
+      "secondAmplitude": "Amplituda 2"
+    },
+    "stats": {
+      "frequency": "Chastota",
+      "wiggles": "Sekundiga tebranish",
+      "wavelength": "To‘lqin uzunligi",
+      "waveLength": "Bitta to‘lqin uzunligi",
+      "speed": "To‘lqin tezligi",
+      "howFast": "Qanchalik tez tarqaladi"
+    },
+    "details": {
+      "frequency": "Chastota  f",
+      "period": "Davr  T",
+      "wavelength": "To‘lqin uzunligi  λ",
+      "speed": "To‘lqin tezligi  v",
+      "amplitude": "Amplituda  A",
+      "secondFrequency": "Chastota  f₂",
+      "secondWavelength": "To‘lqin uzunligi  λ₂",
+      "secondAmplitude": "Amplituda  A₂",
+      "beat": "Tepish chastotasi  f_beat"
+    },
+    "scene": {
+      "oneWave": "Bitta to‘liq to‘lqin: {{length}} m",
+      "lambda": "λ = {{length}} m",
+      "amplitude": "A",
+      "height": "Balandlik",
+      "first": "1-to‘lqin",
+      "second": "2-to‘lqin",
+      "combined": "Ikkalasining yig‘indisi",
+      "loudness": "Hozirgi tovush kuchi"
+    },
+    "compare": {
+      "title": "Shu chastotadagi bitta to‘lqin, haqiqiy nisbatda"
+    },
+    "words": {
+      "pitch": {
+        "low": "Past, yo‘g‘on ohang: sekin tebranishlar.",
+        "middle": "O‘rtacha ohang, xuddi qo‘shiq aytayotgan odamnikidek.",
+        "high": "Baland ohang: juda tez tebranishlar."
+      },
+      "loudness": {
+        "quiet": "To‘lqin kichik, shuning uchun tovush past eshitiladi.",
+        "medium": "To‘lqin o‘rtacha, shuning uchun tovush o‘rtacha kuchda.",
+        "loud": "To‘lqin katta, shuning uchun tovush kuchli."
+      },
+      "material": {
+        "air": "Havoda tovush ancha sekin tarqaladi, shuning uchun har bir to‘lqin uzunligi {{length}} m.",
+        "water": "Suvda tovush havodagidan to‘rt martadan ko‘proq tez tarqaladi, shuning uchun har bir to‘lqin {{length}} m gacha cho‘ziladi.",
+        "steel": "Po‘latda tovush havodagidan taxminan 17 marta tez tarqaladi, shuning uchun har bir to‘lqin {{length}} m gacha cho‘ziladi. U sig‘ishi uchun ko‘rinish uzoqlashtirildi: chizg‘ichga qarang."
+      },
+      "beat": {
+        "none": "Ikki to‘lqinning chastotasi bir xil, shuning uchun ular hamnafas bo‘lib, bir tekis ohangga qo‘shiladi.",
+        "wobble": "Ikki to‘lqin goh mos keladi, goh ajraladi, shuning uchun tovush sekundiga {{beats}} marta tebranadi.",
+        "flutter": "Ikki to‘lqin sekundiga {{beats}} marta mos kelib ajraladi; buni sanab bo‘lmaydi, shuning uchun tovush dag‘al titrash kabi eshitiladi.",
+        "separate": "Chastotalar {{beats}} Hz ga farq qiladi, shuning uchun tebranish o‘rniga ikkita alohida nota eshitila boshlaydi."
+      }
+    },
+    "assumptions": "Ideal muhit: so‘nish va qaytish yo‘q, bitta bir jinsli material va chiziqli qo‘shiladigan sof sinus to‘lqinlar. Materiallardagi tezliklar qat’iy ma’lumotnoma qiymatlaridir. Amplituda o‘lchangan bosim emas, nisbiy shkaladir.",
+    "credits": "Bu yerdagi har bir to‘lqin siz tanlagan chastota va material bo‘yicha shu zahoti hisoblanadi. Uzunlik va balandliklar haqiqiy nisbatda chiziladi, faqat harakat sekinlashtirilgan.",
+    "blurbs": {
+      "beginner": "Baland tovush — tezroq tebranish. Katta to‘lqin — kuchliroq tovush. Bir xil nota suv va po‘latda uzunroq to‘lqin hosil qiladi, chunki u yerda tovush tezroq tarqaladi.",
+      "intermediate": "Chastota tovush balandligini, amplituda esa kuchini belgilaydi. To‘lqin tezligi materialga bog‘liq, shuning uchun bir xil chastotada tezroq materialda to‘lqin uzunligi kattaroq bo‘ladi. Bir-biriga yaqin ikki chastota goh mos kelib, goh ajralib, tepishlar hosil qiladi."
     }
   }
 }

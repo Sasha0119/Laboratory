@@ -12,7 +12,8 @@
     "settings": "Settings",
     "back": "Back",
     "matter": "States of Matter & Heat",
-    "machines": "Simple Machines"
+    "machines": "Simple Machines",
+    "waves": "Waves & Sound"
   },
   "common": {
     "reset": "Reset",
@@ -140,7 +141,10 @@
       "specificHeat": "Specific heat",
       "latentHeat": "Latent heat",
       "mechanicalAdvantage": "Mechanical advantage",
-      "work": "Work"
+      "work": "Work",
+      "frequency": "Frequency",
+      "wavelength": "Wavelength",
+      "amplitude": "Amplitude"
     },
     "comingSoonMessage": "This experiment is coming soon!"
   },
@@ -668,6 +672,14 @@
       "advantage": "Mechanical advantage of a pulley system",
       "effort": "Pull needed",
       "work": "Work in equals work out"
+    },
+    "waves": {
+      "waveEquation": "The wave relation",
+      "wavelength": "Wavelength",
+      "period": "Period",
+      "displacement": "Displacement of a travelling wave",
+      "superposition": "Two waves add up (superposition)",
+      "beat": "Beat frequency"
     }
   },
   "matter": {
@@ -965,6 +977,106 @@
     "blurbs": {
       "beginner": "A pulley lets you pull down to lift something up. With several pulleys, the weight is shared between several pieces of rope, so each pull is smaller, but you pull more rope.",
       "intermediate": "In a block and tackle the load is held by several rope segments that share it equally. The mechanical advantage equals the number of supporting segments, and the effort force is the load force divided by it."
+    }
+  },
+  "waves": {
+    "intro": {
+      "title": "What is a wave?",
+      "body": "A wave is a disturbance that carries energy from place to place, and sound is one you can hear. There are three ideas to play with here: frequency is how fast it wiggles, which you hear as pitch; amplitude is how big it is, which you hear as loudness; and sound travels at different speeds in different materials."
+    },
+    "tryThis": {
+      "title": "Try this",
+      "starter": "Press Play, then raise the frequency and listen to the pitch go up while the wave gets squeezed.",
+      "beat": "Add a second wave with a slightly different frequency and listen for the wobbling beat."
+    },
+    "slowed": "Animation is slowed down about {{times}}× so you can see it. The sound plays at the real frequency.",
+    "cards": {
+      "wave": "Your wave",
+      "material": "Material",
+      "second": "Second wave"
+    },
+    "play": {
+      "label": "Play sound",
+      "hint": "A steady tone of the wave on screen. It stops if you leave this tab.",
+      "muted": "Sound is turned off in Settings.",
+      "lowTone": "Tones this deep may be too low for phone and laptop speakers. Try headphones."
+    },
+    "materials": {
+      "air": "Air",
+      "water": "Water",
+      "steel": "Steel"
+    },
+    "fields": {
+      "frequency": "Frequency",
+      "frequencyHint": "How many wiggles per second. Faster wiggles sound higher.",
+      "amplitude": "Amplitude",
+      "amplitudeHint": "How big the wave is. A bigger wave sounds louder.",
+      "materialHint": "What the sound travels through. Each material has its own speed of sound.",
+      "secondToggle": "Add a second wave",
+      "secondToggleHint": "Plays two waves together and shows what they add up to.",
+      "secondFrequency": "Frequency 2",
+      "secondAmplitude": "Amplitude 2"
+    },
+    "stats": {
+      "frequency": "Frequency",
+      "wiggles": "Wiggles per second",
+      "wavelength": "Wavelength",
+      "waveLength": "Length of one wave",
+      "speed": "Wave speed",
+      "howFast": "How fast it travels"
+    },
+    "details": {
+      "frequency": "Frequency  f",
+      "period": "Period  T",
+      "wavelength": "Wavelength  λ",
+      "speed": "Wave speed  v",
+      "amplitude": "Amplitude  A",
+      "secondFrequency": "Frequency  f₂",
+      "secondWavelength": "Wavelength  λ₂",
+      "secondAmplitude": "Amplitude  A₂",
+      "beat": "Beat frequency  f_beat"
+    },
+    "scene": {
+      "oneWave": "One full wave: {{length}} m",
+      "lambda": "λ = {{length}} m",
+      "amplitude": "A",
+      "height": "Height",
+      "first": "Wave 1",
+      "second": "Wave 2",
+      "combined": "Both added together",
+      "loudness": "Loudness now"
+    },
+    "compare": {
+      "title": "One wave at this frequency, drawn to scale"
+    },
+    "words": {
+      "pitch": {
+        "low": "A low, deep tone: slow wiggles.",
+        "middle": "A middle tone, like someone singing.",
+        "high": "A high tone: very fast wiggles."
+      },
+      "loudness": {
+        "quiet": "The wave is small, so it sounds quiet.",
+        "medium": "The wave is medium-sized, so it sounds moderately loud.",
+        "loud": "The wave is big, so it sounds loud."
+      },
+      "material": {
+        "air": "In air, sound is fairly slow, so each wave is {{length}} m long.",
+        "water": "In water, sound moves over four times faster than in air, so each wave stretches to {{length}} m.",
+        "steel": "In steel, sound moves about 17 times faster than in air, so each wave stretches to {{length}} m. The view zooms out to fit it: check the ruler."
+      },
+      "beat": {
+        "none": "The two waves have the same frequency, so they stay in step and simply add up to a steady tone.",
+        "wobble": "The two waves drift in and out of step, so the sound wobbles {{beats}} times a second.",
+        "flutter": "The two waves drift in and out of step {{beats}} times a second, too fast to count, so the sound is a rough flutter.",
+        "separate": "The frequencies are {{beats}} Hz apart, so you start to hear two separate notes instead of a wobble."
+      }
+    },
+    "assumptions": "Ideal medium: no damping, no reflection, one uniform material, and pure sine waves that add linearly. The material speeds are fixed reference values. Amplitude is a relative scale, not a measured pressure.",
+    "credits": "Every wave here is worked out live from the frequency and material you choose. Lengths and heights are drawn in true proportion; only the movement is slowed down.",
+    "blurbs": {
+      "beginner": "Higher pitch means faster wiggles. A bigger wave means a louder sound. The same note gets longer waves in water and steel, because sound moves faster there.",
+      "intermediate": "Frequency sets the pitch and amplitude sets the loudness. Wave speed depends on the material, so at a fixed frequency a faster material gives a longer wavelength. Two close frequencies drift in and out of step, which makes beats."
     }
   }
 }

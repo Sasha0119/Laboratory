@@ -12,7 +12,8 @@
     "settings": "Ayarlar",
     "back": "Geri",
     "matter": "Maddenin Hâlleri ve Isı",
-    "machines": "Basit Makineler"
+    "machines": "Basit Makineler",
+    "waves": "Dalgalar ve Ses"
   },
   "common": {
     "reset": "Sıfırla",
@@ -140,7 +141,10 @@
       "specificHeat": "Özgül ısı",
       "latentHeat": "Gizli ısı",
       "mechanicalAdvantage": "Mekanik avantaj",
-      "work": "İş"
+      "work": "İş",
+      "frequency": "Frekans",
+      "wavelength": "Dalga boyu",
+      "amplitude": "Genlik"
     },
     "comingSoonMessage": "Bu deney yakında geliyor!"
   },
@@ -668,6 +672,14 @@
       "advantage": "Makara sisteminin mekanik avantajı",
       "effort": "Gereken çekme kuvveti",
       "work": "Girdi işi çıktı işine eşittir"
+    },
+    "waves": {
+      "waveEquation": "Dalga bağıntısı",
+      "wavelength": "Dalga boyu",
+      "period": "Periyot",
+      "displacement": "İlerleyen dalganın yer değiştirmesi",
+      "superposition": "İki dalganın toplamı (süperpozisyon)",
+      "beat": "Vuru frekansı"
     }
   },
   "matter": {
@@ -965,6 +977,106 @@
     "blurbs": {
       "beginner": "Makara, bir şeyi yukarı kaldırmak için aşağı çekmenizi sağlar. Birden fazla makarayla ağırlık birkaç ip parçasına paylaşılır; her çekiş daha küçük olur ama daha çok ip çekersiniz.",
       "intermediate": "Palangada yük, onu eşit paylaşan birkaç ip parçasıyla taşınır. Mekanik avantaj taşıyan parça sayısına eşittir ve uygulanan kuvvet, yük kuvvetinin buna bölünmesidir."
+    }
+  },
+  "waves": {
+    "intro": {
+      "title": "Dalga nedir?",
+      "body": "Dalga, enerjiyi bir yerden başka bir yere taşıyan bir titreşimdir; ses de duyabildiğin bir dalgadır. Burada deneyebileceğin üç fikir var: frekans dalganın ne kadar hızlı titreştiğidir ve sesin inceliği olarak duyulur; genlik dalganın ne kadar büyük olduğudur ve sesin şiddeti olarak duyulur; ses ayrıca farklı maddelerde farklı hızlarda ilerler."
+    },
+    "tryThis": {
+      "title": "Bunu dene",
+      "starter": "Sesi çal, sonra frekansı artır: ses incelirken dalganın sıkıştığını göreceksin.",
+      "beat": "Biraz farklı frekansta ikinci bir dalga ekle ve sesteki dalgalanan vuruyu dinle."
+    },
+    "slowed": "Görebilmen için animasyon yaklaşık {{times}} kat yavaşlatıldı. Ses gerçek frekansında çalar.",
+    "cards": {
+      "wave": "Dalgan",
+      "material": "Madde",
+      "second": "İkinci dalga"
+    },
+    "play": {
+      "label": "Sesi çal",
+      "hint": "Ekrandaki dalganın sabit tonu. Bu sekmeden ayrılırsan durur.",
+      "muted": "Ses, Ayarlar'dan kapatılmış.",
+      "lowTone": "Bu kadar kalın sesler telefon ve dizüstü bilgisayar hoparlörlerinden duyulmayabilir. Kulaklık dene."
+    },
+    "materials": {
+      "air": "Hava",
+      "water": "Su",
+      "steel": "Çelik"
+    },
+    "fields": {
+      "frequency": "Frekans",
+      "frequencyHint": "Saniyede kaç titreşim olduğu. Titreşim hızlandıkça ses incelir.",
+      "amplitude": "Genlik",
+      "amplitudeHint": "Dalganın ne kadar büyük olduğu. Dalga büyüdükçe ses yükselir.",
+      "materialHint": "Sesin içinden geçtiği madde. Her maddenin kendi ses hızı vardır.",
+      "secondToggle": "İkinci dalga ekle",
+      "secondToggleHint": "İki dalgayı birlikte çalar ve toplamlarını gösterir.",
+      "secondFrequency": "Frekans 2",
+      "secondAmplitude": "Genlik 2"
+    },
+    "stats": {
+      "frequency": "Frekans",
+      "wiggles": "Saniyede titreşim",
+      "wavelength": "Dalga boyu",
+      "waveLength": "Bir dalganın uzunluğu",
+      "speed": "Dalga hızı",
+      "howFast": "Ne kadar hızlı gider"
+    },
+    "details": {
+      "frequency": "Frekans  f",
+      "period": "Periyot  T",
+      "wavelength": "Dalga boyu  λ",
+      "speed": "Dalga hızı  v",
+      "amplitude": "Genlik  A",
+      "secondFrequency": "Frekans  f₂",
+      "secondWavelength": "Dalga boyu  λ₂",
+      "secondAmplitude": "Genlik  A₂",
+      "beat": "Vuru frekansı  f_beat"
+    },
+    "scene": {
+      "oneWave": "Bir tam dalga: {{length}} m",
+      "lambda": "λ = {{length}} m",
+      "amplitude": "A",
+      "height": "Yükseklik",
+      "first": "Dalga 1",
+      "second": "Dalga 2",
+      "combined": "İkisinin toplamı",
+      "loudness": "Şu anki ses"
+    },
+    "compare": {
+      "title": "Bu frekansta bir dalga, gerçek oranlarla"
+    },
+    "words": {
+      "pitch": {
+        "low": "Kalın, derin bir ses: yavaş titreşimler.",
+        "middle": "Orta bir ses, şarkı söyleyen biri gibi.",
+        "high": "İnce bir ses: çok hızlı titreşimler."
+      },
+      "loudness": {
+        "quiet": "Dalga küçük, bu yüzden ses kısık.",
+        "medium": "Dalga orta büyüklükte, bu yüzden ses orta şiddette.",
+        "loud": "Dalga büyük, bu yüzden ses yüksek."
+      },
+      "material": {
+        "air": "Havada ses oldukça yavaştır, bu yüzden her dalga {{length}} m uzunluğundadır.",
+        "water": "Suda ses havadakinden dört kattan fazla hızlıdır, bu yüzden her dalga {{length}} m'ye uzar.",
+        "steel": "Çelikte ses havadakinden yaklaşık 17 kat hızlıdır, bu yüzden her dalga {{length}} m'ye uzar. Sığması için görünüm uzaklaştırıldı: cetvele bak."
+      },
+      "beat": {
+        "none": "İki dalganın frekansı aynı, bu yüzden uyum içinde kalır ve sabit bir tona toplanırlar.",
+        "wobble": "İki dalga bir uyuşup bir ayrışır, bu yüzden ses saniyede {{beats}} kez dalgalanır.",
+        "flutter": "İki dalga saniyede {{beats}} kez uyuşup ayrışır; bu sayılamayacak kadar hızlıdır, bu yüzden ses pürüzlü bir titreme gibi duyulur.",
+        "separate": "Frekanslar arasında {{beats}} Hz fark var, bu yüzden dalgalanma yerine iki ayrı nota duymaya başlarsın."
+      }
+    },
+    "assumptions": "İdeal ortam: sönüm ve yansıma yok, tek bir düzgün madde ve doğrusal olarak toplanan saf sinüs dalgaları. Madde hızları sabit referans değerleridir. Genlik ölçülmüş bir basınç değil, göreli bir ölçektir.",
+    "credits": "Buradaki her dalga, seçtiğin frekans ve maddeye göre anlık olarak hesaplanır. Uzunluklar ve yükseklikler gerçek oranlarıyla çizilir; yalnızca hareket yavaşlatılır.",
+    "blurbs": {
+      "beginner": "İnce ses, daha hızlı titreşim demektir. Büyük dalga, daha yüksek ses demektir. Aynı nota su ve çelikte daha uzun dalgalar oluşturur, çünkü ses orada daha hızlı gider.",
+      "intermediate": "Frekans sesin inceliğini, genlik de şiddetini belirler. Dalga hızı maddeye bağlıdır; bu yüzden aynı frekansta daha hızlı bir maddede dalga boyu daha uzundur. Birbirine yakın iki frekans bir uyuşup bir ayrışır ve vurular oluşur."
     }
   }
 }

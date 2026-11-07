@@ -99,7 +99,8 @@ export type SimulationModule =
   | 'matter'
   | 'lever'
   | 'incline'
-  | 'pulley';
+  | 'pulley'
+  | 'waves';
 
 export const FORMULAS: Record<SimulationModule, Formula[]> = {
   drop: [
@@ -146,6 +147,14 @@ export const FORMULAS: Record<SimulationModule, Formula[]> = {
     { id: 'advantage', expression: 'MA = n  (supporting rope segments)', minLevel: 'intermediate' },
     { id: 'effort', expression: 'F_e = F_l / n', minLevel: 'intermediate' },
     { id: 'work', expression: 'W_in = F_e · (n·d) = F_l · d = W_out', minLevel: 'pro' },
+  ],
+  waves: [
+    { id: 'waveEquation', expression: 'v = f·λ', minLevel: 'intermediate' },
+    { id: 'wavelength', expression: 'λ = v / f', minLevel: 'intermediate' },
+    { id: 'period', expression: 'T = 1 / f', minLevel: 'intermediate' },
+    { id: 'displacement', expression: 'y(x, t) = A·sin(2π(x/λ − f·t))', minLevel: 'pro' },
+    { id: 'superposition', expression: 'y = y₁ + y₂', minLevel: 'pro' },
+    { id: 'beat', expression: 'f_beat = |f₁ − f₂|', minLevel: 'pro' },
   ],
 };
 

@@ -12,7 +12,8 @@
     "settings": "设置",
     "back": "返回",
     "matter": "物质状态与热",
-    "machines": "简单机械"
+    "machines": "简单机械",
+    "waves": "波与声音"
   },
   "common": {
     "reset": "重置",
@@ -140,7 +141,10 @@
       "specificHeat": "比热容",
       "latentHeat": "潜热",
       "mechanicalAdvantage": "机械利益",
-      "work": "功"
+      "work": "功",
+      "frequency": "频率",
+      "wavelength": "波长",
+      "amplitude": "振幅"
     },
     "comingSoonMessage": "这个实验即将推出！"
   },
@@ -668,6 +672,14 @@
       "advantage": "滑轮组的机械利益",
       "effort": "所需的拉力",
       "work": "输入功等于输出功"
+    },
+    "waves": {
+      "waveEquation": "波的关系式",
+      "wavelength": "波长",
+      "period": "周期",
+      "displacement": "行波的位移",
+      "superposition": "两列波相加（叠加）",
+      "beat": "拍频"
     }
   },
   "matter": {
@@ -965,6 +977,106 @@
     "blurbs": {
       "beginner": "滑轮让你向下拉来把东西向上提。有多个滑轮时，重量由几段绳子分担，所以每次拉的力更小，但要拉的绳子更长。",
       "intermediate": "在滑轮组中，负载由几段绳子平均分担。机械利益等于承重绳的段数，所需动力等于负载力除以段数。"
+    }
+  },
+  "waves": {
+    "intro": {
+      "title": "什么是波？",
+      "body": "波是一种把能量从一处传到另一处的扰动，而声音就是你能听见的波。这里有三个想法可以动手试试：频率是它振动得有多快，你听到的是音调；振幅是它有多大，你听到的是响度；另外，声音在不同材料中传播的速度也不同。"
+    },
+    "tryThis": {
+      "title": "试一试",
+      "starter": "按下播放，然后调高频率：音调会升高，波也会被压缩。",
+      "beat": "添加一列频率略有不同的第二列波，听听忽强忽弱的拍音。"
+    },
+    "slowed": "动画放慢了约 {{times}} 倍，方便你看清。声音按真实频率播放。",
+    "cards": {
+      "wave": "你的波",
+      "material": "材料",
+      "second": "第二列波"
+    },
+    "play": {
+      "label": "播放声音",
+      "hint": "屏幕上这列波的持续音。离开此标签页时会停止。",
+      "muted": "声音已在设置中关闭。",
+      "lowTone": "这么低的音，手机和笔记本的扬声器可能放不出来。试试耳机。"
+    },
+    "materials": {
+      "air": "空气",
+      "water": "水",
+      "steel": "钢"
+    },
+    "fields": {
+      "frequency": "频率",
+      "frequencyHint": "每秒振动多少次。振动越快，音调越高。",
+      "amplitude": "振幅",
+      "amplitudeHint": "波有多大。波越大，声音越响。",
+      "materialHint": "声音穿过的物质。每种材料都有自己的声速。",
+      "secondToggle": "添加第二列波",
+      "secondToggleHint": "同时播放两列波，并显示它们相加的结果。",
+      "secondFrequency": "频率 2",
+      "secondAmplitude": "振幅 2"
+    },
+    "stats": {
+      "frequency": "频率",
+      "wiggles": "每秒振动次数",
+      "wavelength": "波长",
+      "waveLength": "一个波的长度",
+      "speed": "波速",
+      "howFast": "传播有多快"
+    },
+    "details": {
+      "frequency": "频率  f",
+      "period": "周期  T",
+      "wavelength": "波长  λ",
+      "speed": "波速  v",
+      "amplitude": "振幅  A",
+      "secondFrequency": "频率  f₂",
+      "secondWavelength": "波长  λ₂",
+      "secondAmplitude": "振幅  A₂",
+      "beat": "拍频  f_beat"
+    },
+    "scene": {
+      "oneWave": "一个完整的波：{{length}} m",
+      "lambda": "λ = {{length}} m",
+      "amplitude": "A",
+      "height": "高度",
+      "first": "波 1",
+      "second": "波 2",
+      "combined": "两列波相加",
+      "loudness": "当前响度"
+    },
+    "compare": {
+      "title": "此频率下的一个波，按比例绘制"
+    },
+    "words": {
+      "pitch": {
+        "low": "低沉的音：振动很慢。",
+        "middle": "中等的音，就像有人在唱歌。",
+        "high": "高音：振动非常快。"
+      },
+      "loudness": {
+        "quiet": "波很小，所以声音很轻。",
+        "medium": "波大小适中，所以声音响度适中。",
+        "loud": "波很大，所以声音很响。"
+      },
+      "material": {
+        "air": "声音在空气中传播得比较慢，所以每个波长 {{length}} m。",
+        "water": "声音在水中的传播速度是空气中的四倍多，所以每个波被拉长到 {{length}} m。",
+        "steel": "声音在钢中的传播速度约为空气中的 17 倍，所以每个波被拉长到 {{length}} m。画面已缩小以容纳它：请看标尺。"
+      },
+      "beat": {
+        "none": "两列波频率相同，所以步调一致，相加后是一个稳定的音。",
+        "wobble": "两列波时而同步时而错开，所以声音每秒起伏 {{beats}} 次。",
+        "flutter": "两列波每秒同步又错开 {{beats}} 次，快得数不过来，所以声音听起来像粗糙的颤动。",
+        "separate": "两个频率相差 {{beats}} Hz，所以你开始听到两个独立的音，而不再是起伏。"
+      }
+    },
+    "assumptions": "理想介质：没有衰减和反射，只有一种均匀材料，纯正弦波线性叠加。材料中的声速是固定的参考值。振幅是相对标度，不是测得的声压。",
+    "credits": "这里的每列波都根据你选择的频率和材料实时计算。长度和高度按真实比例绘制，只有运动被放慢了。",
+    "blurbs": {
+      "beginner": "音调越高，振动越快。波越大，声音越响。同一个音在水和钢中的波更长，因为声音在那里传播得更快。",
+      "intermediate": "频率决定音调，振幅决定响度。波速取决于材料，所以在相同频率下，声速越快的材料波长越长。两个相近的频率时而同步时而错开，就产生了拍。"
     }
   }
 }

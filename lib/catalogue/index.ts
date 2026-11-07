@@ -59,7 +59,12 @@ export const TOPICS: Topic[] = [
     topics: ['momentum', 'energy', 'bounciness'],
     href: '/physics/collisions',
   },
-  { id: 'waves', level: 'intermediate' },
+  {
+    id: 'waves',
+    level: 'intermediate',
+    topics: ['frequency', 'wavelength', 'amplitude'],
+    href: '/physics/waves',
+  },
   { id: 'light', level: 'intermediate' },
   { id: 'ohmsLaw', level: 'intermediate' },
   { id: 'energyConservation', level: 'intermediate' },

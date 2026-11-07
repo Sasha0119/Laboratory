@@ -86,6 +86,30 @@ import {
   weightOf,
   work,
 } from '../machines';
+import {
+  MATERIALS,
+  MATERIAL_ORDER,
+  MAX_WAVE_GAIN,
+  WAVE_LIMITS,
+  audioMix,
+  beatBand,
+  beatEnvelope,
+  beatFrequency,
+  displacement,
+  displacementAtPhase,
+  displayRate,
+  gainForAmplitude,
+  loudnessBand,
+  niceCeil,
+  niceFloor,
+  period,
+  pitchBand,
+  slowdownFactor,
+  superpose,
+  timeScale,
+  viewWidth,
+  wavelength,
+} from '../waves';
 
 // ---------------------------------------------------------------- harness --
 
@@ -1527,6 +1551,190 @@ section('Simple machines: the load in motion');
   check('status: a raised load with too little effort is falling', motionStatus({ progress: 0.3, velocity: 0 }, { running: true, enough: false }, true) === 'falling');
   check('status: at the top it is done', motionStatus({ progress: 1, velocity: 0 }, { running: false, enough: true }, true) === 'done');
   check('status: stopped part way is paused', motionStatus({ progress: 0.3, velocity: 0 }, { running: false, enough: true }, true) === 'paused');
+}
+
+// -------------------------------------------------------------------- waves --
+
+section('Waves: wavelength, period and the wave relation');
+
+{
+  near('λ = v/f: 440 Hz in air', wavelength(343, 440), 0.77954545, 1e-6);
+  near('λ = v/f: 100 Hz in water', wavelength(1480, 100), 14.8, 1e-9);
+  near('λ = v/f: 4000 Hz in steel', wavelength(5960, 4000), 1.49, 1e-9);
+  near('doubling the frequency halves the wavelength', wavelength(343, 880), wavelength(343, 440) / 2, 1e-12);
+  check('zero frequency has no finite wavelength', wavelength(343, 0) === Infinity);
+  check('negative frequency has no finite wavelength', wavelength(343, -5) === Infinity);
+
+  near('T = 1/f at 440 Hz', period(440), 1 / 440, 1e-15);
+  near('T = 1/f at 20 Hz', period(20), 0.05, 1e-15);
+  check('zero frequency has no finite period', period(0) === Infinity);
+
+  for (const id of MATERIAL_ORDER) {
+    const v = MATERIALS[id].speed;
+    for (const f of [WAVE_LIMITS.frequencyMin, 440, WAVE_LIMITS.frequencyMax]) {
+      near(`v = f·λ holds in ${id} at ${f} Hz`, f * wavelength(v, f), v, 1e-9);
+      near(`λ = v·T in ${id} at ${f} Hz`, v * period(f), wavelength(v, f), 1e-9);
+    }
+  }
+
+  near('air speed is the textbook value', MATERIALS.air.speed, 343, 0);
+  near('water speed is the textbook value', MATERIALS.water.speed, 1480, 0);
+  near('steel speed is the textbook value', MATERIALS.steel.speed, 5960, 0);
+  check('same pitch: water stretches the wave compared with air', wavelength(1480, 440) > wavelength(343, 440));
+  check('same pitch: steel stretches it further still', wavelength(5960, 440) > wavelength(1480, 440));
+}
+
+section('Waves: displacement');
+
+{
+  const wave = { amplitude: 50, frequency: 440, lambda: wavelength(343, 440) };
+  near('y(0, 0) = 0', displacement(0, 0, wave), 0, 1e-12);
+  near('y = A a quarter wave along', displacement(wave.lambda / 4, 0, wave), 50, 1e-9);
+  near('y = −A three quarters of a wave along', displacement((3 * wave.lambda) / 4, 0, wave), -50, 1e-9);
+  near('repeats after one wavelength', displacement(0.1 + wave.lambda, 0.002, wave), displacement(0.1, 0.002, wave), 1e-9);
+  near('repeats after one period', displacement(0.1, 0.002 + period(440), wave), displacement(0.1, 0.002, wave), 1e-9);
+  // A crest at x at time t is at x + v·dt a moment later: the wave moves towards +x.
+  const dt = 0.0003;
+  near(
+    'the wave moves towards +x at speed v',
+    displacement(0.2 + 343 * dt, 0.001 + dt, wave),
+    displacement(0.2, 0.001, wave),
+    1e-9
+  );
+  near(
+    'the phase form matches y(x, t)',
+    displacementAtPhase(0.3, 50, wave.lambda, wave.frequency * 0.004),
+    displacement(0.3, 0.004, wave),
+    1e-12
+  );
+  for (const t of [0, 0.001, 0.0123]) {
+    for (const x of [0, 0.1, 0.777]) {
+      check(`|y| never exceeds A (x=${x}, t=${t})`, Math.abs(displacement(x, t, wave)) <= 50 + 1e-9);
+    }
+  }
+}
+
+section('Waves: superposition');
+
+{
+  near('y = y1 + y2', superpose(3, -1), 2, 1e-12);
+  const lambda = wavelength(343, 440);
+  const a = { amplitude: 40, frequency: 440, lambda };
+  const opposite = (x: number) => displacementAtPhase(x, 40, lambda, 0.5);
+  near('equal waves in step double', superpose(displacement(lambda / 4, 0, a), displacement(lambda / 4, 0, a)), 80, 1e-9);
+  near('equal waves half a cycle apart cancel', superpose(displacement(0.1, 0, a), opposite(0.1)), 0, 1e-9);
+}
+
+section('Waves: beats');
+
+{
+  near('f_beat = |f1 − f2|', beatFrequency(440, 444), 4, 1e-12);
+  near('the order of the two waves does not matter', beatFrequency(444, 440), 4, 1e-12);
+  near('identical frequencies do not beat', beatFrequency(440, 440), 0, 0);
+
+  near('outline is A1 + A2 when in step', beatEnvelope(60, 40, 4, 0), 100, 1e-9);
+  near('outline is |A1 − A2| half a beat later', beatEnvelope(60, 40, 4, 0.125), 20, 1e-9);
+  near('outline repeats after one beat', beatEnvelope(60, 40, 4, 0.25), 100, 1e-9);
+  near('equal amplitudes cancel fully at the quiet point', beatEnvelope(50, 50, 4, 0.125), 0, 1e-6);
+  near('no beat: the outline stays at its largest', beatEnvelope(60, 40, 0, 7.3), 100, 1e-9);
+
+  // The real sum of the two sines must fit inside that outline, at every moment.
+  const f1 = 440;
+  const f2 = 444;
+  let inside = true;
+  let top = 0;
+  for (let i = 0; i < 20000; i++) {
+    const t = i / 40000;
+    const sum = 60 * Math.sin(2 * Math.PI * f1 * t) + 40 * Math.sin(2 * Math.PI * f2 * t);
+    if (Math.abs(sum) > beatEnvelope(60, 40, beatFrequency(f1, f2), t) + 1e-6) inside = false;
+    top = Math.max(top, Math.abs(sum));
+  }
+  check('the sum of the two sines stays inside the outline', inside);
+  near('the sum really reaches A1 + A2', top, 100, 0.1);
+
+  check('a slow difference is a wobble', beatBand(4) === 'wobble');
+  check('a faster one is a flutter', beatBand(20) === 'flutter');
+  check('a large one sounds like two notes', beatBand(100) === 'separate');
+  check('no difference is no beat', beatBand(0) === 'none');
+}
+
+section('Waves: sound safety');
+
+{
+  near('full amplitude is the capped gain', gainForAmplitude(100), MAX_WAVE_GAIN, 1e-12);
+  near('half amplitude is half the gain', gainForAmplitude(50), MAX_WAVE_GAIN / 2, 1e-12);
+  near('gain is capped above the range', gainForAmplitude(1e9), MAX_WAVE_GAIN, 1e-12);
+  near('gain never goes negative', gainForAmplitude(-5), 0, 0);
+  near('a non-number gives silence', gainForAmplitude(Number.NaN), 0, 0);
+
+  const single = audioMix({ frequency: 440, amplitude: 100 }, null);
+  near('one wave plays at its frequency', single.f1, 440, 0);
+  near('with no second wave its gain is zero', single.g2, 0, 0);
+
+  const pair = audioMix({ frequency: 440, amplitude: 100 }, { frequency: 444, amplitude: 100 });
+  near('two waves keep the first frequency', pair.f1, 440, 0);
+  near('two waves keep the second frequency', pair.f2, 444, 0);
+  check('two waves at full size stay at or under a quarter of full scale', pair.g1 + pair.g2 <= 0.25);
+
+  const same = audioMix({ frequency: 440, amplitude: 60 }, { frequency: 440, amplitude: 40 });
+  near('identical frequencies play as one, at the sum', same.g1, gainForAmplitude(100), 1e-12);
+  near('...with the other oscillator silent', same.g2, 0, 0);
+}
+
+section('Waves: the slowed-down picture');
+
+{
+  let previous = 0;
+  for (const f of [20, 50, 100, 440, 880, 2000, 4000]) {
+    const rate = displayRate(f);
+    check(`more wiggles in the sound means more on screen (${f} Hz)`, rate > previous);
+    check(`the picture is slower than the sound (${f} Hz)`, timeScale(f) < 1);
+    check(`the picture stays watchable (${f} Hz)`, rate >= 0.3 && rate <= 3);
+    near(`picture rate = frequency × slowdown (${f} Hz)`, f * timeScale(f), rate, 1e-9);
+    previous = rate;
+  }
+  check('the stated slowdown is close to the real one', Math.abs(slowdownFactor(440) * timeScale(440) - 1) < 0.05);
+  near('zero frequency does not move', displayRate(0), 0, 0);
+
+  near('niceCeil rounds up', niceCeil(4.68), 5, 1e-9);
+  near('niceCeil leaves a round value alone', niceCeil(2), 2, 1e-9);
+  near('niceCeil crosses a decade', niceCeil(6), 10, 1e-9);
+  near('niceFloor rounds down', niceFloor(4.68), 2, 1e-9);
+  near('niceFloor leaves a round value alone', niceFloor(5), 5, 1e-9);
+
+  const view = (material: keyof typeof MATERIALS, f1: number, f2: number | null = null, maxCycles = 100) =>
+    viewWidth({ speed: MATERIALS[material].speed, f1, f2, maxCycles });
+
+  near('air to water keeps the same view at 440 Hz', view('water', 440), view('air', 440), 0);
+  near(
+    '...so the drawn wave stretches by the true ratio',
+    view('air', 440) / wavelength(343, 440) / (view('water', 440) / wavelength(1480, 440)),
+    1480 / 343,
+    1e-9
+  );
+  near('440 to 880 Hz keeps the same view in air', view('air', 880), view('air', 440), 0);
+
+  for (const id of MATERIAL_ORDER) {
+    for (const f of [20, 37, 100, 440, 1000, 2500, 4000]) {
+      check(`one full wave fits on screen (${id}, ${f} Hz)`, wavelength(MATERIALS[id].speed, f) < view(id, f));
+    }
+  }
+  near('a second wave of the same frequency changes nothing', view('air', 440, 440), view('air', 440), 0);
+  check('a second wave zooms out to hold one full beat', view('air', 440, 450) >= wavelength(343, 10));
+  const packed = view('air', 440, 441, 60);
+  check('...but never packs the waves too tightly to see', packed / wavelength(343, 441) <= 60 + 1e-9);
+  check('...and never hides a whole wave', wavelength(343, 440) < packed);
+}
+
+section('Waves: words');
+
+{
+  check('low pitch', pitchBand(100) === 'low');
+  check('middle pitch', pitchBand(440) === 'middle');
+  check('high pitch', pitchBand(2000) === 'high');
+  check('quiet', loudnessBand(10) === 'quiet');
+  check('medium', loudnessBand(50) === 'medium');
+  check('loud', loudnessBand(90) === 'loud');
 }
 
 // ------------------------------------------------------------------ report --
