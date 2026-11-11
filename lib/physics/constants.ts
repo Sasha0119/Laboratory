@@ -95,7 +95,12 @@ export const LIMITS = {
   resistanceMin: 1,
   resistanceMax: 100,
 
-  magnetDistanceMin: 1,
+  /**
+   * Centre-to-centre. Each bar is 3 cm long (2 × MAGNET_HALF_LENGTH in
+   * magnetism.ts), so at 3 cm the bars touch end to end. Anything closer
+   * would draw them overlapping, with the poles in the wrong order.
+   */
+  magnetDistanceMin: 3,
   magnetDistanceMax: 50,
   magnetStrengthMin: 1,
   magnetStrengthMax: 100,

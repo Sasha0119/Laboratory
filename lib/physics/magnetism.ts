@@ -78,7 +78,10 @@ export const SNAP_DISTANCE = 4;
 
 // ------------------------------------------------------------ field model --
 
-/** Half the drawn length of a bar magnet, in the same units as `distance`. */
+/**
+ * Half the drawn length of a bar magnet, in the same units as `distance`.
+ * LIMITS.magnetDistanceMin must stay at least twice this, or the bars overlap.
+ */
 export const MAGNET_HALF_LENGTH = 1.5;
 
 export interface Pole {

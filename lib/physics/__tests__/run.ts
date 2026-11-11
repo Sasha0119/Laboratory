@@ -35,6 +35,7 @@ import {
   computeForce,
   fieldVectorAt,
   forceFraction,
+  MAGNET_HALF_LENGTH,
   magnetPoles,
   traceFieldLines,
 } from '../magnetism';
@@ -1250,8 +1251,8 @@ section('Boundary values — Magnets');
 
 {
   const cases: { distance: number; strength: number }[] = [
-    { distance: 1, strength: 1 },
-    { distance: 1, strength: 100 },
+    { distance: LIMITS.magnetDistanceMin, strength: 1 },
+    { distance: LIMITS.magnetDistanceMin, strength: 100 },
     { distance: 50, strength: 1 },
     { distance: 50, strength: 100 },
   ];
@@ -1267,10 +1268,42 @@ section('Boundary values — Magnets');
 }
 
 {
-  // distance = 0 can never reach the UI either (min is 1 cm), but the
+  // distance = 0 can never reach the UI either (min is 3 cm), but the
   // formula clamps internally rather than dividing by zero.
   const touching = computeForce({ distance: 0, strengthA: 100, strengthB: 100, orientation: 'attract' });
   check('distance = 0 does not produce NaN or Infinity', Number.isFinite(touching.magnitude));
+}
+
+{
+  // Audit: below 3 cm the bars overlapped, and at 1 cm Attract drew N next
+  // to N. The minimum distance now keeps them at worst touching.
+  const length = 2 * MAGNET_HALF_LENGTH;
+  check('minimum distance is at least one bar length', LIMITS.magnetDistanceMin >= length - 1e-12);
+  near('at the minimum the bars touch end to end', LIMITS.magnetDistanceMin - length, 0, 1e-12);
+
+  for (const distance of [LIMITS.magnetDistanceMin, 4, 15, LIMITS.magnetDistanceMax]) {
+    // Same layout as MagnetScene: A on the left with north on its outer
+    // (left) end; B on the right, its inner pole north for Attract and
+    // south for Repel.
+    const centerA = -distance / 2;
+    const centerB = distance / 2;
+    const gap = centerB - MAGNET_HALF_LENGTH - (centerA + MAGNET_HALF_LENGTH);
+    check(`bars never overlap at ${distance} cm`, gap >= -1e-12, `gap ${gap}`);
+
+    // Facing poles: A's inner end is south. For Attract B's inner end is
+    // north (opposites face); for Repel it is south (like poles face).
+    const aInner = magnetPoles(centerA, 1, false).find((p) => p.x > centerA)!;
+    for (const orientation of ['attract', 'repel'] as const) {
+      const bNorthOutward = orientation === 'repel';
+      const bInner = magnetPoles(centerB, 1, bNorthOutward).find((p) => p.x < centerB)!;
+      const facingOpposite = Math.sign(aInner.strength) !== Math.sign(bInner.strength);
+      check(
+        `${orientation} at ${distance} cm: facing poles are ${orientation === 'attract' ? 'opposite' : 'alike'}`,
+        facingOpposite === (orientation === 'attract')
+      );
+      check(`${orientation} at ${distance} cm: inner poles stay in order`, aInner.x <= bInner.x + 1e-12);
+    }
+  }
 }
 
 
