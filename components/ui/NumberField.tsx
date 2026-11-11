@@ -187,12 +187,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 2,
     minWidth: 118,
+    // A comfortable touch target on phones (44 px is the usual minimum).
+    minHeight: 44,
   },
   inputWrapFocused: { borderColor: colors.accent },
   input: {
     flex: 1,
     color: colors.accent,
-    fontSize: 15,
+    // 16 px or larger stops iOS Safari zooming the page when the field is focused.
+    fontSize: 16,
     fontWeight: '700',
     textAlign: 'right',
     padding: 0,

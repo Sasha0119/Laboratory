@@ -75,6 +75,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 4,
+    // 44 px tall: a comfortable touch target on phones.
+    minHeight: 44,
   },
   title: {
     color: colors.textMuted,

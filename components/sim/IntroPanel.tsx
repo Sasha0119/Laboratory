@@ -44,6 +44,14 @@ const styles = StyleSheet.create({
   title: { color: colors.text, fontSize: 15, fontWeight: '800' },
   body: { color: colors.text, fontSize: 13.5, lineHeight: 19.5 },
   tip: { color: colors.textMuted, fontSize: 12.5, lineHeight: 18, fontStyle: 'italic' },
-  dismissRow: { alignSelf: 'flex-end', marginTop: spacing.xs, paddingVertical: 4, paddingHorizontal: 4 },
+  // 44 px tall: a comfortable touch target on phones.
+  dismissRow: {
+    alignSelf: 'flex-end',
+    marginTop: spacing.xs,
+    minHeight: 44,
+    minWidth: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
   dismissText: { color: colors.accent, fontSize: 13, fontWeight: '800' },
 });
