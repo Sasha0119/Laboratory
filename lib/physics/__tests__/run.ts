@@ -29,7 +29,7 @@ import {
   type SimParams,
   type SimResult,
 } from '../simulation';
-import { resolveCollision, simulateCollision } from '../collision';
+import { CollisionSimulator, gapBetween, resolveCollision, simulateCollision } from '../collision';
 import { REFERENCE_SAFE_VOLTAGE, resolveCircuit, safePowerFor } from '../circuit';
 import {
   computeForce,
@@ -775,6 +775,73 @@ section('Collisions — the track');
   near('contact time is timestep-independent', fine.event!.time, coarse.event!.time, 2e-2);
   near("v1' is timestep-independent", fine.event!.aAfter, coarse.event!.aAfter, 1e-9);
   near("v2' is timestep-independent", fine.event!.bAfter, coarse.event!.bAfter, 1e-9);
+}
+
+{
+  // Audit: after one body stops at an end stop, the other used to freeze
+  // against it while still reporting a speed. Run step by step and require
+  // that a body showing a speed actually moves, in both directions and for
+  // every collision type.
+  const setups = [
+    // Heavy A drives light B into the right-hand wall, then catches it.
+    { name: 'heavy into light, right wall', a: { m: 5, v: 6 }, b: { m: 1, v: 0 } },
+    // Mirror image: heavy B drives light A into the left-hand wall.
+    { name: 'heavy into light, left wall', a: { m: 1, v: 0 }, b: { m: 5, v: -6 } },
+    // B reaches the wall before A ever touches it.
+    { name: 'both heading right, B first to the wall', a: { m: 2, v: 5 }, b: { m: 2, v: 3 } },
+  ];
+  for (const setup of setups) {
+    for (const [kind, e] of [
+      ['bouncy', 1],
+      ['realistic', 0.7],
+      ['realistic', 0],
+      ['sticky', 0],
+    ] as const) {
+      const sim = new CollisionSimulator({
+        a: { mass: setup.a.m, velocity: setup.a.v, position: -2.6, radius: 0.3 },
+        b: { mass: setup.b.m, velocity: setup.b.v, position: 2.6, radius: 0.2 },
+        kind,
+        restitution: e,
+        halfTrack: 4,
+      });
+      let worst = 0;
+      let frozen = 0;
+      while (!sim.finished) {
+        const pa = sim.a.position;
+        const pb = sim.b.position;
+        sim.step(FIXED_DT);
+        // A body is "frozen" if it shows a speed but did not move this step.
+        const stuckA = Math.abs(sim.a.velocity) > 1e-3 && Math.abs(sim.a.position - pa) < 1e-9;
+        const stuckB = Math.abs(sim.b.velocity) > 1e-3 && Math.abs(sim.b.position - pb) < 1e-9;
+        frozen = stuckA || stuckB ? frozen + 1 : 0;
+        worst = Math.max(worst, frozen);
+      }
+      const label = `${setup.name}, ${kind} e=${e}`;
+      check(`${label}: displayed speed always means motion`, worst <= 1, `${worst} frozen steps`);
+      check(
+        `${label}: bodies never overlap`,
+        gapBetween(sim.a, sim.b) >= -1e-9,
+        `gap ${gapBetween(sim.a, sim.b)}`
+      );
+      if (sim.event && !sim.event.stuck) {
+        near(`${label}: main collision still conserves momentum`, sim.event.momentumAfter, sim.event.momentumBefore, 1e-9);
+      }
+    }
+  }
+
+  // The specific case: equal-ish masses, B pinned at the wall, A arrives.
+  // With e = 0 it must stop dead against B, not keep a phantom speed.
+  const sim = new CollisionSimulator({
+    a: { mass: 5, velocity: 6, position: -2.6, radius: 0.3 },
+    b: { mass: 1, velocity: 0, position: 2.6, radius: 0.2 },
+    kind: 'realistic',
+    restitution: 0,
+    halfTrack: 4,
+  });
+  while (!sim.finished) sim.step(FIXED_DT);
+  near('e=0: the arriving body stops against the pinned one', sim.a.velocity, 0, 1e-12);
+  near('e=0: the pinned body stays at rest', sim.b.velocity, 0, 1e-12);
+  near('e=0: they end up touching', gapBetween(sim.a, sim.b), 0, 1e-9);
 }
 
 // -------------------------------------------------------------------- circuits --

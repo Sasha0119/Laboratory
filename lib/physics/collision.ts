@@ -192,20 +192,41 @@ export class CollisionSimulator {
     if (this.finished) return true;
 
     let remaining = dt;
-    // At most one contact can occur per frame at these speeds, but the loop
-    // keeps the sub-stepping honest if that ever stops being true.
-    let guard = 4;
+    // Event-driven within the frame: find whichever happens first — the
+    // bodies touching, or either body reaching an end stop — advance exactly
+    // to it, handle it, and repeat. Handling wall hits as events (rather than
+    // clamping after the fact) matters: if one body were clamped mid-step,
+    // its partner would carry on into it and overlap.
+    //
+    // Usually there is at most one event per frame; a body bouncing between
+    // its partner and a wall can produce a few. Every event leaves the bodies
+    // separating or stopped, so the loop never spins on the same touch, and
+    // the guard only bounds a pathological case.
+    let guard = 16;
     while (remaining > 1e-12 && guard-- > 0) {
-      const tc = this.stuck ? Infinity : timeToContact(this.a, this.b);
-
-      if (tc <= remaining) {
-        // Advance exactly to the moment of contact, then resolve.
-        this.advance(tc);
-        this.resolve();
-        remaining -= tc;
-      } else {
+      if (this.stuck) {
+        // The joined pair is handled as one rigid body by `advance`.
         this.advance(remaining);
-        remaining = 0;
+        break;
+      }
+
+      const tc = timeToContact(this.a, this.b);
+      const ta = this.timeToWall(this.a);
+      const tb = this.timeToWall(this.b);
+      const next = Math.min(tc, ta, tb);
+
+      if (next > remaining) {
+        this.advance(remaining);
+        break;
+      }
+
+      this.advance(next);
+      remaining -= next;
+      if (next === tc) {
+        this.resolve();
+      } else {
+        if (next === ta) this.stopAtWall(this.a);
+        if (next === tb) this.stopAtWall(this.b);
       }
     }
 
@@ -244,7 +265,25 @@ export class CollisionSimulator {
     this.clampToTrack(this.b);
   }
 
-  /** End stops absorb the impact: a body reaching a wall simply stops there. */
+  /** Seconds until `body` reaches the end stop it is heading for (Infinity if at rest). */
+  private timeToWall(body: BodyState): number {
+    const h = this.params.halfTrack;
+    if (body.velocity > 0) return Math.max((h - body.radius - body.position) / body.velocity, 0);
+    if (body.velocity < 0) return Math.max((body.position - body.radius + h) / -body.velocity, 0);
+    return Infinity;
+  }
+
+  /** End stops absorb the impact: the body is placed exactly on the wall, at rest. */
+  private stopAtWall(body: BodyState) {
+    const h = this.params.halfTrack;
+    body.position = body.velocity > 0 ? h - body.radius : -h + body.radius;
+    body.velocity = 0;
+  }
+
+  /**
+   * Safety net only: the step loop stops bodies at the walls as exact events,
+   * so this should never move anything. It catches rounding at the boundary.
+   */
   private clampToTrack(body: BodyState) {
     const h = this.params.halfTrack;
     if (body.position - body.radius < -h) {
@@ -256,8 +295,23 @@ export class CollisionSimulator {
     }
   }
 
+  /**
+   * Whether `body` is pressed against the end stop on the given side: it sits
+   * on the wall, so it cannot move any further that way.
+   */
+  private pinned(body: BodyState, side: 'left' | 'right'): boolean {
+    const h = this.params.halfTrack;
+    const eps = 1e-9;
+    return side === 'right'
+      ? body.position + body.radius >= h - eps
+      : body.position - body.radius <= -h + eps;
+  }
+
   private resolve() {
-    if (this.event) return; // one collision per run
+    if (this.event) {
+      this.resolveRepeatContact();
+      return;
+    }
 
     const before = { a: this.a.velocity, b: this.b.velocity };
     const energyBefore = kineticEnergy(this.a, this.b);
@@ -299,6 +353,48 @@ export class CollisionSimulator {
       stuck: this.params.kind === 'sticky',
     };
     this.sinceImpact = 0;
+  }
+
+  /**
+   * A later touch, after the collision the run is about.
+   *
+   * This happens when one body has already been stopped by an end stop and
+   * the other catches up with it. The stopped body is pinned between its
+   * partner and the wall, so it cannot move: together with the wall it acts
+   * as an immovable object, and the arriving body rebounds with the same
+   * restitution as the main collision (e = 0 simply stops it). Any velocity
+   * the pinned body had into the wall is absorbed, just as the wall itself
+   * absorbs impacts.
+   *
+   * If neither body is pinned (both free, e.g. one came to rest mid-track
+   * after a sticky-like hit), the ordinary two-body formula applies.
+   *
+   * Either way the bodies end up separating or both at rest, so the contact
+   * cannot repeat in zero time. Previously this touch was ignored entirely,
+   * which left the arriving body frozen against its partner while its
+   * velocity — and the speed on screen — stayed non-zero.
+   *
+   * The recorded `event` is not changed: it describes the main collision.
+   */
+  private resolveRepeatContact() {
+    if (this.stuck) return;
+    const { a, b } = this;
+    const e = this.restitution;
+
+    if (this.pinned(b, 'right')) {
+      b.velocity = 0;
+      a.velocity = Math.abs(a.velocity) < 1e-9 ? 0 : -e * a.velocity;
+    } else if (this.pinned(a, 'left')) {
+      a.velocity = 0;
+      b.velocity = Math.abs(b.velocity) < 1e-9 ? 0 : -e * b.velocity;
+    } else {
+      const next = resolveCollision(a.mass, a.velocity, b.mass, b.velocity, e);
+      a.velocity = next.v1;
+      b.velocity = next.v2;
+    }
+    // Below this, the "motion" is rounding noise; call it rest so the run settles.
+    if (Math.abs(a.velocity) < 1e-6) a.velocity = 0;
+    if (Math.abs(b.velocity) < 1e-6) b.velocity = 0;
   }
 
   private record() {
