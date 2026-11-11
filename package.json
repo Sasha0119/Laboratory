@@ -21,7 +21,9 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "test": "npm run test:physics && npm run test:input",
     "test:physics": "npx tsx lib/physics/__tests__/run.ts",
+    "test:input": "npx tsx lib/__tests__/numberInput.ts",
     "check:locales": "node scripts/check-locales.mjs"
   },
   "private": true

@@ -628,7 +628,9 @@
     "range": "Min: {{min}} {{unit}} — Max: {{max}} {{unit}}",
     "clampedMin": "Min is {{min}} {{unit}} — adjusted",
     "clampedMax": "Max is {{max}} {{unit}} — adjusted",
-    "invalid": "Enter a number"
+    "invalid": "Enter a number",
+    "ambiguous": "Unclear number — no thousands separators, use 1.5 or 1,5",
+    "rounded": "Rounded to {{value}} {{unit}}"
   },
   "formulas": {
     "title": "How it's calculated",

@@ -628,7 +628,9 @@
     "range": "最小：{{min}} {{unit}} — 最大：{{max}} {{unit}}",
     "clampedMin": "最小为 {{min}} {{unit}} — 已调整",
     "clampedMax": "最大为 {{max}} {{unit}} — 已调整",
-    "invalid": "请输入数字"
+    "invalid": "请输入数字",
+    "ambiguous": "数字不明确——请勿使用千位分隔符，写成 1.5 或 1,5",
+    "rounded": "已四舍五入为 {{value}} {{unit}}"
   },
   "formulas": {
     "title": "如何计算",

@@ -628,7 +628,9 @@
     "range": "Eng kam: {{min}} {{unit}} — Eng ko‘p: {{max}} {{unit}}",
     "clampedMin": "Eng kami {{min}} {{unit}} — to‘g‘rilandi",
     "clampedMax": "Eng ko‘pi {{max}} {{unit}} — to‘g‘rilandi",
-    "invalid": "Son kiriting"
+    "invalid": "Son kiriting",
+    "ambiguous": "Noaniq son — mingliklarni ajratmang, 1.5 yoki 1,5 deb yozing",
+    "rounded": "{{value}} {{unit}} gacha yaxlitlandi"
   },
   "formulas": {
     "title": "Qanday hisoblanadi",

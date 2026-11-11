@@ -628,7 +628,9 @@
     "range": "En az: {{min}} {{unit}} — En çok: {{max}} {{unit}}",
     "clampedMin": "En az {{min}} {{unit}} olabilir — düzeltildi",
     "clampedMax": "En çok {{max}} {{unit}} olabilir — düzeltildi",
-    "invalid": "Bir sayı gir"
+    "invalid": "Bir sayı gir",
+    "ambiguous": "Belirsiz sayı — binlik ayırıcı kullanma, 1.5 ya da 1,5 yaz",
+    "rounded": "{{value}} {{unit}} olarak yuvarlandı"
   },
   "formulas": {
     "title": "Nasıl hesaplanıyor",

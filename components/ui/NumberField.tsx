@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TextInput, View } from '../dom/index';
 import { colors, radius, spacing } from '../../theme';
+import { parseNumberInput, roundTo } from '../../lib/numberInput';
 
 interface Props {
   label: string;
@@ -42,7 +43,9 @@ function format(value: number, decimals: number): string {
  *
  * Replaces the sliders: the range is stated rather than discovered by dragging,
  * and an out-of-range entry is clamped on blur with a short explanation of what
- * happened, so the value silently changing never looks like a bug.
+ * happened, so the value silently changing never looks like a bug. The same
+ * goes for text that is not a number (refused, see `lib/numberInput.ts`) and
+ * for extra decimals (rounded to what the field shows, with a note).
  *
  * The text is local state while the field has focus — reformatting mid-typing
  * would fight the user — and re-syncs from `value` whenever the parent changes
@@ -86,25 +89,39 @@ export function NumberField({
 
   const commit = useCallback(() => {
     setFocused(false);
-    // Accept a comma as a decimal separator; several of the app's languages
-    // use it, and a numeric keypad may well produce one.
-    const parsed = Number.parseFloat(text.replace(',', '.'));
 
-    if (!Number.isFinite(parsed)) {
+    // Untouched text (focus, then blur) commits nothing, so a displayed value
+    // can never be re-rounded or reported on just by tabbing through.
+    if (text === format(value, decimals)) return;
+
+    // Strict: the whole text must be a number. "1,5" and "1.5" both work;
+    // "12abc" or "1.000,5" are refused with a reason, never half-read.
+    const parsed = parseNumberInput(text);
+    if (!parsed.ok) {
       setText(format(value, decimals));
-      flash(t('input.invalid'));
+      flash(t(parsed.reason === 'ambiguous' ? 'input.ambiguous' : 'input.invalid'));
       return;
     }
 
-    let next = parsed;
-    if (parsed < min) {
+    let next = parsed.value;
+    let note: string | null = null;
+    if (next < min) {
       next = min;
-      flash(tidy(t('input.clampedMin', { min: format(min, decimals), unit: unit ?? '' })));
-    } else if (parsed > max) {
+      note = tidy(t('input.clampedMin', { min: format(min, decimals), unit: unit ?? '' }));
+    } else if (next > max) {
       next = max;
-      flash(tidy(t('input.clampedMax', { max: format(max, decimals), unit: unit ?? '' })));
+      note = tidy(t('input.clampedMax', { max: format(max, decimals), unit: unit ?? '' }));
+    } else {
+      // Keep only the decimals the field shows, and say so, so the number on
+      // screen is exactly the number being used.
+      const rounded = roundTo(next, decimals);
+      if (rounded !== next) {
+        next = Math.min(max, Math.max(min, rounded));
+        note = tidy(t('input.rounded', { value: format(next, decimals), unit: unit ?? '' }));
+      }
     }
 
+    if (note) flash(note);
     setText(format(next, decimals));
     if (next !== value) onCommit(next);
   }, [text, value, min, max, decimals, unit, onCommit, flash, t]);
