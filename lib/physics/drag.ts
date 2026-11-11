@@ -16,7 +16,7 @@
  *
  * The bracketed group is constant for a given object and atmosphere, so we
  * precompute it once as `k` (units: 1 / m). That makes the derivative cheap
- * enough to run 240 substeps a second without noticing.
+ * enough to run 240 steps a second (more when drag is stiff) without noticing.
  *
  * Note that `m` appears only in `k`. When rho = 0, k = 0 and mass drops out of
  * the equations entirely — which is exactly why a feather and a hammer land
@@ -118,6 +118,9 @@ function addScaled(s: State, d: State, h: number): State {
  * object like the feather, while RK4 tracks the analytic solution to within
  * a fraction of a percent. With k = 0 it integrates the drag-free case
  * exactly, since the derivative is then at most linear in t.
+ *
+ * RK4 alone is still only conditionally stable: call `integrate()` rather than
+ * this function directly, so a very stiff step is split into safe sub-steps.
  */
 export function rk4Step(s: State, m: DragModel, dt: number): State {
   const k1 = derivative(s, m);
@@ -131,6 +134,62 @@ export function rk4Step(s: State, m: DragModel, dt: number): State {
     vx: s.vx + (dt / 6) * (k1.vx + 2 * k2.vx + 2 * k3.vx + k4.vx),
     vy: s.vy + (dt / 6) * (k1.vy + 2 * k2.vy + 2 * k3.vy + k4.vy),
   };
+}
+
+/**
+ * Largest value of k·|v|·h a single RK4 sub-step may take.
+ *
+ * Why a limit is needed at all: linearising the drag term around the current
+ * velocity gives a decay rate of 2·k·|v| along the direction of travel (k·|v|
+ * across it). RK4 is only stable while h·λ stays inside its stability region,
+ * about 2.78 on the negative real axis. A feather launched at 50 m/s has
+ * k·|v| ≈ 770 /s, so one 1/240 s step gives h·λ ≈ 6.4 — far outside it, and
+ * each step multiplies the error instead of damping it. That is the "stiff"
+ * case that used to blow up to millions of m/s in a few milliseconds.
+ *
+ * 0.1 keeps h·λ ≤ 0.2: an order of magnitude inside the stability limit, and
+ * small enough that the per-step truncation error (~(h·λ)^5 / 120) is
+ * negligible. Every ordinary case (ball, marble, book, a feather dropped from
+ * rest) already satisfies it with the full frame step, so for those the
+ * integration is exactly one RK4 step, bit-for-bit what it was before.
+ */
+export const MAX_STIFFNESS_PER_STEP = 0.1;
+
+/** Upper bound on sub-steps in one call, so a corrupt input cannot hang a frame. */
+const MAX_SUBSTEPS = 100_000;
+
+/**
+ * Advance the state by `dt` seconds, splitting the interval into as many RK4
+ * sub-steps as the drag stiffness requires (adaptive sub-stepping).
+ *
+ * The sub-step length is chosen from the state at the start of each sub-step:
+ *
+ *     h = min( remaining, MAX_STIFFNESS_PER_STEP / (k·|v|) )
+ *
+ * Drag can only reduce |v| once it is above terminal velocity, so the speed —
+ * and with it the stiffness — never grows by much inside a sub-step chosen
+ * this way. A fast, very light object therefore takes many tiny sub-steps
+ * during the first few milliseconds while drag brakes it hard, then settles
+ * back to one or two per frame near terminal velocity. Because the split
+ * depends only on the state, the result is still fully deterministic, and the
+ * animated run and `simulate()` follow the identical path.
+ */
+export function integrate(s: State, m: DragModel, dt: number): State {
+  if (dt <= 0) return s;
+  if (m.k <= 0) return rk4Step(s, m, dt);
+
+  let state = s;
+  let remaining = dt;
+  let guard = MAX_SUBSTEPS;
+  while (remaining > 0 && guard-- > 0) {
+    const rate = m.k * Math.hypot(state.vx, state.vy);
+    let h = rate > 0 ? Math.min(remaining, MAX_STIFFNESS_PER_STEP / rate) : remaining;
+    // Avoid leaving a sliver of time that would cost a whole extra sub-step.
+    if (remaining - h < h * 1e-6) h = remaining;
+    state = rk4Step(state, m, h);
+    remaining -= h;
+  }
+  return state;
 }
 
 /**
@@ -150,11 +209,11 @@ export function refineGroundCrossing(
 ): { state: State; dt: number } {
   let lo = 0;
   let hi = dt;
-  let best = rk4Step(before, m, dt);
+  let best = integrate(before, m, dt);
 
   for (let i = 0; i < 40; i++) {
     const mid = (lo + hi) / 2;
-    const candidate = rk4Step(before, m, mid);
+    const candidate = integrate(before, m, mid);
     if (candidate.y <= groundY) {
       hi = mid;
       best = candidate;

@@ -256,7 +256,8 @@
       "boundary": "It drifted until it reached the wall.",
       "timeout": "Still falling when the timer ran out.",
       "landed": "Landed after {{time}} seconds, hitting the ground at {{speed}} m/s.",
-      "landedTerminal": "Landed after {{time}} seconds at {{speed}} m/s — as fast as the air will let it fall."
+      "landedTerminal": "Landed after {{time}} seconds at {{speed}} m/s — as fast as the air will let it fall.",
+      "invalid": "The calculation broke a rule of physics, so no result is shown."
     },
     "credits": "Motion is integrated with RK4 at a fixed 1/240 s step. With air off, the closed-form constant-acceleration solution is used instead — which is why every object lands together in a vacuum, whatever its mass.",
     "badge": {
@@ -455,7 +456,8 @@
       "landed": "Impact",
       "boundary": "Reached the chamber wall",
       "timeout": "Still falling at the time limit",
-      "floating": "No net force — it just floats"
+      "floating": "No net force — it just floats",
+      "invalid": "Result blocked"
     },
     "stats": {
       "timeTaken": "Time taken",
@@ -477,7 +479,8 @@
     "notes": {
       "rose": "It rose {{height}} m above where it started before falling back down.",
       "terminal": "It stopped speeding up on the way down: air resistance grew until it exactly balanced the object's weight.",
-      "timeout": "It was still falling when the timer ran out. Try a smaller drop height, or turn air resistance off."
+      "timeout": "It was still falling when the timer ran out. Try a smaller drop height, or turn air resistance off.",
+      "invalid": "The numbers came out impossible (for example, faster than the air allows), so they are not shown. Try a heavier object, a smaller area or a lower speed."
     },
     "graphs": {
       "title": "Graphs",

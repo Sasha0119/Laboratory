@@ -8,8 +8,8 @@
  * under test is a pure function or the UI-free `Simulator`.
  */
 
-import { ENVIRONMENTS, FIXED_DT } from '../constants';
-import { buildDragModel, derivative, rk4Step, terminalVelocity } from '../drag';
+import { ENVIRONMENTS, ENVIRONMENT_ORDER, FIXED_DT, LIMITS } from '../constants';
+import { buildDragModel, derivative, integrate, rk4Step, terminalVelocity } from '../drag';
 import {
   apexHeight,
   horizontalRange,
@@ -20,8 +20,15 @@ import {
   timeToFall,
   velocityY,
 } from '../kinematics';
-import { PRESETS_BY_ID } from '../presets';
-import { simulate, type SimParams } from '../simulation';
+import { PRESETS, PRESETS_BY_ID } from '../presets';
+import {
+  SPEED_LIMIT_TOLERANCE,
+  Simulator,
+  simulate,
+  speedLimit,
+  type SimParams,
+  type SimResult,
+} from '../simulation';
 import { resolveCollision, simulateCollision } from '../collision';
 import { REFERENCE_SAFE_VOLTAGE, resolveCircuit, safePowerFor } from '../circuit';
 import {
@@ -385,6 +392,168 @@ section('Simulator');
   const fine = simulate(p, 1 / 960);
   near('flight time is timestep-independent', coarse.totalTime, fine.totalTime, 1e-4);
   near('impact speed is timestep-independent', coarse.impactSpeed, fine.impactSpeed, 1e-4);
+}
+
+section('Stiff drag: very light objects stay physical');
+
+/**
+ * Everything that must hold for any run with drag on: no NaN or Infinity
+ * anywhere, never faster than max(launch speed, terminal velocity), and a
+ * landing from a real height takes real time. Returns a reason, or '' if fine.
+ */
+function physicalProblem(p: SimParams, r: SimResult): string {
+  if (r.outcome === 'invalid') return 'run was flagged invalid';
+  const numbers = [r.totalTime, r.impactSpeed, r.impactVy, r.maxHeight, r.distance, r.peakSpeed, r.impactEnergy];
+  if (!numbers.every(Number.isFinite)) return `non-finite result ${numbers.join(', ')}`;
+  for (const s of r.samples) {
+    if (![s.t, s.x, s.y, s.vx, s.vy, s.speed].every(Number.isFinite)) return `non-finite sample at t=${s.t}`;
+  }
+  const model = buildDragModel(p, ENVIRONMENTS[p.environmentId], p.airResistance);
+  const cap = Math.max(p.speed, terminalVelocity(model)) * (1 + SPEED_LIMIT_TOLERANCE) + 1e-9;
+  if (r.peakSpeed > cap) return `peak ${r.peakSpeed} m/s above the cap ${cap} m/s`;
+  if (r.outcome === 'landed' && !(r.totalTime > 0.01)) return `landed after ${r.totalTime} s`;
+  return '';
+}
+
+{
+  // The exact cases from the audit.
+  const feather = { mass: 0.0008, dragCoefficient: 2.5, area: 0.008 };
+  const auditParams = params({ ...feather, dropHeight: 10, speed: 50, angleDeg: 45, airResistance: true });
+  const audit = simulate(auditParams, FIXED_DT);
+  const auditProblem = physicalProblem(auditParams, audit);
+  check('feather at 50 m/s, 45°: no impossible numbers', auditProblem === '', auditProblem);
+  check('feather at 50 m/s, 45°: lands', audit.outcome === 'landed');
+  check('feather at 50 m/s, 45°: takes seconds, not 0.00 s', audit.totalTime > 10, `${audit.totalTime} s`);
+  near('feather at 50 m/s, 45°: arrives at terminal velocity', audit.impactSpeed, audit.terminalVelocity, 0.01);
+
+  for (let speed = 40; speed <= 50; speed++) {
+    for (const angleDeg of [0, 30, 45, 60, 90]) {
+      const p = params({ ...feather, speed, angleDeg, airResistance: true });
+      const problem = physicalProblem(p, simulate(p, FIXED_DT));
+      check(`feather on Earth at ${speed} m/s, ${angleDeg}°`, problem === '', problem);
+    }
+  }
+
+  // Light custom sheet: 0.5 g, Cd 3, 1 m². It used to fail even at 1 m/s.
+  const sheet = { mass: 0.0005, dragCoefficient: 3, area: 1 };
+  for (const speed of [1, 10, 50]) {
+    for (const dropHeight of [LIMITS.heightMin, 10]) {
+      const p = params({ ...sheet, speed, angleDeg: 45, dropHeight, airResistance: true });
+      const problem = physicalProblem(p, simulate(p, FIXED_DT));
+      check(`light custom sheet at ${speed} m/s from ${dropHeight} m`, problem === '', problem);
+    }
+  }
+  {
+    // Terminal velocity is about 5 cm/s, so half a metre takes ~10 s.
+    const p = params({ ...sheet, speed: 1, angleDeg: 45, dropHeight: LIMITS.heightMin, airResistance: true });
+    const r = simulate(p, FIXED_DT);
+    check(
+      'light custom sheet drifts down slowly and lands',
+      r.outcome === 'landed' && r.totalTime > 5,
+      `${r.outcome} ${r.totalTime} s`
+    );
+    near('...at its terminal velocity', r.impactSpeed, r.terminalVelocity, 1e-3);
+  }
+}
+
+{
+  // Every preset (plus the extremes a Custom object can reach) in every
+  // environment, at the minimum, a typical and the maximum launch speed,
+  // several angles, and the lowest, a typical and the highest release.
+  const objects: { id: string; mass: number; dragCoefficient: number; area: number }[] = [
+    ...PRESETS.map((p) => ({ id: p.id, mass: p.mass, dragCoefficient: p.dragCoefficient, area: p.area })),
+    { id: 'custom-lightest-draggiest', mass: LIMITS.massMin, dragCoefficient: 3, area: 1 },
+    { id: 'custom-heaviest-sleekest', mass: LIMITS.massMax, dragCoefficient: 0.04, area: 0.0001 },
+  ];
+  const speeds = [LIMITS.velocityMin, 15, LIMITS.velocityMax];
+  const angles = [0, 30, 45, 60, 90];
+  const heights = [LIMITS.heightMin, 10, LIMITS.heightMax];
+  let runs = 0;
+  const problems: string[] = [];
+  for (const o of objects) {
+    for (const environmentId of ENVIRONMENT_ORDER) {
+      for (const speed of speeds) {
+        for (const angleDeg of angles) {
+          for (const dropHeight of heights) {
+            const p = params({ ...o, environmentId, speed, angleDeg, dropHeight, airResistance: true });
+            const problem = physicalProblem(p, simulate(p, FIXED_DT));
+            runs++;
+            if (problem) problems.push(`${o.id}/${environmentId}/${speed} m/s/${angleDeg}°/${dropHeight} m: ${problem}`);
+          }
+        }
+      }
+    }
+  }
+  check(
+    `all ${runs} preset × environment × speed × angle × height runs are physical`,
+    problems.length === 0,
+    `${problems.length} bad, e.g. ${problems.slice(0, 3).join(' | ')}`
+  );
+}
+
+{
+  // The fix must not cost accuracy. A vertical drop with quadratic drag has
+  // an exact landing time:  t = (v∞/g)·acosh(exp(g·h / v∞²)).
+  const cases = [
+    ['ball', 1e-9],
+    ['marble', 1e-9],
+    ['book', 1e-9],
+    ['feather', 1e-8],
+  ] as const;
+  for (const [id, tol] of cases) {
+    const p = params({ presetId: id, dropHeight: 10, airResistance: true });
+    const vt = terminalVelocity(buildDragModel(p, ENVIRONMENTS.earth, true));
+    const exact = (vt / EARTH_G) * Math.acosh(Math.exp((EARTH_G * 10) / (vt * vt)));
+    near(`${id}: drop time matches the exact drag solution`, simulate(p, FIXED_DT).totalTime, exact, tol);
+  }
+
+  // A stiff launch must now be timestep-independent too.
+  const stiff = params({ presetId: 'feather', speed: 25, angleDeg: 90, airResistance: true });
+  near(
+    'stiff feather launch is timestep-independent',
+    simulate(stiff, FIXED_DT).totalTime,
+    simulate(stiff, 1 / 4800).totalTime,
+    1e-6
+  );
+
+  // Ordinary steps are a single RK4 step: sub-stepping only engages when needed.
+  const ballModel = buildDragModel(PRESETS_BY_ID.ball, ENVIRONMENTS.earth, true);
+  const s0 = { x: 0, y: 10, vx: 30, vy: 30 };
+  const a = integrate(s0, ballModel, FIXED_DT);
+  const b = rk4Step(s0, ballModel, FIXED_DT);
+  check(
+    'non-stiff step is bit-for-bit one RK4 step',
+    a.x === b.x && a.y === b.y && a.vx === b.vx && a.vy === b.vy
+  );
+
+  // Even one large step on a stiff model stays bounded.
+  const featherModel = buildDragModel(PRESETS_BY_ID.feather, ENVIRONMENTS.earth, true);
+  const big = integrate({ x: 0, y: 10, vx: 35, vy: 35 }, featherModel, 0.25);
+  check('one large stiff step never speeds the object up', Math.hypot(big.vx, big.vy) < 50);
+}
+
+{
+  // Last line of defence: impossible numbers end the run as 'invalid'
+  // instead of reaching the screen.
+  check(
+    'NaN mass is refused, not simulated',
+    new Simulator(params({ mass: Number.NaN, airResistance: true })).outcome === 'invalid'
+  );
+  check(
+    'infinite speed is refused, not simulated',
+    new Simulator(params({ speed: Infinity, angleDeg: 45 })).outcome === 'invalid'
+  );
+  check('no speed cap without air', speedLimit(10, { g: EARTH_G, k: 0 }) === Infinity);
+  const cap = speedLimit(10, { g: EARTH_G, k: 0.05 });
+  check('speed cap is max(launch, terminal) with drag', cap >= 14 && cap < 14.01, `${cap}`);
+
+  // A step that breaks the cap is never committed: the last good state stays.
+  const sim = new Simulator(params({ presetId: 'ball', speed: 20, angleDeg: 45, airResistance: true }));
+  const good = sim.state;
+  (sim as unknown as { speedLimit: number }).speedLimit = 1; // force a violation
+  sim.step(FIXED_DT);
+  check('a step faster than physics allows ends the run as invalid', sim.outcome === 'invalid');
+  check('...and is not shown: the previous state is kept', sim.state === good);
 }
 
 section('Zero-G');

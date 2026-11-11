@@ -256,7 +256,8 @@
       "boundary": "Duvara ulaşana kadar süzüldü.",
       "timeout": "Süre dolduğunda hâlâ düşüyordu.",
       "landed": "{{time}} s sonra yere {{speed}} m/s hızla çarptı.",
-      "landedTerminal": "{{time}} s sonra {{speed}} m/s ile yere indi — havanın izin verdiği en yüksek hız."
+      "landedTerminal": "{{time}} s sonra {{speed}} m/s ile yere indi — havanın izin verdiği en yüksek hız.",
+      "invalid": "Hesaplama bir fizik kuralını bozdu, bu yüzden sonuç gösterilmiyor."
     },
     "credits": "Hareket, sabit 1/240 s adımla RK4 yöntemiyle integre edilir. Hava kapalıyken bunun yerine sabit ivme için kapalı form çözüm kullanılır — boşlukta kütlesi ne olursa olsun bütün cisimlerin aynı anda yere inmesinin sebebi budur.",
     "badge": {
@@ -455,7 +456,8 @@
       "landed": "Çarpma",
       "boundary": "Odanın duvarına ulaştı",
       "timeout": "Süre dolduğunda hâlâ düşüyordu",
-      "floating": "Net kuvvet yok — öylece asılı duruyor"
+      "floating": "Net kuvvet yok — öylece asılı duruyor",
+      "invalid": "Sonuç engellendi"
     },
     "stats": {
       "timeTaken": "Geçen süre",
@@ -477,7 +479,8 @@
     "notes": {
       "rose": "Geri düşmeden önce başladığı yerin {{height}} m üstüne çıktı.",
       "terminal": "İnerken hızlanmayı bıraktı: hava direnci, cismin ağırlığını tam olarak dengeleyene kadar arttı.",
-      "timeout": "Süre dolduğunda hâlâ düşüyordu. Daha küçük bir bırakma yüksekliği dene veya hava direncini kapat."
+      "timeout": "Süre dolduğunda hâlâ düşüyordu. Daha küçük bir bırakma yüksekliği dene veya hava direncini kapat.",
+      "invalid": "Sayılar imkânsız çıktı (örneğin havanın izin verdiğinden hızlı), bu yüzden gösterilmiyor. Daha ağır bir nesne, daha küçük bir alan ya da daha düşük bir hız dene."
     },
     "graphs": {
       "title": "Grafikler",

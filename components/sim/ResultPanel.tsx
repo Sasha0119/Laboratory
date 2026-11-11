@@ -25,6 +25,7 @@ const OUTCOME_TONE: Record<SimResult['outcome'], string> = {
   boundary: colors.blue,
   timeout: colors.amber,
   floating: colors.violet,
+  invalid: colors.rose,
 };
 
 export function ResultPanel({ result, dropHeight, chartWidth, airResistance }: Props) {
@@ -41,6 +42,22 @@ export function ResultPanel({ result, dropHeight, chartWidth, airResistance }: P
 
   const showTerminal =
     airResistance && Number.isFinite(result.terminalVelocity) && result.terminalVelocity > 0;
+
+  // A run that broke a physics sanity rule has no trustworthy numbers, so
+  // none are shown — only the explanation.
+  if (result.outcome === 'invalid') {
+    return (
+      <Card style={styles.card}>
+        <View style={styles.headerRow}>
+          <View style={[styles.dot, { backgroundColor: outcomeTone }]} />
+          <Text style={[styles.outcome, { color: outcomeTone }]}>
+            {t('results.outcomes.invalid')}
+          </Text>
+        </View>
+        <Text style={styles.note}>{t('results.notes.invalid')}</Text>
+      </Card>
+    );
+  }
 
   return (
     <>

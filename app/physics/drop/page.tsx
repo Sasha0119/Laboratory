@@ -154,7 +154,7 @@ export default function DropSimulator() {
   useEffect(() => {
     if (!result || banked.current === result) return;
     banked.current = result;
-    if (frame.path.length > 2) {
+    if (frame.path.length > 2 && result.outcome !== 'invalid') {
       setGhost({
         path: frame.path.slice(),
         label: `${t(`presets.${base.id}.label`)} · ${result.totalTime.toFixed(2)} s`,
@@ -313,6 +313,7 @@ export default function DropSimulator() {
     if (result.outcome === 'floating') return t('drop.messages.floating');
     if (result.outcome === 'boundary') return t('drop.messages.boundary');
     if (result.outcome === 'timeout') return t('drop.messages.timeout');
+    if (result.outcome === 'invalid') return t('drop.messages.invalid');
     const values = {
       time: friendlyTime(result.totalTime),
       speed: friendly(result.impactSpeed),

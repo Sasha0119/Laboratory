@@ -256,7 +256,8 @@
       "boundary": "Devorga yetguncha suzib bordi.",
       "timeout": "Vaqt tugaganda hamon tushayotgan edi.",
       "landed": "{{time}} s dan keyin yerga {{speed}} m/s tezlik bilan urildi.",
-      "landedTerminal": "{{time}} s dan keyin {{speed}} m/s bilan yerga tushdi — havo ruxsat bergan eng yuqori tezlik."
+      "landedTerminal": "{{time}} s dan keyin {{speed}} m/s bilan yerga tushdi — havo ruxsat bergan eng yuqori tezlik.",
+      "invalid": "Hisob fizika qoidasini buzdi, shuning uchun natija ko‘rsatilmaydi."
     },
     "credits": "Harakat qat'iy 1/240 s qadam bilan RK4 usulida integrallanadi. Havo o'chiq bo'lsa, o'zgarmas tezlanish uchun aniq yechim ishlatiladi — shuning uchun vakuumda massasidan qat'i nazar hamma jism bir vaqtda tushadi.",
     "badge": {
@@ -455,7 +456,8 @@
       "landed": "Zarba",
       "boundary": "Kamera devoriga yetdi",
       "timeout": "Vaqt tugaganda hamon tushmoqda",
-      "floating": "Natijaviy kuch yo'q — shunchaki muallaq"
+      "floating": "Natijaviy kuch yo'q — shunchaki muallaq",
+      "invalid": "Natija bloklandi"
     },
     "stats": {
       "timeTaken": "Ketgan vaqt",
@@ -477,7 +479,8 @@
     "notes": {
       "rose": "Qaytib tushishdan oldin boshlang'ich nuqtadan {{height}} m yuqoriga ko'tarildi.",
       "terminal": "Tushish davomida tezlanishdan to'xtadi: havo qarshiligi jismning og'irligini to'liq muvozanatlagunicha o'sdi.",
-      "timeout": "Vaqt tugaganda hamon tushayotgan edi. Kichikroq balandlikni sinab ko'ring yoki havo qarshiligini o'chiring."
+      "timeout": "Vaqt tugaganda hamon tushayotgan edi. Kichikroq balandlikni sinab ko'ring yoki havo qarshiligini o'chiring.",
+      "invalid": "Sonlar imkonsiz chiqdi (masalan, havo ruxsat berganidan tezroq), shuning uchun ko‘rsatilmaydi. Og‘irroq jism, kichikroq yuza yoki pastroq tezlikni sinab ko‘ring."
     },
     "graphs": {
       "title": "Grafiklar",

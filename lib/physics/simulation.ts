@@ -10,9 +10,15 @@
  *   - No air (toggle off, or a vacuum environment): the closed-form
  *     constant-acceleration solution, evaluated at absolute time t. Exact,
  *     no accumulated error, and mass-independent by construction.
- *   - Air: RK4 on the drag ODE, stepped forward. The spec's requirement that
- *     drag runs through a real numerical integrator rather than the analytic
- *     equations is enforced by this branch never calling `stateAt`.
+ *   - Air: RK4 on the drag ODE, stepped forward, with adaptive sub-steps
+ *     when drag is strong relative to mass (see `integrate` in drag.ts).
+ *     The spec's requirement that drag runs through a real numerical
+ *     integrator rather than the analytic equations is enforced by this
+ *     branch never calling `stateAt`.
+ *
+ * Whatever the integrator does, every step is checked against physics that
+ * must always hold (see `speedLimit`). A step that breaks it ends the run as
+ * 'invalid' instead of putting an impossible number on screen.
  */
 
 import {
@@ -22,8 +28,8 @@ import {
 } from './constants';
 import {
   buildDragModel,
+  integrate,
   refineGroundCrossing,
-  rk4Step,
   terminalVelocity,
   type BodyProperties,
   type DragModel,
@@ -57,7 +63,13 @@ export type SimOutcome =
   /** Still going when the time cap was reached (e.g. a feather on a long fall). */
   | 'timeout'
   /** Zero-G with no initial velocity: no net force, so nothing ever happens. */
-  | 'floating';
+  | 'floating'
+  /**
+   * The numbers broke a physical sanity rule (non-finite, faster than drag
+   * allows, or an instant landing). The run is stopped and no result is shown.
+   * Should never happen; it is the last line of defence, not a code path.
+   */
+  | 'invalid';
 
 export interface SimSample {
   t: number;
@@ -87,6 +99,8 @@ export interface SimResult {
   distance: number;
   /** sqrt(g/k), or Infinity without air. */
   terminalVelocity: number;
+  /** Fastest speed reached at any step of the run, m/s. */
+  peakSpeed: number;
   /** Regularly spaced samples for the graphs. */
   samples: SimSample[];
 }
@@ -104,6 +118,33 @@ export function zeroGChamber(dropHeight: number) {
   };
 }
 
+/**
+ * Relative slack allowed on the drag speed limit. The true solution never
+ * exceeds the limit at all; this only absorbs rounding in the last digits.
+ */
+export const SPEED_LIMIT_TOLERANCE = 1e-6;
+
+/**
+ * The fastest the object can ever legitimately move when drag is on.
+ *
+ * Proof sketch: d(|v|²)/dt = 2 v·a = -2 g·vy - 2 k |v|³. Whenever |v| is above
+ * terminal velocity v∞ = sqrt(g/k), k|v|³ > g|v| ≥ -g·vy, so the right-hand
+ * side is negative and the speed falls. Speed can therefore never climb past
+ * whichever is larger: the speed it was launched at, or v∞. Returns Infinity
+ * without drag, where gravity alone sets the speed and no such cap exists.
+ */
+export function speedLimit(launchSpeed: number, model: DragModel): number {
+  if (model.k <= 0) return Infinity;
+  const cap = Math.max(launchSpeed, terminalVelocity(model));
+  return cap * (1 + SPEED_LIMIT_TOLERANCE) + 1e-9;
+}
+
+function isFiniteState(s: State): boolean {
+  return (
+    Number.isFinite(s.x) && Number.isFinite(s.y) && Number.isFinite(s.vx) && Number.isFinite(s.vy)
+  );
+}
+
 export class Simulator {
   readonly params: SimParams;
   readonly model: DragModel;
@@ -116,6 +157,8 @@ export class Simulator {
   t = 0;
   outcome: SimOutcome = 'running';
   maxHeight: number;
+  peakSpeed: number;
+  readonly speedLimit: number;
   /** Every position visited, for the on-canvas trail. */
   path: { x: number; y: number }[] = [];
   samples: SimSample[] = [];
@@ -136,6 +179,13 @@ export class Simulator {
     this.launch = { y0: params.dropHeight, vx0: v.x, vy0: v.y };
     this.state = { x: 0, y: params.dropHeight, vx: v.x, vy: v.y };
     this.maxHeight = params.dropHeight;
+    this.peakSpeed = Math.abs(params.speed);
+    this.speedLimit = speedLimit(Math.abs(params.speed), this.model);
+
+    const inputs = [params.mass, params.dragCoefficient, params.area, params.dropHeight, params.speed, params.angleDeg];
+    if (!inputs.every(Number.isFinite) || !isFiniteState(this.state)) {
+      this.outcome = 'invalid';
+    }
 
     // Zero-G with nothing pushing it: the object is already in equilibrium.
     if (!this.hasGround && this.model.g === 0 && params.speed === 0) {
@@ -171,11 +221,19 @@ export class Simulator {
 
     if (this.usesDrag) {
       // Air resistance on: integrate numerically, never analytically.
-      next = rk4Step(before, this.model, dt);
+      next = integrate(before, this.model, dt);
     } else {
       // Vacuum: evaluate the exact solution at the new absolute time. This
       // avoids drift entirely over long flights.
       next = stateAt(this.launch, this.model.g, this.t + dt);
+    }
+
+    // --- Sanity --------------------------------------------------------
+    // Refuse a step that breaks physics rather than show it. The last good
+    // state stays on screen.
+    if (!isFiniteState(next) || Math.hypot(next.vx, next.vy) > this.speedLimit) {
+      this.outcome = 'invalid';
+      return true;
     }
 
     // --- Ground contact -------------------------------------------------
@@ -191,7 +249,9 @@ export class Simulator {
         next = { ...stateAt(this.launch, this.model.g, tLand), y: 0 };
       }
       this.commit(next, consumed);
-      this.outcome = 'landed';
+      // Every release height is at least LIMITS.heightMin, so a landing at
+      // t ≈ 0 can only come from broken numbers.
+      this.outcome = this.t > 1e-6 && isFiniteState(next) ? 'landed' : 'invalid';
       return true;
     }
 
@@ -218,6 +278,8 @@ export class Simulator {
     this.state = next;
     this.t += dt;
     if (next.y > this.maxHeight) this.maxHeight = next.y;
+    const speed = Math.hypot(next.vx, next.vy);
+    if (speed > this.peakSpeed) this.peakSpeed = speed;
     this.record(false);
   }
 
@@ -265,6 +327,7 @@ export class Simulator {
       impactEnergy: 0.5 * this.params.mass * speed * speed,
       distance: Math.abs(this.state.x),
       terminalVelocity: terminalVelocity(this.model),
+      peakSpeed: this.peakSpeed,
       samples: this.samples,
     };
   }
