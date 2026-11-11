@@ -47,10 +47,13 @@ export interface BulbOutput {
   overloaded: boolean;
   burnedOut: boolean;
   /**
-   * 0..1 glow intensity. A perceptual (square-root) curve, so the tile reads
-   * as meaningfully brighter partway up the range rather than only near the
-   * top — and it saturates at exactly 1 right at the overload threshold,
-   * which is what makes a bulb glow hardest just before it fails.
+   * 0..1 glow intensity, from the power the bulb actually dissipates:
+   * sqrt(P / BULB_RATED_POWER). Same reference for every bulb, so more power
+   * always means a brighter bulb — two bulbs side by side compare honestly.
+   * The square root is a perceptual curve (the eye responds roughly to the
+   * square root of light output), so a dim bulb is still visibly lit; it is
+   * monotonic, so the order never changes. It reaches exactly 1 at the
+   * rated power, which is also the burnout threshold.
    */
   brightness: number;
 }
@@ -66,15 +69,27 @@ export interface CircuitOutput {
 }
 
 /**
- * The voltage a bulb is built to withstand. Safe power is then Vref² / R, so
- * — pleasantly — the overload condition `power > safePower` reduces to
- * exactly `voltageAcrossBulb > REFERENCE_SAFE_VOLTAGE`, independent of R. A
- * bulb of any resistance fails once more than this is pushed across it.
+ * The power every bulb is rated for, in watts — a small 25 W lamp.
+ *
+ * It is the single reference for both brightness and burnout:
+ *   - brightness = sqrt(P / BULB_RATED_POWER), so full glow means "at its
+ *     rating", and a bulb dissipating more power is always brighter;
+ *   - a bulb whose power exceeds its rating burns out.
+ *
+ * Previously the reference was a 12 V rating (safe power 12²/R). That made
+ * brightness reduce to V/12, independent of R, so two different bulbs in
+ * parallel always looked identical even when one drew twice the current.
+ *
+ * 25 W keeps ordinary setups well inside the scale: the default 9 V across
+ * 20 Ω is 4 W (40 % glow), and 12 V across 10 Ω and 20 Ω in parallel is
+ * 14.4 W and 7.2 W (76 % and 54 %). Low resistance at high voltage still
+ * burns a bulb out — 24 V across 20 Ω is 28.8 W.
  */
-export const REFERENCE_SAFE_VOLTAGE = 12;
+export const BULB_RATED_POWER = 25;
 
-export function safePowerFor(resistance: number): number {
-  return (REFERENCE_SAFE_VOLTAGE * REFERENCE_SAFE_VOLTAGE) / resistance;
+/** The most a bulb can dissipate before its filament fails, in watts. */
+export function safePowerFor(): number {
+  return BULB_RATED_POWER;
 }
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
@@ -129,9 +144,9 @@ export function resolveCircuit(input: CircuitInput): CircuitOutput {
     }
 
     const power = voltage * current;
-    const safePower = safePowerFor(bulb.resistance);
+    const safePower = safePowerFor();
     const overloaded = !burnedOut && power > safePower;
-    const brightness = burnedOut || safePower <= 0 ? 0 : clamp01(Math.sqrt(power / safePower));
+    const brightness = burnedOut ? 0 : clamp01(Math.sqrt(power / safePower));
 
     return {
       resistance: bulb.resistance,

@@ -30,7 +30,7 @@ import {
   type SimResult,
 } from '../simulation';
 import { CollisionSimulator, gapBetween, resolveCollision, simulateCollision } from '../collision';
-import { REFERENCE_SAFE_VOLTAGE, resolveCircuit, safePowerFor } from '../circuit';
+import { BULB_RATED_POWER, resolveCircuit, safePowerFor } from '../circuit';
 import {
   computeForce,
   fieldVectorAt,
@@ -953,65 +953,96 @@ section('Circuits — parallel');
 section('Circuits — power and burnout');
 
 {
-  // Overload reduces to "more than the reference voltage across the bulb",
-  // independent of resistance — check that identity directly.
+  // One rating for every bulb, whatever its resistance.
   for (const resistance of [1, 10, 50, 100]) {
-    const safe = safePowerFor(resistance);
-    near(
-      `safe power at R=${resistance} matches Vref²/R`,
-      safe,
-      (REFERENCE_SAFE_VOLTAGE * REFERENCE_SAFE_VOLTAGE) / resistance,
-      1e-9
-    );
+    near(`rated power is the same at R=${resistance}`, safePowerFor(), BULB_RATED_POWER, 0);
   }
 }
 
-{
-  const under = resolveCircuit({
-    voltage: 10,
+/** One bulb, or two in the given wiring, at a voltage. */
+function circuit(voltage: number, resistances: number[], wiring: 'series' | 'parallel' = 'series') {
+  return resolveCircuit({
+    voltage,
     switchClosed: true,
-    bulbCount: 1,
-    wiring: 'series',
-    bulbs: [{ resistance: 20 }],
+    bulbCount: resistances.length as 1 | 2,
+    wiring,
+    bulbs: resistances.map((resistance) => ({ resistance })),
     burnedOut: [false, false],
   });
-  check('under the safe voltage: not overloaded', !under.bulbs[0].overloaded);
+}
 
-  const over = resolveCircuit({
-    voltage: 24,
-    switchClosed: true,
-    bulbCount: 1,
-    wiring: 'series',
-    bulbs: [{ resistance: 20 }],
-    burnedOut: [false, false],
-  });
-  check('over the safe voltage: overloaded', over.bulbs[0].overloaded);
+{
+  const under = circuit(10, [20]); // 5 W
+  check('under the rated power: not overloaded', !under.bulbs[0].overloaded);
+  const over = circuit(24, [20]); // 28.8 W
+  check('over the rated power: overloaded', over.bulbs[0].overloaded);
 }
 
 {
   // Brightness must climb monotonically with power up to the overload point.
   let previous = -1;
-  for (const voltage of [1, 4, 8, 11.9]) {
-    const r = resolveCircuit({
-      voltage,
-      switchClosed: true,
-      bulbCount: 1,
-      wiring: 'series',
-      bulbs: [{ resistance: 10 }],
-      burnedOut: [false, false],
-    });
+  for (const voltage of [1, 4, 8, 11.9, 15]) {
+    const r = circuit(voltage, [10]);
     check(`brightness rises with voltage (${voltage}V)`, r.bulbs[0].brightness > previous);
     previous = r.bulbs[0].brightness;
   }
-  const atLimit = resolveCircuit({
-    voltage: REFERENCE_SAFE_VOLTAGE,
-    switchClosed: true,
-    bulbCount: 1,
-    wiring: 'series',
-    bulbs: [{ resistance: 10 }],
-    burnedOut: [false, false],
-  });
-  near('brightness saturates at exactly the safe limit', atLimit.bulbs[0].brightness, 1, 1e-9);
+  // P = V²/R = rating exactly at V = sqrt(rating · R).
+  const vLimit = Math.sqrt(BULB_RATED_POWER * 10);
+  const atLimit = circuit(vLimit, [10]);
+  near('brightness reaches exactly 1 at the rated power', atLimit.bulbs[0].brightness, 1, 1e-9);
+  check('...which is not yet an overload', !atLimit.bulbs[0].overloaded);
+  check('just past it the bulb overloads', circuit(vLimit * 1.001, [10]).bulbs[0].overloaded);
+  near('brightness is sqrt(P / rating)', circuit(9, [20]).bulbs[0].brightness, Math.sqrt(81 / 20 / BULB_RATED_POWER), 1e-12);
+}
+
+{
+  // Audit: 10 Ω and 20 Ω in parallel at 12 V. The 10 Ω bulb draws twice the
+  // current, so twice the power, and must look brighter — not both 100 %.
+  const r = circuit(12, [10, 20], 'parallel');
+  const [low, high] = r.bulbs;
+  near('parallel: 10 Ω draws 1.2 A', low.current, 1.2, 1e-12);
+  near('parallel: 20 Ω draws 0.6 A', high.current, 0.6, 1e-12);
+  near('parallel: 10 Ω dissipates twice the power', low.power / high.power, 2, 1e-12);
+  check(
+    'parallel: the 10 Ω bulb is brighter',
+    low.brightness > high.brightness,
+    `${low.brightness} vs ${high.brightness}`
+  );
+  near('parallel: brightness ratio is sqrt(power ratio)', low.brightness / high.brightness, Math.SQRT2, 1e-12);
+  check('parallel: neither saturates at 12 V', low.brightness < 0.9 && high.brightness < 0.9);
+  check('parallel: neither burns out at 12 V', !low.overloaded && !high.overloaded);
+
+  // Series is the reverse: same current, so the bigger resistance takes
+  // more voltage and more power, and glows brighter.
+  const s = circuit(12, [10, 20], 'series');
+  check('series: the 20 Ω bulb is brighter', s.bulbs[1].brightness > s.bulbs[0].brightness);
+
+  // Ordering by power always matches ordering by brightness.
+  let consistent = true;
+  for (const voltage of [1, 3, 6, 9, 12, 18, 24]) {
+    for (const wiring of ['series', 'parallel'] as const) {
+      for (const [ra, rb] of [[1, 2], [5, 50], [10, 20], [40, 100], [100, 100]]) {
+        const c = circuit(voltage, [ra, rb], wiring);
+        const [a, b] = c.bulbs;
+        if (a.overloaded || b.overloaded) continue; // saturated at 1 — burning out
+        if (Math.sign(a.power - b.power) !== Math.sign(a.brightness - b.brightness)) consistent = false;
+      }
+    }
+  }
+  check('more power always means more brightness', consistent);
+
+  // Burnout stays consistent with the scale: a bulb overloads exactly when
+  // its brightness would go past 1.
+  let agree = true;
+  for (const voltage of [2, 6, 12, 16, 20, 24]) {
+    for (const resistance of [1, 5, 10, 20, 25, 50, 100]) {
+      const b = circuit(voltage, [resistance]).bulbs[0];
+      if (b.overloaded !== b.power > BULB_RATED_POWER) agree = false;
+      if (!b.overloaded && b.brightness > 1) agree = false;
+      if (b.overloaded && b.brightness !== 1) agree = false;
+    }
+  }
+  check('overload happens exactly where brightness hits full', agree);
 }
 
 {
