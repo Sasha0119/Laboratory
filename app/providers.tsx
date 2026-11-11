@@ -46,6 +46,7 @@ const PAGES: Record<string, { title: string; parent: string }> = {
   '/physics/matter': { title: 'nav.matter', parent: '/physics' },
   '/physics/machines': { title: 'nav.machines', parent: '/physics' },
   '/physics/waves': { title: 'nav.waves', parent: '/physics' },
+  '/physics/light': { title: 'nav.light', parent: '/physics' },
   '/auth/sign-in': { title: 'auth.signIn.title', parent: '/' },
   '/auth/sign-up': { title: 'auth.signUp.title', parent: '/' },
   '/auth/reset-password': { title: 'auth.reset.title', parent: '/auth/sign-in' },

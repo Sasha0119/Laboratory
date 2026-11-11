@@ -100,7 +100,8 @@ export type SimulationModule =
   | 'lever'
   | 'incline'
   | 'pulley'
-  | 'waves';
+  | 'waves'
+  | 'light';
 
 export const FORMULAS: Record<SimulationModule, Formula[]> = {
   drop: [
@@ -155,6 +156,13 @@ export const FORMULAS: Record<SimulationModule, Formula[]> = {
     { id: 'displacement', expression: 'y(x, t) = A·sin(2π(x/λ − f·t))', minLevel: 'pro' },
     { id: 'superposition', expression: 'y = y₁ + y₂', minLevel: 'pro' },
     { id: 'beat', expression: 'f_beat = |f₁ − f₂|', minLevel: 'pro' },
+  ],
+  light: [
+    { id: 'snell', expression: 'n₁·sin θ₁ = n₂·sin θ₂', minLevel: 'intermediate' },
+    { id: 'reflection', expression: 'θ_r = θ₁', minLevel: 'intermediate' },
+    { id: 'critical', expression: 'θ_c = asin(n₂ / n₁)   (n₁ > n₂)', minLevel: 'intermediate' },
+    { id: 'speed', expression: 'v = c / n', minLevel: 'pro' },
+    { id: 'wavelength', expression: 'λ = λ₀ / n   (f = v / λ unchanged)', minLevel: 'pro' },
   ],
 };
 

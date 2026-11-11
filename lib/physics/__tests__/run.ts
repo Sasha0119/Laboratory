@@ -118,6 +118,16 @@ import {
   viewWidth,
   wavelength,
 } from '../waves';
+import {
+  LIGHT_LIMITS,
+  MEDIUM_INDEX,
+  SPEED_OF_LIGHT,
+  criticalAngle,
+  refractedAngle,
+  solveBoundary,
+  speedIn,
+  wavelengthIn,
+} from '../light';
 
 // ---------------------------------------------------------------- harness --
 
@@ -2035,6 +2045,136 @@ section('Waves: words');
   check('quiet', loudnessBand(10) === 'quiet');
   check('medium', loudnessBand(50) === 'medium');
   check('loud', loudnessBand(90) === 'loud');
+}
+
+// ------------------------------------------------------------------ light --
+
+section('Light — hand-checked values');
+
+{
+  const n = MEDIUM_INDEX;
+  near('Air → Water at 45°: bends to 32.1°', refractedAngle(n.air, n.water, 45)!, 32.12, 0.01);
+  near('Air → Glass at 30°: bends to 19.2°', refractedAngle(n.air, n.glass, 30)!, 19.2, 0.01);
+  near('critical angle Water → Air: 48.75°', criticalAngle(n.water, n.air)!, 48.75, 0.01);
+  near('critical angle Glass → Air: 41.14°', criticalAngle(n.glass, n.air)!, 41.14, 0.01);
+  near('critical angle Diamond → Air: 24.41°', criticalAngle(n.diamond, n.air)!, 24.41, 0.01);
+  for (const id of ['air', 'water', 'glass', 'diamond'] as const) {
+    near(`same material (${id}): no bending at 37°`, refractedAngle(n[id], n[id], 37)!, 37, 1e-12);
+  }
+}
+
+section("Light — Snell's law and reflection");
+
+{
+  const n = MEDIUM_INDEX;
+  const ids = ['air', 'water', 'glass', 'diamond'] as const;
+  let snellHolds = true;
+  let reflectionHolds = true;
+  let directionRight = true;
+  for (const a of ids) {
+    for (const b of ids) {
+      for (let angle = 0; angle <= 89; angle += 0.5) {
+        const r = solveBoundary(n[a], n[b], angle);
+        if (r.reflected !== angle) reflectionHolds = false;
+        if (r.refracted === null) continue;
+        const lhs = n[a] * Math.sin((angle * Math.PI) / 180);
+        const rhs = n[b] * Math.sin((r.refracted * Math.PI) / 180);
+        if (Math.abs(lhs - rhs) > 1e-12) snellHolds = false;
+        // Into a denser material it bends toward the normal, out of one away.
+        if (angle > 0 && n[b] > n[a] && !(r.refracted < angle)) directionRight = false;
+        if (angle > 0 && n[b] < n[a] && !(r.refracted > angle)) directionRight = false;
+      }
+    }
+  }
+  check('n₁·sin θ₁ = n₂·sin θ₂ for every material pair and angle', snellHolds);
+  check('reflected angle always equals the incident angle', reflectionHolds);
+  check('denser → bends toward the normal; less dense → away', directionRight);
+  check('no critical angle going into a denser material', criticalAngle(n.air, n.glass) === null);
+  check('no critical angle between equal materials', criticalAngle(n.water, n.water) === null);
+}
+
+section('Light — total internal reflection threshold');
+
+{
+  const n = MEDIUM_INDEX;
+  for (const id of ['water', 'glass', 'diamond'] as const) {
+    const c = criticalAngle(n[id], n.air)!;
+    const below = solveBoundary(n[id], n.air, c - 0.01);
+    const at = solveBoundary(n[id], n.air, c);
+    const above = solveBoundary(n[id], n.air, c + 0.01);
+    check(`${id} → air just below θc: light still gets out`, !below.tir && below.refracted !== null);
+    check(`${id} → air just below θc: bent ray skims the surface (> 85°)`, below.refracted! > 85, `${below.refracted}`);
+    check(`${id} → air just below θc: described as nearly trapped`, below.behaviour === 'nearlyTir');
+    check(`${id} → air exactly at θc: total internal reflection`, at.tir && at.refracted === null);
+    check(`${id} → air just above θc: total internal reflection`, above.tir && above.behaviour === 'tir');
+    check(`${id} → air: TIR still reflects at the same angle`, above.reflected === c + 0.01);
+  }
+  // Air → Water never traps light, even at the maximum angle.
+  const grazing = solveBoundary(n.air, n.water, LIGHT_LIMITS.angleMax);
+  check('air → water at 89°: no total internal reflection', !grazing.tir);
+  near('air → water at 89°: bends to about 48.74° (just under θc)', grazing.refracted!, 48.74, 0.01);
+}
+
+section('Light — edge cases');
+
+{
+  const n = MEDIUM_INDEX;
+  const head = solveBoundary(n.air, n.diamond, 0);
+  check('0°: goes straight through', head.refracted === 0 && head.behaviour === 'straight');
+  check('0° from a dense material: still straight, never trapped', solveBoundary(n.diamond, n.air, 0).refracted === 0);
+  check('same material: described as no bending', solveBoundary(1.33, 1.33, 40).behaviour === 'same');
+  check('air → glass at 30°: bends toward the normal', solveBoundary(n.air, n.glass, 30).behaviour === 'toward');
+  check('glass → air at 20°: bends away from the normal', solveBoundary(n.glass, n.air, 20).behaviour === 'away');
+
+  // Custom values at the limits.
+  near('custom 3.00 → 1.00: critical angle asin(1/3) = 19.47°', criticalAngle(3, 1)!, 19.47, 0.01);
+  near('custom 1.00 → 3.00 at 89°: bends to 19.46°', refractedAngle(1, 3, 89)!, 19.46, 0.01);
+  check('custom 1.00 → 1.00: nothing bends', refractedAngle(1, 1, 60) === 60);
+  check('custom 3.00 → 3.00: nothing bends', refractedAngle(3, 3, 60) === 60);
+
+  // Nothing out of range or non-finite can produce NaN or Infinity.
+  const nasty = [Number.NaN, Infinity, -Infinity, -5, 0, 0.5, 90, 1e9];
+  let allFinite = true;
+  for (const n1 of nasty) {
+    for (const n2 of nasty) {
+      for (const angle of nasty) {
+        const r = solveBoundary(n1, n2, angle);
+        const values = [r.n1, r.n2, r.incident, r.reflected, r.v1, r.v2, r.lambda1, r.lambda2, r.frequency];
+        if (r.refracted !== null) values.push(r.refracted);
+        if (r.critical !== null) values.push(r.critical);
+        if (!values.every(Number.isFinite)) allFinite = false;
+      }
+    }
+  }
+  check('garbage inputs never produce NaN or Infinity', allFinite);
+  check('angle above 89° is held at 89°', solveBoundary(1, 1.33, 90).incident === LIGHT_LIMITS.angleMax);
+  check('index below 1 is held at 1', solveBoundary(0.5, 1.33, 30).n1 === LIGHT_LIMITS.indexMin);
+
+  // A sweep of the whole input space at the precision the fields allow.
+  let sweepFinite = true;
+  for (let n1 = 1; n1 <= 3.0001; n1 += 0.05) {
+    for (let n2 = 1; n2 <= 3.0001; n2 += 0.05) {
+      for (let angle = 0; angle <= 89; angle += 1) {
+        const r = solveBoundary(n1, n2, angle);
+        if (r.refracted !== null && !(r.refracted >= 0 && r.refracted <= 90)) sweepFinite = false;
+        if (r.tir !== (r.critical !== null && angle >= r.critical)) sweepFinite = false;
+      }
+    }
+  }
+  check('every index pair 1.00–3.00 and angle 0–89°: angles in range, TIR exactly past θc', sweepFinite);
+}
+
+section('Light — speed and wavelength');
+
+{
+  near('speed of light in vacuum is exact', SPEED_OF_LIGHT, 299_792_458, 0);
+  near('speed in water = c / 1.33', speedIn(1.33), 299_792_458 / 1.33, 1e-6);
+  near('speed in diamond ≈ 124 million m/s', speedIn(2.42) / 1e6, 123.88, 0.01);
+  near('550 nm light is 413.5 nm long in water', wavelengthIn(1.33), 550 / 1.33, 1e-9);
+  const r = solveBoundary(1, 1.52, 30);
+  near('frequency is the same on both sides: v₁/λ₁ = v₂/λ₂', r.v1 / r.lambda1, r.v2 / r.lambda2, 1e-3);
+  near('...and equals c / λ₀', r.frequency, SPEED_OF_LIGHT / 550e-9, 1);
+  near('v = f·λ holds inside glass', r.frequency * r.lambda2 * 1e-9, r.v2, 1e-6);
 }
 
 // ------------------------------------------------------------------ report --

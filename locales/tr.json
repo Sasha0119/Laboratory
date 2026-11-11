@@ -13,7 +13,8 @@
     "back": "Geri",
     "matter": "Maddenin Hâlleri ve Isı",
     "machines": "Basit Makineler",
-    "waves": "Dalgalar ve Ses"
+    "waves": "Dalgalar ve Ses",
+    "light": "Işık ve Kırılma"
   },
   "common": {
     "reset": "Sıfırla",
@@ -85,7 +86,7 @@
       },
       "light": {
         "title": "Işık, Yansıma ve Kırılma",
-        "summary": "Aynalar, mercekler ve bardaktaki pipetin neden kırık göründüğü."
+        "summary": "Işık bir yüzeyden nasıl yansır ve başka bir maddeye girerken nasıl kırılır; bir bardak sudaki pipet neden kırık görünür."
       },
       "ohmsLaw": {
         "title": "Ohm Yasası ve Devreler",
@@ -144,7 +145,10 @@
       "work": "İş",
       "frequency": "Frekans",
       "wavelength": "Dalga boyu",
-      "amplitude": "Genlik"
+      "amplitude": "Genlik",
+      "refraction": "Kırılma",
+      "reflection": "Yansıma",
+      "totalInternalReflection": "Tam iç yansıma"
     },
     "comingSoonMessage": "Bu deney yakında geliyor!"
   },
@@ -685,6 +689,13 @@
       "displacement": "İlerleyen dalganın yer değiştirmesi",
       "superposition": "İki dalganın toplamı (süperpozisyon)",
       "beat": "Vuru frekansı"
+    },
+    "light": {
+      "snell": "Snell yasası",
+      "reflection": "Yansıma yasası",
+      "critical": "Kritik açı",
+      "speed": "Işığın bir maddedeki hızı",
+      "wavelength": "Bir maddedeki dalga boyu"
     }
   },
   "matter": {
@@ -1083,5 +1094,104 @@
       "beginner": "İnce ses, daha hızlı titreşim demektir. Büyük dalga, daha yüksek ses demektir. Aynı nota su ve çelikte daha uzun dalgalar oluşturur, çünkü ses orada daha hızlı gider.",
       "intermediate": "Frekans sesin inceliğini, genlik de şiddetini belirler. Dalga hızı maddeye bağlıdır; bu yüzden aynı frekansta daha hızlı bir maddede dalga boyu daha uzundur. Birbirine yakın iki frekans bir uyuşup bir ayrışır ve vurular oluşur."
     }
+  },
+  "light": {
+    "intro": {
+      "title": "Işık neden kırılır?",
+      "body": "Işık farklı maddelerde farklı hızlarda ilerler: en hızlı havada, suda ve camda daha yavaş. Bir maddeden ötekine eğik geçerken hızının değişmesi yönünü de değiştirir. Bir bardak sudaki pipetin kırık görünmesinin nedeni budur. Işığın bir kısmı da yüzeyden bir ayna gibi geri yansır."
+    },
+    "tryThis": {
+      "title": "Bunu dene",
+      "starter": "Işığı havadan suya 45° ile gönder ve normale doğru kırılmasını izle.",
+      "tir": "Işık sudan havaya gitsin diye yer değiştir, sonra kırılan ışın kaybolana kadar açıyı artır."
+    },
+    "blurbs": {
+      "beginner": "Işık suda ve camda yavaşlar, bu yüzden içine girerken kırılır. Geri çıkarken hızlanır ve öbür yöne kırılır. Işığın bir kısmı her zaman yüzeyden, geldiği açıyla geri yansır.",
+      "intermediate": "Her maddenin bir kırılma indisi n vardır: ışık o maddede boşluğa göre kaç kat yavaş gider. Geliş açısı ve kırılma açısı normalden ölçülür. Daha büyük n'li maddeye geçerken ışın normale yaklaşır, daha küçük n'li maddeye geçerken normalden uzaklaşır; kritik açının ötesinde ise hiç ışık çıkamaz."
+    },
+    "media": {
+      "air": "Hava",
+      "water": "Su",
+      "glass": "Cam",
+      "diamond": "Elmas",
+      "custom": "Özel"
+    },
+    "words": {
+      "straight": "Işık yüzeye dik geliyor, bu yüzden kırılmadan dümdüz geçiyor.",
+      "same": "İki taraf da {{a}}, bu yüzden ışık ne yavaşlıyor ne hızlanıyor ve kırılmadan dümdüz devam ediyor.",
+      "toward": "Işık {{b}} içine girerken yavaşlıyor, bu yüzden kesikli çizgiye doğru kırılıyor.",
+      "away": "Işık {{a}} içinden {{b}} içine geçerken hızlanıyor, bu yüzden kesikli çizgiden uzaklaşacak şekilde kırılıyor.",
+      "nearlyTir": "Işık {{b}} içine ancak çıkabiliyor, yüzeyi sıyırarak gidiyor. Biraz daha eğik olursa tamamı geri yansıyacak.",
+      "tir": "Hiç ışık çıkmıyor: tamamı kusursuz bir ayna gibi {{a}} içine geri yansıyor."
+    },
+    "wordsPrecise": {
+      "straight": "Dik gelişte (0°) ışın düz geçer: kırılma açısı da 0°.",
+      "same": "İki kırılma indisi eşit, bu yüzden kırılma açısı geliş açısına eşit: kırılma yok.",
+      "toward": "Daha büyük kırılma indisli ortama geçerken ışın normale yaklaşır.",
+      "away": "Daha küçük kırılma indisli ortama geçerken ışın normalden uzaklaşır. Buradaki kritik açı {{critical}}.",
+      "nearlyTir": "Geliş açısı kritik açının ({{critical}}) hemen altında, bu yüzden kırılan ışın yüzeyi neredeyse 90° ile sıyırıyor.",
+      "tir": "Tam iç yansıma: geliş açısı kritik açıya ({{critical}}) eşit ya da daha büyük, bu yüzden kırılan ışın yok ve ışığın tamamı yansıyor."
+    },
+    "scene": {
+      "medium": "{{name}} · n = {{n}}",
+      "incoming": "gelen",
+      "reflected": "yansıyan",
+      "bent": "kırılan",
+      "normal": "normal",
+      "tir": "Hiç ışık geçmiyor: tamamı geri yansıyor",
+      "description": "Işık üstteki {{a}} (n = {{n1}}) ortamından alttaki {{b}} (n = {{n2}}) ortamına gidiyor. Yüzeye normalle {{incident}} açı yaparak çarpıyor, {{incident}} ile yansıyor ve geçen kısmı {{refracted}} açıya kırılıyor.",
+      "descriptionTir": "Işık üstteki {{a}} (n = {{n1}}) ortamından alttaki {{b}} (n = {{n2}}) ortamına doğru gidiyor. Yüzeye normalle {{incident}} açı yaparak çarpıyor ve tamamı {{incident}} ile yansıyor; kırılan ışın yok."
+    },
+    "stats": {
+      "incident": "Geliş açısı",
+      "comesIn": "Işığın geliş açısı",
+      "refracted": "Kırılma açısı",
+      "bendsTo": "Işığın kırıldığı açı",
+      "noneGetsOut": "hiç ışık geçmiyor",
+      "critical": "Kritik açı",
+      "speedIn": "Hız: {{name}}",
+      "ofTopSpeed": "en yüksek hızının"
+    },
+    "details": {
+      "n1": "Kırılma indisi n₁ ({{name}})",
+      "n2": "Kırılma indisi n₂ ({{name}})",
+      "incident": "Geliş açısı  θ₁",
+      "reflected": "Yansıma açısı  θr",
+      "refracted": "Kırılma açısı  θ₂",
+      "tir": "yok (tam iç yansıma)",
+      "critical": "Kritik açı  θc",
+      "noCritical": "yok (n₁ ≤ n₂)",
+      "v1": "Hız v₁ ({{name}})",
+      "v2": "Hız v₂ ({{name}})",
+      "frequency": "Frekans  f (değişmez)",
+      "lambda1": "Dalga boyu λ₁ ({{name}})",
+      "lambda2": "Dalga boyu λ₂ ({{name}})"
+    },
+    "cards": {
+      "ray": "Işık ışını",
+      "materials": "Maddeler"
+    },
+    "fields": {
+      "incident": "Geliş açısı",
+      "angle": "Işığın açısı",
+      "incidentHint": "Normalden, yani yüzeye dik çizgiden ölçülür. 90° yüzey boyunca giden bir ışın olurdu, bu yüzden izin verilmez.",
+      "angleHint": "Yüzeyden dimdik yükselen kesikli çizgiden ölçülür. 0° ışığı dümdüz aşağı tutar.",
+      "direction": "Işık her zaman A maddesinden (üstte) B maddesine (altta) gider.",
+      "mediumA": "A maddesi (üstte)",
+      "mediumB": "B maddesi (altta)",
+      "customA": "A için özel indis",
+      "customB": "B için özel indis",
+      "customHint": "Kırılma indisi n: 1,00 hava gibidir, 3,00 elmastan daha yoğundur.",
+      "swap": "A ile B'yi değiştir",
+      "swapLabel": "Maddeleri değiştir: {{a}} ile {{b}} yer değiştirir"
+    },
+    "key": {
+      "title": "Hangi ışın hangisi",
+      "incoming": "Gelen ışık (düz çizgi)",
+      "reflected": "Yansıyan ışık (kesikli çizgi)",
+      "bent": "Geçen, kırılan ışık (kesik-noktalı çizgi)"
+    },
+    "assumptions": "Basitleştirmeler: her maddenin görünür ışık için tipik tek bir kırılma indisi var (gerçekte renge göre biraz değişir), dalga boyları yeşil ışık içindir (boşlukta {{nm}} nm) ve yansıyan ışın gerçek parlaklığını değil yalnızca yönünü gösterir (Fresnel hesabı yok).",
+    "credits": "Her açı, Snell yasası ve yansıma yasasıyla anında hesaplanır ve gerçek açısıyla çizilir. Hareket eden noktalar yoğun maddede daha yavaş ve daha sık ilerler; ışığın hızı ve dalga boyu da gerçekte böyle değişir."
   }
 }

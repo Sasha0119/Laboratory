@@ -13,7 +13,8 @@
     "back": "Back",
     "matter": "States of Matter & Heat",
     "machines": "Simple Machines",
-    "waves": "Waves & Sound"
+    "waves": "Waves & Sound",
+    "light": "Light & Refraction"
   },
   "common": {
     "reset": "Reset",
@@ -85,7 +86,7 @@
       },
       "light": {
         "title": "Light, Reflection & Refraction",
-        "summary": "Mirrors, lenses, and why a straw looks bent in a glass of water."
+        "summary": "How light bounces off a surface and bends as it enters another material, and why a straw looks bent in a glass of water."
       },
       "ohmsLaw": {
         "title": "Ohm's Law & Circuits",
@@ -144,7 +145,10 @@
       "work": "Work",
       "frequency": "Frequency",
       "wavelength": "Wavelength",
-      "amplitude": "Amplitude"
+      "amplitude": "Amplitude",
+      "refraction": "Refraction",
+      "reflection": "Reflection",
+      "totalInternalReflection": "Total internal reflection"
     },
     "comingSoonMessage": "This experiment is coming soon!"
   },
@@ -685,6 +689,13 @@
       "displacement": "Displacement of a travelling wave",
       "superposition": "Two waves add up (superposition)",
       "beat": "Beat frequency"
+    },
+    "light": {
+      "snell": "Snell's law",
+      "reflection": "Law of reflection",
+      "critical": "Critical angle",
+      "speed": "Speed of light in a material",
+      "wavelength": "Wavelength in a material"
     }
   },
   "matter": {
@@ -1083,5 +1094,104 @@
       "beginner": "Higher pitch means faster wiggles. A bigger wave means a louder sound. The same note gets longer waves in water and steel, because sound moves faster there.",
       "intermediate": "Frequency sets the pitch and amplitude sets the loudness. Wave speed depends on the material, so at a fixed frequency a faster material gives a longer wavelength. Two close frequencies drift in and out of step, which makes beats."
     }
+  },
+  "light": {
+    "intro": {
+      "title": "Why does light bend?",
+      "body": "Light travels at different speeds in different materials: fastest in air, slower in water and glass. When it crosses from one material into another at a slant, the change of speed makes it change direction. That is why a straw looks bent in a glass of water. Some of the light also bounces off the surface, like a mirror."
+    },
+    "tryThis": {
+      "title": "Try this",
+      "starter": "Shine light from Air into Water at 45° and watch the bend toward the normal.",
+      "tir": "Swap so the light goes from Water into Air, then raise the angle until the bent ray disappears."
+    },
+    "blurbs": {
+      "beginner": "Light slows down in water and glass, so it bends when it goes in. Coming back out, it speeds up and bends the other way. Some light always bounces off the surface, at the same angle it arrived.",
+      "intermediate": "Each material has a refractive index n: how many times slower light travels in it than in a vacuum. The angle of incidence and the angle of refraction are measured from the normal. Going into a higher n, the ray bends toward the normal; going into a lower n it bends away, and beyond the critical angle no light can leave at all."
+    },
+    "media": {
+      "air": "Air",
+      "water": "Water",
+      "glass": "Glass",
+      "diamond": "Diamond",
+      "custom": "Custom"
+    },
+    "words": {
+      "straight": "The light hits the surface straight on, so it goes straight through without bending.",
+      "same": "Both sides are {{a}}, so the light does not slow down or speed up, and it goes straight on without bending.",
+      "toward": "The light slows down as it enters {{b}}, so it bends toward the dashed line.",
+      "away": "The light speeds up as it leaves {{a}} for {{b}}, so it bends away from the dashed line.",
+      "nearlyTir": "The light only just escapes into {{b}}, skimming along the surface. A little steeper and it will all bounce back.",
+      "tir": "No light escapes: it all bounces back into {{a}}, like a perfect mirror."
+    },
+    "wordsPrecise": {
+      "straight": "At normal incidence (0°) the ray passes straight through: the angle of refraction is 0° too.",
+      "same": "Both refractive indices are equal, so the angle of refraction equals the angle of incidence: no bending.",
+      "toward": "Going into a higher refractive index, the ray bends toward the normal.",
+      "away": "Going into a lower refractive index, the ray bends away from the normal. The critical angle here is {{critical}}.",
+      "nearlyTir": "The angle of incidence is just below the critical angle ({{critical}}), so the refracted ray grazes the surface at nearly 90°.",
+      "tir": "Total internal reflection: the angle of incidence is at or beyond the critical angle ({{critical}}), so there is no refracted ray and all the light reflects."
+    },
+    "scene": {
+      "medium": "{{name}} · n = {{n}}",
+      "incoming": "incoming",
+      "reflected": "reflected",
+      "bent": "bent",
+      "normal": "normal",
+      "tir": "No light gets through: it all bounces back",
+      "description": "Light travels from {{a}} (n = {{n1}}) at the top into {{b}} (n = {{n2}}) at the bottom. It meets the surface at {{incident}} from the normal, reflects at {{incident}}, and the part that gets through bends to {{refracted}}.",
+      "descriptionTir": "Light travels from {{a}} (n = {{n1}}) at the top toward {{b}} (n = {{n2}}) at the bottom. It meets the surface at {{incident}} from the normal and all of it reflects at {{incident}}; there is no bent ray."
+    },
+    "stats": {
+      "incident": "Angle of incidence",
+      "comesIn": "Light comes in at",
+      "refracted": "Angle of refraction",
+      "bendsTo": "Light bends to",
+      "noneGetsOut": "no light gets through",
+      "critical": "Critical angle",
+      "speedIn": "Speed in {{name}}",
+      "ofTopSpeed": "of its top speed"
+    },
+    "details": {
+      "n1": "Refractive index n₁ ({{name}})",
+      "n2": "Refractive index n₂ ({{name}})",
+      "incident": "Angle of incidence  θ₁",
+      "reflected": "Angle of reflection  θr",
+      "refracted": "Angle of refraction  θ₂",
+      "tir": "none (total internal reflection)",
+      "critical": "Critical angle  θc",
+      "noCritical": "none (n₁ ≤ n₂)",
+      "v1": "Speed v₁ in {{name}}",
+      "v2": "Speed v₂ in {{name}}",
+      "frequency": "Frequency  f (unchanged)",
+      "lambda1": "Wavelength λ₁ in {{name}}",
+      "lambda2": "Wavelength λ₂ in {{name}}"
+    },
+    "cards": {
+      "ray": "Light ray",
+      "materials": "Materials"
+    },
+    "fields": {
+      "incident": "Angle of incidence",
+      "angle": "Angle of the light",
+      "incidentHint": "Measured from the normal, the line perpendicular to the surface. 90° would run along the surface, so it is not allowed.",
+      "angleHint": "Measured from the dashed line that stands straight up from the surface. 0° shines straight down.",
+      "direction": "The light always travels from material A (top) into material B (bottom).",
+      "mediumA": "Material A (top)",
+      "mediumB": "Material B (bottom)",
+      "customA": "Custom index for A",
+      "customB": "Custom index for B",
+      "customHint": "Refractive index n: 1.00 is like air, 3.00 is denser than diamond.",
+      "swap": "Swap A and B",
+      "swapLabel": "Swap materials: {{a}} and {{b}} change places"
+    },
+    "key": {
+      "title": "Which ray is which",
+      "incoming": "Incoming light (solid line)",
+      "reflected": "Reflected light (dashed line)",
+      "bent": "Bent light that gets through (dash-dot line)"
+    },
+    "assumptions": "Simplifications: each material has one typical refractive index for visible light (real ones vary slightly with colour), wavelengths are for green light ({{nm}} nm in a vacuum), and the reflected ray shows direction only, not its true brightness (no Fresnel calculation).",
+    "credits": "Every angle is worked out live from Snell's law and the law of reflection, and drawn at its true angle. The moving dots travel slower and closer together in the denser material, just as light's speed and wavelength really change."
   }
 }

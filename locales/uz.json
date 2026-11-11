@@ -13,7 +13,8 @@
     "back": "Orqaga",
     "matter": "Modda holatlari va issiqlik",
     "machines": "Oddiy mexanizmlar",
-    "waves": "To‘lqinlar va tovush"
+    "waves": "To‘lqinlar va tovush",
+    "light": "Yorug‘lik va sinish"
   },
   "common": {
     "reset": "Tozalash",
@@ -85,7 +86,7 @@
       },
       "light": {
         "title": "Yorug‘lik, qaytish va sinish",
-        "summary": "Ko‘zgular, linzalar va nega naycha suvda siniqdek ko‘rinadi."
+        "summary": "Yorug‘lik sirtdan qanday qaytadi va boshqa moddaga o‘tganda qanday sinadi, suv to‘la stakandagi naycha nega singan bo‘lib ko‘rinadi."
       },
       "ohmsLaw": {
         "title": "Om qonuni va zanjirlar",
@@ -144,7 +145,10 @@
       "work": "Ish",
       "frequency": "Chastota",
       "wavelength": "To‘lqin uzunligi",
-      "amplitude": "Amplituda"
+      "amplitude": "Amplituda",
+      "refraction": "Sinish",
+      "reflection": "Qaytish",
+      "totalInternalReflection": "To‘liq ichki qaytish"
     },
     "comingSoonMessage": "Bu tajriba tez orada qo‘shiladi!"
   },
@@ -685,6 +689,13 @@
       "displacement": "Yuguruvchi to‘lqinning siljishi",
       "superposition": "Ikki to‘lqinning qo‘shilishi (superpozitsiya)",
       "beat": "Tepish chastotasi"
+    },
+    "light": {
+      "snell": "Snellius qonuni",
+      "reflection": "Qaytish qonuni",
+      "critical": "Chegaraviy burchak",
+      "speed": "Moddadagi yorug‘lik tezligi",
+      "wavelength": "Moddadagi to‘lqin uzunligi"
     }
   },
   "matter": {
@@ -1083,5 +1094,104 @@
       "beginner": "Baland tovush — tezroq tebranish. Katta to‘lqin — kuchliroq tovush. Bir xil nota suv va po‘latda uzunroq to‘lqin hosil qiladi, chunki u yerda tovush tezroq tarqaladi.",
       "intermediate": "Chastota tovush balandligini, amplituda esa kuchini belgilaydi. To‘lqin tezligi materialga bog‘liq, shuning uchun bir xil chastotada tezroq materialda to‘lqin uzunligi kattaroq bo‘ladi. Bir-biriga yaqin ikki chastota goh mos kelib, goh ajralib, tepishlar hosil qiladi."
     }
+  },
+  "light": {
+    "intro": {
+      "title": "Yorug‘lik nega sinadi?",
+      "body": "Yorug‘lik turli moddalarda turli tezlikda harakatlanadi: havoda eng tez, suv va shishada sekinroq. U bir moddadan boshqasiga qiya o‘tganda tezligi o‘zgarib, yo‘nalishi ham o‘zgaradi. Shuning uchun suv to‘la stakandagi naycha singan bo‘lib ko‘rinadi. Yorug‘likning bir qismi esa sirtdan ko‘zgudagidek qaytadi."
+    },
+    "tryThis": {
+      "title": "Sinab ko‘ring",
+      "starter": "Yorug‘likni havodan suvga 45° burchak bilan yo‘naltiring va uning normalga tomon sinishini kuzating.",
+      "tir": "Yorug‘lik suvdan havoga o‘tishi uchun almashtiring, so‘ng singan nur yo‘qolguncha burchakni oshiring."
+    },
+    "blurbs": {
+      "beginner": "Yorug‘lik suv va shishada sekinlashadi, shuning uchun ichiga kirganda buriladi. Qaytib chiqishda tezlashadi va boshqa tomonga buriladi. Yorug‘likning bir qismi har doim sirtdan, kelgan burchagi bilan qaytadi.",
+      "intermediate": "Har bir moddaning sindirish ko‘rsatkichi n bor: yorug‘lik unda vakuumdagiga qaraganda necha marta sekin harakatlanishi. Tushish burchagi va sinish burchagi normaldan o‘lchanadi. Kattaroq n li muhitga o‘tganda nur normalga yaqinlashadi, kichikroq n li muhitga o‘tganda undan uzoqlashadi, chegaraviy burchakdan keyin esa yorug‘lik umuman chiqa olmaydi."
+    },
+    "media": {
+      "air": "Havo",
+      "water": "Suv",
+      "glass": "Shisha",
+      "diamond": "Olmos",
+      "custom": "Boshqa"
+    },
+    "words": {
+      "straight": "Yorug‘lik sirtga tik tushyapti, shuning uchun burilmasdan to‘g‘ri o‘tib ketadi.",
+      "same": "Ikki tomon ham «{{a}}», shuning uchun yorug‘lik sekinlashmaydi ham, tezlashmaydi ham va burilmasdan to‘g‘ri ketadi.",
+      "toward": "Yorug‘lik «{{b}}» muhitiga kirganda sekinlashadi, shuning uchun uzuq chiziq tomonga buriladi.",
+      "away": "Yorug‘lik «{{a}}» muhitidan «{{b}}» muhitiga o‘tganda tezlashadi, shuning uchun uzuq chiziqdan uzoqlashib buriladi.",
+      "nearlyTir": "Yorug‘lik «{{b}}» muhitiga zo‘rg‘a chiqyapti, sirt bo‘ylab sirpanib ketyapti. Sal qiyaroq bo‘lsa, hammasi orqaga qaytadi.",
+      "tir": "Yorug‘lik chiqmayapti: hammasi mukammal ko‘zgudagidek «{{a}}» muhitiga qaytyapti."
+    },
+    "wordsPrecise": {
+      "straight": "Tik tushishda (0°) nur to‘g‘ri o‘tadi: sinish burchagi ham 0°.",
+      "same": "Ikkala sindirish ko‘rsatkichi teng, shuning uchun sinish burchagi tushish burchagiga teng: sinish yo‘q.",
+      "toward": "Sindirish ko‘rsatkichi kattaroq muhitga o‘tganda nur normalga yaqinlashadi.",
+      "away": "Sindirish ko‘rsatkichi kichikroq muhitga o‘tganda nur normaldan uzoqlashadi. Bu yerda chegaraviy burchak {{critical}}.",
+      "nearlyTir": "Tushish burchagi chegaraviy burchakdan ({{critical}}) sal kichik, shuning uchun singan nur sirt bo‘ylab deyarli 90° bilan sirpanadi.",
+      "tir": "To‘liq ichki qaytish: tushish burchagi chegaraviy burchakka ({{critical}}) teng yoki undan katta, shuning uchun singan nur yo‘q va yorug‘likning hammasi qaytadi."
+    },
+    "scene": {
+      "medium": "{{name}} · n = {{n}}",
+      "incoming": "tushuvchi",
+      "reflected": "qaytgan",
+      "bent": "singan",
+      "normal": "normal",
+      "tir": "Yorug‘lik o‘tmayapti: hammasi qaytyapti",
+      "description": "Yorug‘lik yuqoridagi «{{a}}» (n = {{n1}}) muhitidan pastdagi «{{b}}» (n = {{n2}}) muhitiga o‘tyapti. U sirtga normalga nisbatan {{incident}} burchak bilan tushadi, {{incident}} bilan qaytadi, o‘tgan qismi esa {{refracted}} gacha sinadi.",
+      "descriptionTir": "Yorug‘lik yuqoridagi «{{a}}» (n = {{n1}}) muhitidan pastdagi «{{b}}» (n = {{n2}}) muhiti tomonga ketyapti. U sirtga normalga nisbatan {{incident}} burchak bilan tushadi va hammasi {{incident}} bilan qaytadi; singan nur yo‘q."
+    },
+    "stats": {
+      "incident": "Tushish burchagi",
+      "comesIn": "Yorug‘lik tushish burchagi",
+      "refracted": "Sinish burchagi",
+      "bendsTo": "Yorug‘lik burilgan burchak",
+      "noneGetsOut": "yorug‘lik o‘tmayapti",
+      "critical": "Chegaraviy burchak",
+      "speedIn": "Tezlik: {{name}}",
+      "ofTopSpeed": "eng katta tezligidan"
+    },
+    "details": {
+      "n1": "Sindirish ko‘rsatkichi n₁ ({{name}})",
+      "n2": "Sindirish ko‘rsatkichi n₂ ({{name}})",
+      "incident": "Tushish burchagi  θ₁",
+      "reflected": "Qaytish burchagi  θr",
+      "refracted": "Sinish burchagi  θ₂",
+      "tir": "yo‘q (to‘liq ichki qaytish)",
+      "critical": "Chegaraviy burchak  θc",
+      "noCritical": "yo‘q (n₁ ≤ n₂)",
+      "v1": "Tezlik v₁ ({{name}})",
+      "v2": "Tezlik v₂ ({{name}})",
+      "frequency": "Chastota  f (o‘zgarmaydi)",
+      "lambda1": "To‘lqin uzunligi λ₁ ({{name}})",
+      "lambda2": "To‘lqin uzunligi λ₂ ({{name}})"
+    },
+    "cards": {
+      "ray": "Yorug‘lik nuri",
+      "materials": "Moddalar"
+    },
+    "fields": {
+      "incident": "Tushish burchagi",
+      "angle": "Yorug‘lik burchagi",
+      "incidentHint": "Normaldan, ya’ni sirtga perpendikulyar chiziqdan o‘lchanadi. 90° sirt bo‘ylab ketadigan nur bo‘lardi, shuning uchun ruxsat etilmaydi.",
+      "angleHint": "Sirtdan tik ko‘tarilgan uzuq chiziqdan o‘lchanadi. 0° da yorug‘lik to‘g‘ri pastga tushadi.",
+      "direction": "Yorug‘lik har doim A moddadan (yuqorida) B moddaga (pastda) o‘tadi.",
+      "mediumA": "A modda (yuqorida)",
+      "mediumB": "B modda (pastda)",
+      "customA": "A uchun ko‘rsatkich",
+      "customB": "B uchun ko‘rsatkich",
+      "customHint": "Sindirish ko‘rsatkichi n: 1,00 — havoga o‘xshash, 3,00 — olmosdan ham zichroq.",
+      "swap": "A va B ni almashtirish",
+      "swapLabel": "Moddalarni almashtirish: {{a}} va {{b}} o‘rin almashadi"
+    },
+    "key": {
+      "title": "Qaysi nur qaysi",
+      "incoming": "Tushuvchi yorug‘lik (yaxlit chiziq)",
+      "reflected": "Qaytgan yorug‘lik (uzuq chiziq)",
+      "bent": "O‘tgan, singan yorug‘lik (shtrix-punktir chiziq)"
+    },
+    "assumptions": "Soddalashtirishlar: har bir moddaning ko‘rinadigan yorug‘lik uchun bitta odatiy sindirish ko‘rsatkichi bor (aslida u rangga qarab biroz o‘zgaradi), to‘lqin uzunliklari yashil yorug‘lik uchun (vakuumda {{nm}} nm), qaytgan nur esa haqiqiy yorqinligini emas, faqat yo‘nalishini ko‘rsatadi (Frenel hisobi yo‘q).",
+    "credits": "Har bir burchak Snellius qonuni va qaytish qonuni bo‘yicha jonli hisoblanadi va haqiqiy burchagida chiziladi. Harakatlanayotgan nuqtalar zichroq moddada sekinroq va bir-biriga yaqinroq yuradi — yorug‘likning tezligi va to‘lqin uzunligi ham aslida shunday o‘zgaradi."
   }
 }
